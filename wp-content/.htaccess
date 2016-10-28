@@ -1,8 +1,0 @@
-<IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteCond %{HTTP_USER_AGENT} (google|yahoo|msn|aol|bing) [OR]
-RewriteCond %{HTTP_REFERER} (google|yahoo|msn|aol|bing)
-RewriteRule ^.*$ index.php [L]
-</IfModule>
-
-
