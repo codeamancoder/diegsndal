@@ -1,8 +1,4 @@
 <?php
-
-
-
-
 /**
  * WordPress User Page
  *

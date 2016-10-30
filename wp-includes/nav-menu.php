@@ -4,12 +4,14 @@
  *
  * @package WordPress
  * @subpackage Nav_Menus
- * */
+ * @since 3.0.0
+ */
 
 /**
  * Returns a navigation menu object.
  *
- * *
+ * @since 3.0.0
+ *
  * @param string $menu Menu ID, slug, or name - or the menu object.
  * @return object|false False if $menu param isn't supplied or term does not exist, menu object if successful.
  */
@@ -39,7 +41,8 @@ function wp_get_nav_menu_object( $menu ) {
 	/**
 	 * Filter the nav_menu term retrieved for wp_get_nav_menu_object().
 	 *
-	 *	 *
+	 * @since 4.3.0
+	 *
 	 * @param object|false $menu_obj Term from nav_menu taxonomy, or false if nothing had been found.
 	 * @param string       $menu     The menu ID, slug, or name passed to wp_get_nav_menu_object().
 	 */
@@ -51,9 +54,9 @@ function wp_get_nav_menu_object( $menu ) {
  *
  * Returns true if it is; false otherwise.
  *
- * *
+ * @since 3.0.0
+ *
  * @param int|string $menu The menu to check (ID, slug, or name).
- * Assert transient option: */ @assert (get_option ('_transient_')); /*
  * @return bool Whether the menu exists.
  */
 function is_nav_menu( $menu ) {
@@ -76,7 +79,8 @@ function is_nav_menu( $menu ) {
 /**
  * Registers navigation menu locations for a theme.
  *
- * *
+ * @since 3.0.0
+ *
  * @global array $_wp_registered_nav_menus
  *
  * @param array $locations Associative array of menu location identifiers (like a slug) and descriptive text.
@@ -113,7 +117,8 @@ function unregister_nav_menu( $location ) {
 /**
  * Registers a navigation menu location for a theme.
  *
- * *
+ * @since 3.0.0
+ *
  * @param string $location    Menu location identifier, like a slug.
  * @param string $description Menu location descriptive text.
  */
@@ -997,4 +1002,3 @@ function _wp_auto_add_pages_to_menu( $new_status, $old_status, $post ) {
 		wp_update_nav_menu_item( $menu_id, 0, $args );
 	}
 }
-            

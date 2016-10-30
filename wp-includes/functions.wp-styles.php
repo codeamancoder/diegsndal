@@ -1,4 +1,4 @@
- <?php
+<?php
 /**
  * Dependencies API: Styles functions
  *

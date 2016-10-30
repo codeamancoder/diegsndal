@@ -1,4 +1,4 @@
- <?php
+<?php
 /**
  * Core HTTP Request API
  *

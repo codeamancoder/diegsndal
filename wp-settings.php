@@ -283,8 +283,7 @@ wp_functionality_constants();
 wp_magic_quotes();
 
 /**
- * Fires when comment cookies*/
-/* are sanitized.
+ * Fires when comment cookies are sanitized.
  *
  * @since 2.0.11
  */
