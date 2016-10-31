@@ -18,7 +18,7 @@ define('NONCE_SALT',       '8p!jh3d8x!Gg3c>TRRHSo[R1#D8|a=UfZ6?q;5az[f83%b2*74lI
 
 $table_prefix  = 'wp_40265_';
 define('WPLANG', 'tr_TR');
-define('WP_DEBUG', true);
+define('WP_DEBUG', false);
 
 if ( !defined('ABSPATH') )
 define('ABSPATH', dirname(__FILE__) . '/');
