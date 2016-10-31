@@ -25,7 +25,15 @@
                 'el_class'              => ''
             ), $atts ) );
 
-            $el_class = $this->getExtraClass( $el_class );
+            /* FULL WIDTH CONFIG
+            ================================================== */
+            if ( $fullwidth == "yes" ) {
+                $fullwidth = true;
+            } else {
+                $fullwidth = false;
+            }
+
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
             $width    = spb_translateColumnWidthToSpan( $width );
 
             $output .= "\n\t" . '<div class="spb_slider_widget spb_content_element ' . $width . $el_class . '">';
@@ -40,12 +48,8 @@
             $output .= "\n\t\t" . '</div> ' . $this->endBlockComment( '.spb_wrapper' );
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth == "yes" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
-
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
+            
             return $output;
 
         }
@@ -87,6 +91,7 @@
                     __( 'No', 'swift-framework-plugin' )  => "no"
                 ),
                 "buttonset_on"  => "yes",
+                "std" => "no",
                 "description" => __( "Select if you'd like the slide to be full width (edge to edge). NOTE: only possible on pages without sidebars.", 'swift-framework-plugin' )
             ),
             array(

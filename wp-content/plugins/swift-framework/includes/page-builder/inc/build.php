@@ -40,7 +40,6 @@
 
             global $sf_opts, $is_IE;
             $enable_min_styles = false;
-
             if ( isset( $sf_opts['enable_min_styles'] ) ) {
                 $enable_min_styles = $sf_opts['enable_min_styles'];
             }
@@ -61,20 +60,30 @@
 
             global $sf_opts, $is_IE;
             $enable_min_scripts = false;
-
             if ( isset( $sf_opts['enable_min_scripts'] ) ) {
                 $enable_min_scripts = $sf_opts['enable_min_scripts'];
             }
 
             // Register Scripts
-            wp_register_script( 'spb-frontend-js', $this->frontendAssetURL( 'js/spb-functions.js' ), array( 'jquery' ), NULL, true );
-            wp_register_script( 'spb-frontend-js-min', $this->frontendAssetURL( 'js/spb-functions.min.js' ), array( 'jquery' ), NULL, true );
+            wp_register_script( 'jquery-ui', $this->frontendAssetURL( 'js/lib/jquery-ui-1.11.4.custom.min.js' ), 'jquery', NULL, true );
+            wp_register_script( 'parallax', $this->frontendAssetURL( 'js/lib/jquery.parallax.min.js' ), array( 'jquery' ), NULL, true );
+            wp_register_script( 'mlparallax', $this->frontendAssetURL( 'js/lib/jquery.mlparallax.min.js' ), array( 'jquery' ), NULL, true );
+            wp_register_script( 'easypiechart', $this->frontendAssetURL( 'js/lib/jquery.easypiechart.min.js' ), array( 'jquery' ), NULL, true );
+            wp_register_script( 'countto', $this->frontendAssetURL( 'js/lib/jquery.countto.min.js' ), array( 'jquery' ), NULL, true );
+            wp_register_script( 'countdown', $this->frontendAssetURL( 'js/lib/jquery.countdown.min.js' ), array( 'jquery' ), NULL, true );
+            wp_register_script( 'vivus', $this->frontendAssetURL( 'js/lib/vivus.min.js' ), array( 'jquery' ), NULL, true );
+            wp_register_script( 'isotope', $this->frontendAssetURL( 'js/lib/isotope.pkgd.min.js' ), array( 'jquery' ), NULL, true );
+            wp_register_script( 'isotope-packery', $this->frontendAssetURL( 'js/lib/packery-mode.pkgd.min.js' ), array( 'jquery' ), NULL, true );              
+            wp_register_script( 'matchHeight', $this->frontendAssetURL( 'js/lib/jquery.matchHeight-min.js' ), array( 'jquery' ), NULL, true );              
+            wp_register_script( 'prism', $this->frontendAssetURL( 'js/lib/prism.js' ), array( 'jquery' ), NULL, true );              
 
             // Enqueue Script
+            wp_enqueue_script('modernizr', $this->frontendAssetURL( 'js/lib/modernizr-custom.js' ), NULL, NULL, TRUE);
             if ( $enable_min_scripts && !$is_IE ) {
-                wp_enqueue_script( 'spb-frontend-js-min' );
+                wp_enqueue_script( 'spb-frontend-js-min', $this->frontendAssetURL( 'js/spb-functions.min.js' ), array( 'jquery' ), NULL, true );
             } else {
-                wp_enqueue_script( 'spb-frontend-js' );
+                wp_enqueue_script( 'spb-frontend-js', $this->frontendAssetURL( 'js/spb-functions.js' ), array( 'jquery' ), NULL, true );
+
             }
         }
     }
@@ -169,7 +178,7 @@
 
         public function spb_scripts() {
   
-            $enable_min_scripts = true;
+            $enable_min_scripts = false;
 
             // Styles
             wp_enqueue_style( 'materialize-components-css' );                
@@ -183,16 +192,17 @@
             wp_enqueue_style( 'colorpicker' );
             wp_enqueue_style( 'uislider' );
             wp_enqueue_style( 'chosen' );
-            wp_enqueue_style( 'ilightbox' );
-            wp_enqueue_style( 'ilightbox-dark' );
-            if ( sf_theme_supports('icon-mind-font') ) {
+            if ( spb_theme_supports('icon-mind-font') ) {
             wp_enqueue_style( 'ss-iconmind' );
             }
-            if ( sf_theme_supports('gizmo-icon-font') ) {
+            if ( spb_theme_supports('gizmo-icon-font') ) {
             wp_enqueue_style( 'ss-gizmo' );
             }
-            if ( sf_theme_supports('nucleo-general-font') ) {
+            if ( spb_theme_supports('nucleo-general-font') ) {
             wp_enqueue_style( 'nucleo' );
+            }
+            if ( spb_theme_supports('simple-line-icons-font') ) {
+            wp_enqueue_style( 'simple-line-icons' );
             }
             wp_enqueue_style( 'fontawesome' );
             wp_enqueue_style( 'materialicons' );
@@ -215,7 +225,6 @@
             wp_enqueue_script( 'colorpicker-js' );
             wp_enqueue_script( 'uislider-js' );
             wp_enqueue_script( 'chosen-js' );
-            wp_enqueue_script( 'ilightbox-js' );
             wp_enqueue_script( 'spb-maps' );
             wp_enqueue_style( 'swift-pb-font' );   
             wp_enqueue_script( 'touch-punch' );
@@ -224,10 +233,11 @@
 
         public function spb_register_js() {
 
+            $gmaps_api_key = get_option('sf_gmaps_api_key');
             $wp_locale = get_locale();
          
-            if( $wp_locale != '' ){
-                $wp_locale = '?language=' . $wp_locale;
+            if ( $wp_locale != '' ) {
+                $wp_locale = '&language=' . $wp_locale;
             }
             
             wp_register_script( 'touch-punch', $this->assetURL( 'js/jquery.ui.touch-punch.js'), 'jquery' , null, true );
@@ -239,12 +249,10 @@
             wp_register_script( 'colorpicker-js', $this->assetURL( 'js/jquery.minicolors.min.js' ), array( 'jquery' ), SPB_VERSION, true );
             wp_register_script( 'uislider-js', $this->assetURL( 'js/jquery.nouislider.min.js' ), array( 'jquery' ), SPB_VERSION, true );
             wp_register_script( 'chosen-js', $this->assetURL( 'js/chosen.jquery.min.js' ), array( 'jquery' ), SPB_VERSION, true );
-            wp_register_script( 'ilightbox-js', $this->assetURL( 'js/ilightbox.min.js' ), array( 'jquery' ), SPB_VERSION, true );
-            wp_register_script( 'spb-maps', '//maps.google.com/maps/api/js' . $wp_locale, 'jquery', null, true );
+            wp_register_script( 'spb-maps', '//maps.google.com/maps/api/js?key=' . $gmaps_api_key . $wp_locale, 'jquery', null, true );
         }
   
         public function spb_register_css() {    
-            
             wp_register_style( 'swift-pb-font', $this->assetURL( 'css/swift-pb.css' ), false, null, false );
             wp_register_style( 'materialize-components-css', $this->assetURL( 'materialize/css/materialize.css' ), false, null, false );
             wp_register_style( 'spb-bootstrap', $this->assetURL( 'css/bootstrap.css' ), false, SPB_VERSION, false );
@@ -253,21 +261,20 @@
             wp_register_style( 'colorpicker', $this->assetURL( 'css/jquery.minicolors.css' ), false, null, false );
             wp_register_style( 'uislider', $this->assetURL( 'css/jquery.nouislider.min.css' ), false, null, false );
             wp_register_style( 'chosen', $this->assetURL( 'css/chosen.min.css' ), false, null, false );
-            wp_register_style( 'ilightbox', $this->assetURL( 'css/ilightbox.css' ), false, null, false );
-            wp_register_style( 'ilightbox-dark', $this->assetURL( 'css/ilightbox-dark-skin/skin.css' ), false, null, false );
-            if ( sf_theme_supports('icon-mind-font') ) {
+            if ( spb_theme_supports('icon-mind-font') ) {
             wp_register_style( 'ss-iconmind', get_template_directory_uri() . '/css/iconmind.css', array(), null, 'all' );
             }
-            if ( sf_theme_supports('gizmo-icon-font') ) {
+            if ( spb_theme_supports('gizmo-icon-font') ) {
             wp_register_style( 'ss-gizmo', get_template_directory_uri() . '/css/ss-gizmo.css', array(), null, 'all' );
             }
-            if ( sf_theme_supports('nucleo-general-font') ) {
+            if ( spb_theme_supports('nucleo-general-font') ) {
             wp_register_style( 'nucleo', get_template_directory_uri() . '/css/iconfont.css', array(), null, 'all' );
+            }
+            if ( spb_theme_supports('simple-line-icons-font') ) {
+            wp_register_style( 'simple-line-icons', get_template_directory_uri() . '/css/simple-line-icons.css', array(), null, 'all' );
             }
             wp_register_style( 'fontawesome', get_template_directory_uri() . '/css/font-awesome.min.css', array(), null, 'all' );
             wp_register_style( 'materialicons', 'https://fonts.googleapis.com/icon?family=Material+Icons', array(), null, 'all' );
-
-
         }
   
         public function spb_edit_page() {

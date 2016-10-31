@@ -26,6 +26,10 @@
                 'width'            => '1/1'
             ), $atts ) );
 
+            // ENQUEUE SCRIPT
+            wp_enqueue_script('lightSlider');
+
+
             $output = '';
 
             if ( $autoplay == "yes" ) {
@@ -38,7 +42,7 @@
 
             $items .= '</ul></div>';
 
-            $sidebar_config = sf_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
+            $sidebar_config = spb_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
 
             $sidebars = '';
             if ( ( $sidebar_config == "left-sidebar" ) || ( $sidebar_config == "right-sidebar" ) ) {

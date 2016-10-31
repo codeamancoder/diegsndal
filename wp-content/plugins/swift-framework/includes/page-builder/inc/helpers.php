@@ -11,8 +11,8 @@
 
     /* CHECK THEME FEATURE SUPPORT
     ================================================== */
-    if ( !function_exists( 'sf_theme_supports' ) ) {
-        function sf_theme_supports( $feature ) {
+    if ( !function_exists( 'spb_theme_supports' ) ) {
+        function spb_theme_supports( $feature ) {
             $supports = get_theme_support( 'swiftframework' );
             $supports = $supports[0];
             if ( !isset( $supports[ $feature ] ) || $supports[ $feature ] == "") {
@@ -243,8 +243,178 @@
                 return $category_list;
             }
         }
+    }  
+
+
+    /* GET ATTACHMENT META
+    ================================================== */
+    if ( ! function_exists( 'spb_get_attachment_meta' ) ) {
+        function spb_get_attachment_meta( $attachment_id ) {
+    
+            $attachment = get_post( $attachment_id );
+    
+            if ( isset( $attachment ) ) {
+                return array(
+                    'alt' => get_post_meta( $attachment->ID, '_wp_attachment_image_alt', true ),
+                    'caption' => $attachment->post_excerpt,
+                    'description' => $attachment->post_content,
+                    'href' => get_permalink( $attachment->ID ),
+                    'src' => $attachment->guid,
+                    'title' => $attachment->post_title
+                );
+            }
+        }
+    }
+
+
+    /* PERFORMANCE FRIENDLY GET META FUNCTION
+    ================================================== */
+    if ( !function_exists( 'spb_get_post_meta' ) ) {
+        function spb_get_post_meta( $id, $key = "", $single = false ) {
+
+            $GLOBALS['spb_post_meta'] = isset( $GLOBALS['spb_post_meta'] ) ? $GLOBALS['spb_post_meta'] : array();
+            if ( ! isset( $id ) ) {
+                return;
+            }
+            if ( ! is_array( $id ) ) {
+                if ( ! isset( $GLOBALS['spb_post_meta'][ $id ] ) ) {
+                    //$GLOBALS['sf_post_meta'][ $id ] = array();
+                    $GLOBALS['spb_post_meta'][ $id ] = get_post_meta( $id );
+                }
+                if ( ! empty( $key ) && isset( $GLOBALS['spb_post_meta'][ $id ][ $key ] ) && ! empty( $GLOBALS['spb_post_meta'][ $id ][ $key ] ) ) {
+                    if ( $single ) {
+                        return maybe_unserialize( $GLOBALS['spb_post_meta'][ $id ][ $key ][0] );
+                    } else {
+                        return array_map( 'maybe_unserialize', $GLOBALS['spb_post_meta'][ $id ][ $key ] );
+                    }
+                }
+
+                if ( $single ) {
+                    return '';
+                } else {
+                    return array();
+                }
+
+            }
+
+            return get_post_meta( $id, $key, $single );
+        }
     }
     
+
+    /* SHORTCODE FIX
+    ================================================== */
+    if ( ! function_exists( 'spb_shortcode_content_filter' ) ) :
+        function spb_shortcode_content_filter( $content ) {
+            // array of custom shortcodes requiring the fix
+            $block = join( "|", array(
+                    "alert",
+                    "sf_button",
+                    "icon",
+                    "sf_iconbox",
+                    "sf_imagebanner",
+                    "social",
+                    "sf_social_share",
+                    "highlight",
+                    "decorative_ampersand",
+                    "blockquote1",
+                    "blockquote2",
+                    "blockquote3",
+                    "pullquote",
+                    "one_half",
+                    "one_half_last",
+                    "one_third",
+                    "one_third_last",
+                    "two_third",
+                    "two_third_last",
+                    "one_fourth",
+                    "one_fourth_last",
+                    "three_fourth",
+                    "three_fourth_last",
+                    "one_half",
+                    "one_half_last",
+                    "progress_bar",
+                    "chart",
+                    "sf_count",
+                    "sf_countdown",
+                    "sf_tooltip",
+                    "sf_modal",
+                    "sf_fullscreenvideo",
+                    "sf_visibility",
+                    "table",
+                    "trow",
+                    "thcol",
+                    "tcol",
+                    "list",
+                    "list_item",
+                    "hr",
+                    "accordion",
+                    "panel",
+                    "tabs",
+                    "tab",
+                    "sf_supersearch",
+                    "gallery",
+                    "spb_accordion",
+                    "spb_accordion_tab",
+                    "spb_blog",
+                    "spb_boxed_content",
+                    "spb_clients",
+                    "spb_codesnippet",
+                    "spb_divider",
+                    "spb_faqs",
+                    "spb_gallery",
+                    "spb_googlechart",
+                    "spb_gmaps",
+                    "spb_latest_tweets",
+                    "spb_message",
+                    "spb_parallax",
+                    "spb_portfolio",
+                    "spb_portfolio_carousel",
+                    "spb_portfolio_showcase",
+                    "spb_posts_carousel",
+                    "spb_products",
+                    "spb_products_mini",
+                    "spb_recent_posts",
+                    "spb_slider",
+                    "spb_sitemap",
+                    "spb_search",
+                    "spb_supersearch",
+                    "spb_tabs",
+                    "spb_tab",
+                    "spb_text_block",
+                    "spb_team",
+                    "spb_testimonial",
+                    "spb_testimonial_carousel",
+                    "spb_testimonial_slider",
+                    "spb_toggle",
+                    "spb_tour",
+                    "spb_tweets_slider",
+                    "spb_video",
+                    "spb_blank_spacer",
+                    "spb_image",
+                    "spb_blog_grid",
+                    "spb_promo_bar",
+                    "spb_gravityforms",
+                    "spb_campaigns",
+                    "spb_column",
+                    "spb_row",
+                    "spb_icon_box",
+                    "spb_multilayer_parallax",
+                    "spb_multilayer_parallax_layer",
+                    "spb_image_banner",
+                    "spb_icon_box_grid",
+                    "spb_icon_box_grid_element",
+                    "spb_section"
+                ) );
+            // opening tag
+            $rep = preg_replace( "/(<p>)?\[($block)(\s[^\]]+)?\](<\/p>|<br \/>)?/", "[$2$3]", $content );
+            // closing tag
+            $rep = preg_replace( "/(<p>)?\[\/($block)](<\/p>|<br \/>)?/", "[/$2]", $rep );
+
+            return $rep;
+        }
+        add_filter( "the_content", "spb_shortcode_content_filter" );
+    endif;
 
     /* SPB TEMPLATE LIST FUNCTION
     ================================================== */
@@ -649,6 +819,8 @@
 	            __( "Slide In Right", 'swift-framework-plugin' )     => "slideInRight",
 	            __( "Slide In Up", 'swift-framework-plugin' )        => "slideInUp",
 	        );
+
+            $array = apply_filters( 'spb_animations_list_array', $array );
 	        return $array;
 
         }
@@ -747,7 +919,6 @@
     
 	/* GET PRODUCT CATEGORIES
 	================================================== */
-    
     if ( ! function_exists( 'spb_get_product_categories' ) ) {
         function spb_get_product_categories() {
  
@@ -764,12 +935,27 @@
         }
     }
 
-    /* GET PRODUCT CATEGORIES
+    /* GET SVG ICONS
     ================================================== */
     if ( ! function_exists( 'spb_get_svg_icons' ) ) {
         function spb_get_svg_icons() {
 
-            if ( !sf_theme_supports('nucleo-svg-icons') ) {
+            $svg_icons = array();
+            $svg_icons = apply_filters( 'spb_svg_icons_list', $svg_icons );
+
+            if ( empty($svg_icons) ) {
+                return "Unfortunately there are no svg icons available to use.";
+            } else {
+                return $svg_icons;
+            }
+        }
+    }
+
+
+    if ( ! function_exists( 'spb_get_svg_icons' ) ) {
+        function spb_get_svg_icons() {
+
+            if ( !spb_theme_supports('nucleo-svg-icons') ) {
                 return '';
             }
 
@@ -1277,13 +1463,179 @@
             // Output
             $svg_icon_output = '';
             foreach ( $coloured_svg_icons as $icon ) {
-                $svg_icon_output .= '<li class="svg-icon" data-icon="'.$icon.'"><i class="svg-icon-picker-item '.$icon.'"></i></li>';
+                $svg_icon_output .= '<li class="svg-icon bg-image-icon" data-icon="'.$icon.'"><i class="svg-icon-picker-item '.$icon.'"></i></li>';
             }
             foreach ( $outline_svg_icons as $icon ) {
-                $svg_icon_output .= '<li class="svg-icon" data-icon="'.$icon.'"><i class="svg-icon-picker-item outline-svg '.$icon.'"></i></li>';
+                $svg_icon_output .= '<li class="svg-icon bg-image-icon" data-icon="'.$icon.'"><i class="svg-icon-picker-item outline-svg '.$icon.'"></i></li>';
             }
             
             return $svg_icon_output;
+        }
+    }
+
+    if ( !function_exists( 'spb_theme_svg_icons' ) ) {
+        function spb_theme_svg_icons( $svg_icons ) {
+
+            // Check if we can access files
+            if ( !function_exists('glob') ) {
+                return $svg_icons;
+            }
+
+            // Path to directory to scan
+            $folder = '/swift-builder-icons/svg/';
+            $directory = get_template_directory() . $folder;
+            $uri = get_template_directory_uri() . $folder;
+
+            // Get all svg files
+            $svgs = glob($directory . "*.svg");
+
+            // If no files, return
+            if ( empty($svgs) ) {
+                return;
+            }
+
+            // Add each icon to array
+            foreach($svgs as $svg) {
+                $svg = basename($svg);
+                $key = $uri . $svg;
+                if ( !array_key_exists( $key, $svg_icons ) ) {
+                    $svg_icons[ $key ] = $svg;
+                }
+            }
+
+            // Return array
+            return $svg_icons; 
+        }
+        add_filter( 'spb_svg_icons_list', 'spb_theme_svg_icons' );
+    }
+
+    /* VIDEO EMBED FUNCTIONS
+    ================================================== */
+    function spb_get_vimeoid( $url ) {
+        $regex = '~
+                    # Match Vimeo link and embed code
+                    (?:<iframe [^>]*src=")?     # If iframe match up to first quote of src
+                    (?:                         # Group vimeo url
+                        https?:\/\/             # Either http or https
+                        (?:[\w]+\.)*            # Optional subdomains
+                        vimeo\.com              # Match vimeo.com
+                        (?:[\/\w]*\/videos?)?   # Optional video sub directory this handles groups links also
+                        \/                      # Slash before Id
+                        ([0-9]+)                # $1: VIDEO_ID is numeric
+                        [^\s]*                  # Not a space
+                    )                           # End group
+                    "?                          # Match end quote if part of src
+                    (?:[^>]*></iframe>)?        # Match the end of the iframe
+                    (?:<p>.*</p>)?              # Match any title information stuff
+                    ~ix';
+
+        preg_match( $regex, $url, $matches );
+
+        $vimeo_ID_fallback = substr( $url, strrpos( $url, '/' ) + 1 );
+
+        if ( isset( $matches[1] ) ) {
+            return $matches[1];
+        } else {
+            return $vimeo_ID_fallback;
+        }
+    }
+
+    if ( ! function_exists( 'spb_video_embed' ) ) {
+        function spb_video_embed( $url, $width = 640, $height = 480, $extra_params = '' ) {
+            if ( strpos( $url, 'youtube' ) || strpos( $url, 'youtu.be' ) ) {
+                return spb_video_youtube( $url, $width, $height, $extra_params );
+            } else {
+                return spb_video_vimeo( $url, $width, $height, $extra_params );
+            }
+        }
+    }
+
+    if ( ! function_exists( 'spb_video_youtube' ) ) {
+        function spb_video_youtube( $url, $width = 640, $height = 480, $extra_params = '' ) {
+            
+            // Get video id
+            preg_match( '/[\\?\\&]v=([^\\?\\&]+)/', $url, $video_id );
+            $video_id = $video_id[1];
+
+            // Variables
+            $params = '?showinfo=0&controls=1&modestbranding=1' . $extra_params;
+            $youtube_params = apply_filters( 'spb_youtube_embed_params', $params );
+            $video_padding = ( intval( $height, 10 ) / intval( $width, 10 ) ) * 100;
+            $inline_style  = 'padding-bottom: ' . $video_padding . '%;';
+            $ssl_override = apply_filters( 'spb_video_youtube_ssl', false );
+
+            // Return
+            $return = '';
+            if ( is_ssl() || $ssl_override ) {
+                $return = '<div class="video-wrap" style="' . $inline_style . '"><iframe itemprop="video" class="video-embed" src="https://www.youtube.com/embed/' . $video_id . $youtube_params . '" width="' . $width . '" height="' . $height . '" allowfullscreen></iframe></div>';
+            } else {
+                $return = '<div class="video-wrap" style="' . $inline_style . '"><iframe itemprop="video" class="video-embed" src="http://www.youtube.com/embed/' . $video_id . $youtube_params . '" width="' . $width . '" height="' . $height . '" allowfullscreen></iframe></div>';
+            }
+            $return = apply_filters( 'spb_video_youtube_embed_return', $return, $video_id, $width, $height );
+            return $return;
+        }
+    }
+
+    if ( ! function_exists( 'spb_video_vimeo' ) ) {
+        function spb_video_vimeo( $url, $width = 640, $height = 480, $extra_params = '' ) {
+            
+            // Get video id
+            $url          = str_replace( 'https://', 'http://', $url );
+            $video_id     = spb_get_vimeoid( $url );
+
+            // Variables
+            $params = '?title=0&amp;byline=0&amp;portrait=0' . $extra_params;
+            $vimeo_params = apply_filters( 'spb_vimeo_embed_params', $params );
+            $video_padding = ( intval( $height, 10 ) / intval( $width, 10 ) ) * 100;
+            $inline_style  = 'padding-bottom: ' . $video_padding . '%;';
+            $ssl_override = apply_filters( 'spb_video_youtube_ssl', false );
+
+            if ( $video_id == "" ) {
+                return '<div class="video-wrap">' . __( 'Video not found', 'nota' ) . '</div>';
+            }
+
+            // Return
+            $return = '';
+            if ( is_ssl() || $ssl_override ) {
+                $return = '<div class="video-wrap" style="' . $inline_style . '"><iframe itemprop="video" class="video-embed" src="https://player.vimeo.com/video/' . $video_id . $vimeo_params . '" width="' . $width . '" height="' . $height . '"></iframe></div>';
+            } else {
+                $return = '<div class="video-wrap" style="' . $inline_style . '"><iframe itemprop="video" class="video-embed" src="http://player.vimeo.com/video/' . $video_id . $vimeo_params . '" width="' . $width . '" height="' . $height . '"></iframe></div>';
+            }
+            $return = apply_filters( 'spb_video_vimeo_embed_return', $return, $video_id, $width, $height );
+            return $return;
+        }
+    }
+
+    if ( ! function_exists( 'spb_get_embed_src' ) ) {
+        function spb_get_embed_src( $url ) {
+            if ( strpos( $url, 'youtube' ) ) {
+                preg_match( '/[\\?\\&]v=([^\\?\\&]+)/', $url, $video_id );
+                $youtube_params = apply_filters( 'spb_youtube_embed_src_params', '?autoplay=1' );
+                if ( is_ssl() ) {
+                    if ( isset( $video_id[1] ) ) {
+                        return 'https://www.youtube.com/embed/' . $video_id[1] . $youtube_params;
+                    }
+                } else {
+                    if ( isset( $video_id[1] ) ) {
+                        return 'http://www.youtube.com/embed/' . $video_id[1] . $youtube_params;
+                    }
+                }
+            } else {
+                $url          = str_replace( 'https://', 'http://', $url );
+                $video_id     = spb_get_vimeoid( $url );
+                $time_stamp = explode('#',$url);
+                $video_id  = (!empty($time_stamp[1]))?$video_id.'#'.$time_stamp[1]:$video_id;
+                $vimeo_params = apply_filters( 'spb_vimeo_embed_src_params', '?title=0&byline=0&portrait=0&autoplay=1' );
+                if ( is_ssl() ) {
+                    if ( $video_id != "" ) {
+                        return 'https://player.vimeo.com/video/' . $video_id . $vimeo_params;
+                    }
+                } else {
+                    if ( $video_id != "" ) {
+                        return 'http://player.vimeo.com/video/' . $video_id . $vimeo_params;
+                    }
+                }
+            }
         }
     }
 
@@ -1508,5 +1860,3 @@
 
         return $args;
     }
-
-?>

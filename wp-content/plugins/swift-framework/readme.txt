@@ -2,8 +2,8 @@
 Contributors: SwiftIdeas
 Tags: swift framework
 Requires at least: 3.6
-Tested up to: 4.5.3
-Stable tag: 4.5.3
+Tested up to: 4.6.1
+Stable tag: 4.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,6 +16,68 @@ The Swift Framework plugin provides the Custom Post Types, Swift Slider, and Swi
 Supported Themes: Uplift, Atelier, Cardinal, JOYN
 
 == Changelog ==
+
+= 2.5.19 =
+* FRONTEND: Fixed issue with parallax background positioning
+* FRONTEND: Fixed issue with background size on columns
+* FRONTEND: Fixed charts animation issue
+* FRONTEND: Fixed issue with spacing on mobiles
+* FRONTEND: Fixed icon box icons colour issue
+
+= 2.5.18 =
+* FRONTEND: Full width elements not in rows now render full width on the frontend
+* FRONTEND: Fixed issue with client images being cropped
+* FRONTEND: Fixed issue with recent posts view all link
+* FRONTEND: Fixed issue with icon box icons
+
+= 2.5.17 =
+* FRONTEND: Fixed vertical column position output issue
+* FRONTEND: Fixed column background issue
+* FRONTEND: Fixed issue with "fade" on Swift Slider
+* FRONTEND: Fixed issue with images showing 1/1 instead of their set width
+* FRONTEND: Fixed issue with multi-layer parallax
+* FRONTEND: Fixed row overflow issue
+* BACKEND: Fixed issue with SVG icon picker in Uplift
+* BACKEND: Default image size is now "Full"
+
+= 2.5.16 =
+* FRONTEND: Fixed issue with window height row option
+* FRONTEND: Fixed mobile spacing with icon boxes
+* FRONTEND: Fixed icon box grid display issue
+* FRONTEND: Fixed vertical center for legacy display
+
+= 2.5.15 =
+* FRONTEND: Fixed row slants output
+* FRONTEND: Fixed issue with full width elements being used within tab + tour elements
+* BACKEND: Fixed issue with svg icon grid in Uplift icon box elements
+
+= 2.5.13 =
+* FRONTEND: Fixed full width row width on boxed layouts & vertical header setups
+* BACKEND: Fixed issues with previous updates
+
+= 2.5.1 =
+* BACKEND: Re-added redux framework for themes that don't include it
+
+= 2.5.0 =
+* FRONTEND: Improved row & full width row performance
+* FRONTEND: Row now has standard width, full width contained, and full width stretch modes
+* FRONTEND: Added row column position option, allowing you to set the position of columns within the row
+* FRONTEND: Added row column spacing option, allowing you to set the spacing between columns within the row
+* FRONTEND: Added row column content position, allowing you to set the position of content within columns of a row
+* FRONTEND: Added row column equal heights option, allowing you to set the columns within a row to be equal height
+* FRONTEND: Improved overally frontend performance with conditional loading where possible
+* FRONTEND: Various fixes
+NOTE: This version requires the following theme versions: Atelier v2.4.0, Cardinal v2.5.6, Joyn v2.5.6, Uplift v1.3.0
+
+= 2.4.15 =
+* FRONTEND: Fixed offset class addition on column offset
+* BACKEND: Performance improvements with builder history functionality
+
+= 2.4.12 =
+* FRONTEND: Fixed off-grid columns being hidden outside of row boundaries
+* FRONTEND: Fixed view all button link when multiple categories selected in an element
+* FRONTNED: Added customer supplied Russian translation
+* BACKEND: Minor styling fixes
 
 = 2.4.11 =
 * FRONTEND: Testimonial excerpt now respects formatting

@@ -9,6 +9,43 @@
 	*
 	*/
 
+    /* SHORTCODE GENERATOR SETUP
+    ================================================== */
+    // Create TinyMCE's editor button & plugin for Swift Framework Shortcodes
+    if ( !function_exists('sf_shortcodegen_sc_button') ) {
+        function sf_shortcodegen_sc_button() {
+            if ( current_user_can( 'edit_posts' ) && current_user_can( 'edit_pages' ) ) {
+                add_filter( 'mce_external_plugins', 'sf_shortcodegen_add_tinymce_plugin' );
+                add_filter( 'mce_buttons', 'sf_shortcodegen_register_shortcode_button' );
+            }
+        }
+        add_action( 'init', 'sf_shortcodegen_sc_button' );
+    }
+
+    if ( !function_exists('sf_shortcodegen_register_shortcode_button') ) {
+        function sf_shortcodegen_register_shortcode_button( $button ) {
+            array_push( $button, 'separator', 'swiftframework_shortcodes' );
+
+            return $button;
+        }
+    }
+
+    if ( !function_exists('sf_shortcodegen_add_tinymce_plugin') ) {
+        function sf_shortcodegen_add_tinymce_plugin( $plugins ) {
+            $plugins['swiftframework_shortcodes'] = plugin_dir_url( __FILE__ ) . 'generator/tinymce.editor.plugin.js';
+            return $plugins;
+        }
+    }
+
+    if ( ! function_exists( 'swiftframework_shortcode_generator' ) ) {
+        function swiftframework_shortcode_generator() {
+            require_once( plugin_dir_path( __FILE__ ) . 'generator/interface.php' );   
+            wp_die();
+        }
+        add_action( 'wp_ajax_swiftframework_shortcode_generator', 'swiftframework_shortcode_generator' );
+        add_action( 'wp_ajax_nopriv_swiftframework_shortcode_generator', 'swiftframework_shortcode_generator' );
+    }
+
 
     /* ADD SHORTCODE FUNCTIONALITY TO WIDGETS
     ================================================== */
@@ -174,19 +211,29 @@
             if ( $image != "" ) {
                 $icon_output .= '<span class="sf-icon image-display sf-icon-float-' . $float . '"><img src="' . $image . '" alt="icon box image"/></span>';
             } else if ( $svg != "" ) {
+
+                // Enqueue script
+                wp_enqueue_script( 'vivus' );
+
                 $svg_el_class = '';
                 if ( $color != "" ) {
                     $svg_el_class = 'has-color';
                 }
-                $svg_class = $svg;
-                $svg = str_replace('svg-icon-picker-item ', '', $svg);
-                $svg = str_replace('outline-svg ', '', $svg);
+                $svg_class = $directory = '';  
+                if ( strpos($svg, '/') === false ) {
+                    $svg = str_replace('svg-icon-picker-item ', '', $svg);
+                    if (strpos($svg, 'outline-svg') !== false || strpos($svg, 'outline') !== false) {
+                        $svg_el_class .= ' outline-svg';
+                    }
+                    $svg = str_replace('outline-svg ', '', $svg);
+                    $directory = apply_filters( 'spb_svg_template_directory', get_template_directory_uri() . '/images/svgs/' );
+                    $svg = $directory . $svg . '.svg';
+                }
 
-                $directory = get_template_directory_uri() . '/images/svgs/';
                 if ( $animate_svg == "yes" ) {
-                    $icon_output .= '<div id="sf-svg-'.$sf_svg_icon_id.'" class="sf-svg-icon-holder sf-svg-icon-animate ' . $svg_class . ' '.$svg_el_class.'" data-svg-src="' . $directory . $svg . '.svg" data-anim-type="delayed" data-path-timing="ease-in" data-anim-timing="ease-out" style="stroke: '.$color.';"></div>';
+                    $icon_output .= '<div id="sf-svg-'.$sf_svg_icon_id.'" class="sf-svg-icon-holder sf-svg-icon-animate ' . $svg_class . ' '.$svg_el_class.'" data-svg-src="' . $svg . '" data-anim-type="delayed" data-path-timing="ease-in" data-anim-timing="ease-out" style="stroke: '.$color.';"></div>';
                 } else {
-                    $icon_output .= '<div id="sf-svg-'.$sf_svg_icon_id.'" class="sf-svg-icon-holder sf-svg-icon-animate animation-disabled ' . $svg_class . ' '.$svg_el_class.'" data-svg-src="' . $directory . $svg . '.svg" data-anim-type="delayed" data-path-timing="ease-in" data-anim-timing="ease-out" style="stroke: '.$color.';"></div>';
+                    $icon_output .= '<div id="sf-svg-'.$sf_svg_icon_id.'" class="sf-svg-icon-holder sf-svg-icon-animate animation-disabled ' . $svg_class . ' '.$svg_el_class.'" data-svg-src="' . $svg . '" data-anim-type="delayed" data-path-timing="ease-in" data-anim-timing="ease-out" style="stroke: '.$color.';"></div>';
                 }
             } else {
                 if ( $cont == "yes" ) {
@@ -310,13 +357,13 @@
             }
 
             if ( $type == "standard" && sf_current_theme() == "joyn" ) {
-                $icon_box .= do_shortcode( '[sf_icon size="large" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" float="none" cont="no" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
+                $icon_box .= do_shortcode( '[sf_icon size="large" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" svg="' . $svg . '" animate_svg="' . $animate_svg . '" float="none" cont="no" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
             } else if ( $type == "standard" ) {
-                $icon_box .= do_shortcode( '[sf_icon size="large" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" float="none" cont="yes" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
+                $icon_box .= do_shortcode( '[sf_icon size="large" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" svg="' . $svg . '" animate_svg="' . $animate_svg . '" float="none" cont="yes" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
             } else if ( $type == "left-icon" ) {
-                $icon_box .= do_shortcode( '[sf_icon size="small" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" float="none" cont="yes" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
+                $icon_box .= do_shortcode( '[sf_icon size="small" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" svg="' . $svg . '" animate_svg="' . $animate_svg . '" float="none" cont="yes" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
             } else if ( $type == "left-icon-alt" ) {
-                $icon_box .= do_shortcode( '[sf_icon size="medium" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" float="none" cont="no" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
+                $icon_box .= do_shortcode( '[sf_icon size="medium" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" svg="' . $svg . '" animate_svg="' . $animate_svg . '" float="none" cont="no" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
             } else if ( $type == "standard-center" ) {
                 $icon_box .= do_shortcode( '[sf_icon icon="' . $icon . '" character="' . $character . '" image="' . $image . '" svg="' . $svg . '" animate_svg="' . $animate_svg . '" float="none" cont="no" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
             } else if ( $type == "standard-center-contained" ) {
@@ -334,9 +381,9 @@
                 $icon_box .= do_shortcode( '[sf_icon icon="' . $icon . '" character="' . $character . '" image="' . $image . '" svg="' . $svg . '" animate_svg="' . $animate_svg . '" float="none" cont="yes" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
                 $icon_box .= '</div>';
             } else if ( $type == "boxed-one" || $type == "boxed-three" ) {
-                $icon_box .= do_shortcode( '[sf_icon size="medium" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" float="none" cont="yes" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
+                $icon_box .= do_shortcode( '[sf_icon size="medium" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" svg="' . $svg . '" animate_svg="' . $animate_svg . '" float="none" cont="yes" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
             } else if ( $type != "boxed-two" && $type != "boxed-four" && $type != "standard-title" && $type != "animated" && $type != "animated-alt" ) {
-                $icon_box .= do_shortcode( '[sf_icon size="large" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" float="none" cont="no" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
+                $icon_box .= do_shortcode( '[sf_icon size="large" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" svg="' . $svg . '" animate_svg="' . $animate_svg . '" float="none" cont="no" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
             }
 
             if ( $type == "boxed-one" || $type == "boxed-two" || $type == "boxed-three" || $type == "boxed-four" ) {
@@ -345,7 +392,7 @@
                 $icon_box .= '<div class="sf-icon-box-content-wrap clearfix">';
             }
             if ( $type == "boxed-two" ) {
-                $icon_box .= do_shortcode( '[sf_icon size="medium" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" float="none" cont="no" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
+                $icon_box .= do_shortcode( '[sf_icon size="medium" icon="' . $icon . '" character="' . $character . '" image="' . $image . '" svg="' . $svg . '" animate_svg="' . $animate_svg . '" float="none" cont="no" color="' . $icon_color . '" bgcolor="'. $icon_bg_color .'" link="' . $link . '" target="' . $target . '"]' );
             }
 
             if ( $type == "boxed-four" || $type == "standard-title" ) {
@@ -423,7 +470,8 @@
 	            "image_alt"	 => "",
 	            "href"       => "",
 	            "target"     => "_self",
-	            "animation"  => "fade-in",
+                "animation"  => "fade-in",
+                "animation_delay"  => "200",
 	            "contentpos" => "center",
 	            "textalign"  => "center",
 	            "extraclass" => ""
@@ -446,7 +494,7 @@
 	            $image_banner .= '<a class="sf-image-banner-link" href="' . $href . '" target="' . $target . '"></a>';
 	        }
 
-	        $image_banner .= '<div class="image-banner-content sf-animation content-' . $contentpos . ' text-' . $textalign . '" data-animation="' . $animation . '" data-delay="200">';
+	        $image_banner .= '<div class="image-banner-content sf-animation content-' . $contentpos . ' text-' . $textalign . '" data-animation="' . $animation . '" data-delay="' . $animation_delay . '">';
 	        $image_banner .= do_shortcode( $content );
 	        $image_banner .= '</div>';
 
@@ -958,7 +1006,13 @@
                 "style" => ''
             ), $atts ) );
 
-            global $sf_options;
+            $theme_opts_name = $sf_options = "";
+            if ( get_option('sf_theme') != "" ) {
+                $theme_opts_name = 'sf_' . get_option('sf_theme') . '_options';
+                $sf_options        = get_option( $theme_opts_name );
+            } else {
+                global $sf_options;
+            }
 
             $twitter    = $sf_options['twitter_username'];
             $facebook   = $sf_options['facebook_page_url'];
@@ -1287,6 +1341,9 @@
                 "align"       => ''
             ), $atts ) );
 
+            // Enqueue script
+            wp_enqueue_script( 'easypiechart' );
+
             $chart_output = '';
 
             if ( $barcolour == "" ) {
@@ -1426,11 +1483,11 @@
                 $fw_video_output .= '<a href="#" class="fw-video-link fw-video-' . $type . ' fw-video-link-image ' . $extraclass . '" data-video="' . $video_embed_url . '">';
 
                 if ( $type == "image-button3" ) {
-                    $fw_video_output .= apply_filters('sf_fs_video_icon_alt3', '<i class="ss-video"></i>');
+                    $fw_video_output .= apply_filters( 'sf_fs_video_icon_alt3', '<i class="ss-video"></i>' );
                 } else if ( $type == "image-button2" ) {
-                    $fw_video_output .= apply_filters('sf_fs_video_icon_alt', '<i class="ss-play"></i>');
+                    $fw_video_output .= apply_filters( 'sf_fs_video_icon_alt', '<i class="ss-play"></i>' );
                 } else {
-                    $fw_video_output .= apply_filters('sf_fs_video_icon', '<i class="ss-play"></i>');
+                    $fw_video_output .= apply_filters( 'sf_fs_video_icon', '<i class="ss-play"></i>' );
                 }  
 
                 $image_meta = 'alt="' . $btntext . '"';
@@ -1550,6 +1607,9 @@
                 "color"     => ''
             ), $atts ) );
 
+            // Enqueue script
+            wp_enqueue_script( 'countto' );
+
             $count_output = '';
 
             if ( $speed == "" ) {
@@ -1592,6 +1652,9 @@
                 "fontsize"    => 'large',
                 "displaytext" => ''
             ), $atts ) );
+
+            // Enqueue script
+            wp_enqueue_script( 'countdown' );
 
             $countdown_output = '';
 
@@ -1682,6 +1745,9 @@
     }
     $sf_options        = get_option( $theme_opts_name );
     $disable_sfgallery = $sf_options['disable_sfgallery'];
+    if ( class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'tiled-gallery' ) ) :
+        $disable_sfgallery = true;
+    endif;
 
     if ( ! $disable_sfgallery ) {
         // Remove built in shortcode
@@ -1822,14 +1888,23 @@
                     $image_file_lightbox_url = wp_get_attachment_url( $id, "full" );
                     $image_caption           = wptexturize( $attachment->post_excerpt );
                     $image_meta              = wp_get_attachment_metadata( $id );
-                    $image_alt               = sf_get_post_meta( $id, '_wp_attachment_image_alt', true );
+                    $image_alt               = spb_get_post_meta( $id, '_wp_attachment_image_alt', true );
     				$image_title = get_the_title($id);
 
     				$image_output .= '<img src="'.$image_file_url[0].'" alt="'.$image_alt.'" />';
 
     				if ( ! empty( $attr['link'] ) && 'file' === $attr['link'] ) {
-    					$image_output .= '<a href="'.$image_file_lightbox_url.'" class="lightbox" data-rel="ilightbox[galleryid-'.$instance.']" title="'.$image_alt.'" data-title="'.$image_alt.'"
-    					  data-caption="'.$image_caption.'"></a>';
+                        $lightbox_id = 'galleryid-' . $instance;
+                        $atts = array(
+                            'image_id'    => $id,
+                            'lightbox_id' => $lightbox_id,
+                            'title'       => $image_alt,
+                            'caption'     => $image_caption,
+                            'extra_class' => '',
+                            'is_slider'   => false
+                        );
+                        $link_config = spb_lightbox_link_config( $atts );
+                        $image_output .= '<a ' . $link_config . '></a>';
     				} elseif ( ! empty( $attr['link'] ) && 'none' === $attr['link'] ) {
     				} else {
     					$image_output .= '<a href="'.get_attachment_link( $id ).'"></a>';
@@ -1871,4 +1946,26 @@
             add_shortcode( 'gallery', 'sf_gallery' );
         }
     }
-?>
+
+    if ( !function_exists('swiftframework_oversize_media') ) :
+        function swiftframework_oversize_media( $atts, $content = null ) {
+            extract( shortcode_atts( array(
+                'type' => 'image',
+                'id'   => '',
+                'caption_pos' => 'bottom-right'
+            ), $atts ) );
+
+            $output = "";
+
+            if ( $type == "image" && $id != "" ) {
+                $output .= '<figure class="oversize" data-caption-pos="' . $caption_pos . '">';
+                $output .= wp_get_attachment_image( $id, 'full', false, array('itemprop' => 'image') );
+                $output .= '<figcaption class="caption">' . do_shortcode( $content ) . '</figcaption>';
+                $output .= '</figure>';
+                return $output;
+            } else {
+                return false;
+            }
+        }
+        add_shortcode( 'swiftframework_oversize_media', 'swiftframework_oversize_media' );
+    endif;

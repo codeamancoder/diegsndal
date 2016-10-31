@@ -83,7 +83,7 @@ var SWIFTSLIDER = SWIFTSLIDER || {};
             // Slider variables
             var sliderInstance = '#' + sliderID,
                 sliderElement = jQuery( sliderInstance ),
-                sliderType = sliderElement.data( 'type' ),
+                sliderType = sliderElement.data( 'slider-type' ),
                 sliderAuto = parseInt( sliderElement.data( 'autoplay' ), 10 ),
                 sliderTransition = sliderElement.data( 'transition' ),
                 sliderLoop = sliderElement.data( 'loop' ),

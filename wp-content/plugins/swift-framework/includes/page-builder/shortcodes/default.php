@@ -348,6 +348,14 @@
                 'el_position'   => ''
             ), $atts ) );
 
+            /* FULL WIDTH CONFIG
+            ================================================== */
+            if ( $fullwidth == "yes" ) {
+                $fullwidth = true;
+            } else {
+                $fullwidth = false;
+            }
+
             $width = spb_translateColumnWidthToSpan( $width );
 
             $up_icon = apply_filters( 'sf_up_icon' , '<i class="ss-up"></i>' );
@@ -355,7 +363,11 @@
             $style = "margin-top: " . $top_margin . "; margin-bottom: " . $bottom_margin . ";";
 
             $output = '';
-            $output .= '<div class="divider-wrap ' . $width . '">';
+            if ( $fullwidth ) {
+                $output .= '<div class="divider-wrap spb-full-width-element ' . $width . '">';
+            } else {
+                $output .= '<div class="divider-wrap ' . $width . '">';
+            }
             if ( $type == "heading" ) {
                 $output .= '<div class="spb_divider ' . $el_class . '" style="' . $style . '">';
                 $output .= '<h3 class="divider-heading">' . $heading_text . '</h3>';
@@ -374,13 +386,8 @@
 
             $output .= '</div>';
 
-
-            if ( $fullwidth == "yes" && $width == "col-sm-12" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
-
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
+            
             return $output;
         }
     }
@@ -445,6 +452,7 @@
                     __( 'Yes', 'swift-framework-plugin' ) => "yes"
                 ),
                 "buttonset_on"  => "yes",
+                "std" => "no",
                 "description" => __( "Select yes if you'd like the divider to be full width (only to be used with no sidebars, and with Standard/Thin/Dotted divider types).", 'swift-framework-plugin' )
             ),
             array(

@@ -28,7 +28,10 @@
                 'el_class'     => ''
             ), $atts ) );
 
-
+            // Enqueue
+            wp_enqueue_script( 'owlcarousel' );
+            
+            
             /* SIDEBAR CONFIG
             ================================================== */
             global $sf_sidebar_config, $sf_options;
@@ -44,6 +47,15 @@
             if ( is_singular( 'portfolio' ) ) {
                 $sidebars = "no-sidebars";
             }
+
+            /* FULL WIDTH CONFIG
+            ================================================== */
+            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
+                $fullwidth = true;
+            } else {
+                $fullwidth = false;
+            }
+            
 
             // CATEGORY SLUG MODIFICATION
             if ( $category == "All" ) {
@@ -128,7 +140,7 @@
             $items .= '</div>';
 
             $width    = spb_translateColumnWidthToSpan( $width );
-            $el_class = $this->getExtraClass( $el_class );
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
 
             $output .= "\n\t" . '<div class="spb_portfolio_carousel_widget carousel-asset spb_content_element ' . $width . $el_class . '">';
             $output .= "\n\t\t" . '<div class="spb-asset-content">';
@@ -146,11 +158,7 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
 
             global $sf_include_carousel, $sf_include_isotope;
             $sf_include_carousel = true;

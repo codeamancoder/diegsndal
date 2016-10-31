@@ -36,6 +36,11 @@
                 'el_class'     => ''
             ), $atts ) );
 
+            // Enqueue
+            if ( $carousel == "yes" ) {
+                wp_enqueue_script( 'owlcarousel' );
+            }
+
             // CATEGORY SLUG MODIFICATION
             if ( $category == "All" ) {
                 $category = "all";
@@ -62,6 +67,17 @@
             }
 
 
+            /* FULL WIDTH CONFIG
+            ================================================== */
+            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
+                $fullwidth = true;
+            } else {
+                $fullwidth = false;
+            }
+
+
+            /* QUERY CONFIG
+            ================================================== */
             global $post, $wp_query;
 
             $paged        = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
@@ -135,13 +151,14 @@
 				
                 $postID          = $post->ID;
                 $member_name     = get_the_title();
-                $member_position = sf_get_post_meta( $postID, 'sf_team_member_position', true );
-                $custom_excerpt  = sf_get_post_meta( $postID, 'sf_custom_excerpt', true );
-                $pb_active 		 = get_post_meta($postID, '_spb_js_status', true);
+                $member_position = spb_get_post_meta( $postID, 'sf_team_member_position', true );
+                $custom_excerpt  = spb_get_post_meta( $postID, 'sf_custom_excerpt', true );
+                $pb_legacy_active       = get_post_meta($postID, '_spb_js_status', true);
+                $pb_active       = get_post_meta($postID, '_spb_status', true);
                 $member_link     = get_permalink( $postID );
                 $member_bio 	 = "";
                 
-                if ($pb_active == "true") {
+                if ($pb_active == "true" || $pb_legacy_active == "true") {
                 	if ( $custom_excerpt != "" ) {
                 	    $member_bio = $custom_excerpt;
                 	} else {
@@ -155,43 +172,49 @@
 	                }
                 }
                 
-                $member_email       = sf_get_post_meta( $postID, 'sf_team_member_email', true );
-                $member_phone       = sf_get_post_meta( $postID, 'sf_team_member_phone_number', true );
-                $member_twitter     = sf_get_post_meta( $postID, 'sf_team_member_twitter', true );
-                $member_facebook    = sf_get_post_meta( $postID, 'sf_team_member_facebook', true );
-                $member_linkedin    = sf_get_post_meta( $postID, 'sf_team_member_linkedin', true );
-                $member_google_plus = sf_get_post_meta( $postID, 'sf_team_member_google_plus', true );
-                $member_skype       = sf_get_post_meta( $postID, 'sf_team_member_skype', true );
-                $member_instagram   = sf_get_post_meta( $postID, 'sf_team_member_instagram', true );
-                $member_dribbble    = sf_get_post_meta( $postID, 'sf_team_member_dribbble', true );
-                $view_profile_text = __( "View Profile", 'swift-framework-plugin' );
-                $thumb_image = rwmb_meta( 'sf_thumbnail_image', 'type=image&size=full' );
-                $item_icon   = apply_filters( 'sf_team_hover_icon', "fa-pencil" );
-                $item_svg_icon   = apply_filters( 'sf_team_hover_svg_icon', "" );
+                // Meta
+                $member_email       = spb_get_post_meta( $postID, 'sf_team_member_email', true );
+                $member_phone       = spb_get_post_meta( $postID, 'sf_team_member_phone_number', true );
+                $member_twitter     = spb_get_post_meta( $postID, 'sf_team_member_twitter', true );
+                $member_facebook    = spb_get_post_meta( $postID, 'sf_team_member_facebook', true );
+                $member_linkedin    = spb_get_post_meta( $postID, 'sf_team_member_linkedin', true );
+                $member_google_plus = spb_get_post_meta( $postID, 'sf_team_member_google_plus', true );
+                $member_skype       = spb_get_post_meta( $postID, 'sf_team_member_skype', true );
+                $member_instagram   = spb_get_post_meta( $postID, 'sf_team_member_instagram', true );
+                $member_dribbble    = spb_get_post_meta( $postID, 'sf_team_member_dribbble', true );
+                $member_behance     = spb_get_post_meta( $postID, 'sf_team_member_behance', true );
+                $member_flickr      = spb_get_post_meta( $postID, 'sf_team_member_flickr', true );
+                $member_vimeo       = spb_get_post_meta( $postID, 'sf_team_member_vimeo', true );
+                $member_snapchat    = spb_get_post_meta( $postID, 'sf_team_member_snapchat', true );
+                $view_profile_text  = __( "View Profile", 'swift-framework-plugin' );
+                $thumb_image        = rwmb_meta( 'sf_thumbnail_image', 'type=image&size=full' );
+                $item_icon          = apply_filters( 'sf_team_hover_icon', "fa-pencil" );
+                $item_svg_icon      = apply_filters( 'sf_team_hover_svg_icon', "" );
+                
+                // Thumb Image
                 $thumb_img_url = "";
                     foreach ( $thumb_image as $detail_image ) {
                     $thumb_image_id = $detail_image['ID'];
                     $thumb_img_url  = $detail_image['url'];
                     break;
                 }
-
                 if ( ! $thumb_image ) {
                     $thumb_image    = get_post_thumbnail_id();
                     $thumb_image_id = $thumb_image;
                     $thumb_img_url  = wp_get_attachment_url( $thumb_image, 'full' );
                 }                
-                $image   = sf_aq_resize( $thumb_img_url, $image_width, $image_height, true, false );
+                $image   = spb_image_resizer( $thumb_img_url, $image_width, $image_height, true, false );
 
                 // Output
                 $items .= '<div itemscope data-id="id-' . $count . '" class="clearfix team-member ' . $item_class . '">';
 
-                if ( sf_theme_supports('minimal-team-hover') ) {
+                if ( spb_theme_supports('minimal-team-hover') ) {
                     $items .= '<div class="team-member-item-wrap">';
                 }
 
                 $items .= '<figure class="animated-overlay">';
 
-                if ( sf_theme_supports('minimal-team-hover') && $display_type != "gallery" ) {
+                if ( spb_theme_supports('minimal-team-hover') && $display_type != "gallery" ) {
                     $items .= '<a class="team-member-link ' . $team_member_link_class . '" href="' . get_permalink() . '" data-id="' . $postID . '"></a>';
                 }
 
@@ -204,7 +227,7 @@
 
                 $items .= '<figcaption class="team-' . $display_type . '">';
 
-                if ( sf_theme_supports('minimal-team-hover') && $display_type != "gallery" ) {
+                if ( spb_theme_supports('minimal-team-hover') && $display_type != "gallery" ) {
                     $items .= '<div class="thumb-info thumb-info-alt">';
                     if ( $item_svg_icon != "" ) {
                         $items .= $item_svg_icon;
@@ -225,7 +248,7 @@
                         $items .= '<div class="name-divide"></div>';
                     }
 
-                    if ( ( $member_twitter ) || ( $member_facebook ) || ( $member_linkedin ) || ( $member_google_plus ) || ( $member_skype ) || ( $member_instagram ) || ( $member_dribbble ) ) {
+                    if ( ( $member_twitter ) || ( $member_facebook ) || ( $member_linkedin ) || ( $member_google_plus ) || ( $member_skype ) || ( $member_instagram ) || ( $member_dribbble ) || ( $member_behance ) || ( $member_flickr ) || ( $member_vimeo ) || ( $member_snapchat ) ) {
                         $items .= '<ul class="social-icons">';
                         if ( $member_twitter ) {
                             $items .= '<li class="twitter"><a href="http://www.twitter.com/' . $member_twitter . '" target="_blank"><i class="fa-twitter"></i><i class="fa-twitter"></i></a></li>';
@@ -248,6 +271,18 @@
                         if ( $member_dribbble ) {
                             $items .= '<li class="dribbble"><a href="http://www.dribbble.com/' . $member_dribbble . '" target="_blank"><i class="fa-dribbble"></i><i class="fa-dribbble"></i></a></li>';
                         }
+                        if ( $member_behance ) {
+                            $items .= '<li class="behance"><a href="' . $member_behance . '" target="_blank"><i class="fa-behance"></i><i class="fa-behance"></i></a></li>';
+                        }
+                        if ( $member_flickr ) {
+                            $items .= '<li class="flickr"><a href="' . $member_flickr . '" target="_blank"><i class="fa-flickr"></i><i class="fa-flickr"></i></a></li>';
+                        }
+                        if ( $member_vimeo ) {
+                            $items .= '<li class="vimeo"><a href="' . $member_vimeo . '" target="_blank"><i class="fa-vimeo"></i><i class="fa-vimeo"></i></a></li>';
+                        }
+                        if ( $member_snapchat ) {
+                            $items .= '<li class="snapchat"><a href="' . $member_snapchat . '" target="_blank"><i class="fa-snapchat"></i><i class="fa-snapchat"></i></a></li>';
+                        }
                         $items .= '</ul>';
                     }
                     if ( $display_type != "gallery" && $profile_link == "yes" ) {
@@ -261,7 +296,7 @@
 
                 $items .= '</figure>';
 
-                if ( sf_theme_supports('minimal-team-hover') ) {
+                if ( spb_theme_supports('minimal-team-hover') ) {
                     $items .= '<div class="team-member-details-wrap">';
                 }
 
@@ -275,7 +310,7 @@
                 }
                 if ( $display_type == "standard" ) {
 
-                    if ( sf_theme_supports('minimal-team-hover') ) {
+                    if ( spb_theme_supports('minimal-team-hover') ) {
                         $items .= '<div class="team-member-divider"></div>';
                     }
 
@@ -294,7 +329,7 @@
                     }
                 }
 
-                if ( sf_theme_supports('minimal-team-hover') ) {
+                if ( spb_theme_supports('minimal-team-hover') ) {
                     $items .= '</div>';
                     $items .= '</div>';
                 }
@@ -319,7 +354,7 @@
                 $items .= '</div>';
             }
 
-            $el_class = $this->getExtraClass( $el_class );
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
             $width    = spb_translateColumnWidthToSpan( $width );
 
             $output .= "\n\t" . '<div class="team_list carousel-asset spb_content_element ' . $width . $el_class . '">';
@@ -347,11 +382,7 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
 
             global $sf_include_isotope, $sf_has_team, $sf_include_carousel;
             $sf_include_isotope = true;
@@ -454,7 +485,7 @@
         )
     );
     
-    if ( sf_theme_supports( 'spb-team-ajax' ) ) {
+    if ( spb_theme_supports( 'spb-team-ajax' ) ) {
         $params[] = array(
                 "type"        => "buttonset",
                 "heading"     => __( "AJAX Overlay", 'swift-framework-plugin' ),
@@ -488,6 +519,7 @@
                 __( 'Yes', 'swift-framework-plugin' ) => "yes"
             ),
             "buttonset_on"  => "yes",
+            "std" => "no",
             "description" => __( "Select if you'd like the asset to be full width (edge to edge). NOTE: only possible on pages without sidebars.", 'swift-framework-plugin' )
         );
     $params[] = array(

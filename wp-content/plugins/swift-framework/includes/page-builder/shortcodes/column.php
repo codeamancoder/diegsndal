@@ -25,7 +25,7 @@
                 'col_vertical_offset'         => '0',
                 'col_horizontal_offset'       => '0',
                 'col_custom_zindex'           => '',
-                'padding_horizontal'          => '15',
+                'padding_horizontal'          => '0',
                 'col_animation'               => '',
                 'col_xs'                      => '',
                 'col_sm'                      => '12',
@@ -41,6 +41,7 @@
             ), $atts ) );
 
             $output = $animation_output = '';
+            $parallax_layer_styles = array();
 
             $col_responsive_vis = str_replace( "_", " ", $col_responsive_vis );
             $col_el_class       = $this->getExtraClass( $col_el_class ) . ' ' . $col_responsive_vis;
@@ -53,17 +54,17 @@
             }
 
             if ( $col_bg_color != "" ) {
-                $inline_style .= 'background-color:' . $col_bg_color . ';';
+                $inner_inline_style .= 'background-color:' . $col_bg_color . ';';
             }
 
-            if ( isset( $img_url ) && $img_url[0] != "" ) {
-                $inline_style .= 'background-image: url(' . $img_url[0] . ');';
+            if ( isset( $img_url ) && $img_url[0] != "" && $col_parallax_image_movement != "stellar" ) {
+                $inner_inline_style .= 'background-image: url(' . $img_url[0] . ');';
             }
 
             if ( $col_padding != "" &&  $custom_css == "" && $padding_horizontal == '') {  
-                $inline_style .= 'padding:' . $col_padding . '%;';
+                $inner_inline_style .= 'padding:' . $col_padding . '%;';
             }else if( $custom_css == "" && $padding_horizontal != '' ){
-                $inline_style .= 'padding-left:' . $padding_horizontal . 'px; padding-right:' . $padding_horizontal . 'px;';
+                $inner_inline_style .= 'padding-left:' . $padding_horizontal . 'px; padding-right:' . $padding_horizontal . 'px;';
             }
 
             if( $el_class != '' ) {
@@ -95,7 +96,7 @@
                 $col_res .= ' col-lg-' . $col_lg;
             }
 
-            if ( $col_vertical_offset != "0" || $col_horizontal_offset != "0" ) {
+            if ( ($col_vertical_offset != "" || $col_horizontal_offset != "") && ($col_vertical_offset != "0" || $col_horizontal_offset != "0") ) {
                 $col_el_class .= ' spb-col-custom-offset';
             }
             if ( $col_vertical_offset != "0" ) {
@@ -110,16 +111,24 @@
 
             if ( $col_bg_image != "" && $img_url[0] != "" ) {
                 if ( $col_parallax_image_movement == "stellar" ) {
-                    $output .= "\n\t" . '<div class="spb-column-container spb_parallax_asset sf-parallax parallax-' . $col_parallax_image_movement . ' spb_content_element bg-type-' . $col_bg_type . ' ' . $width . ' ' . $col_res . ' '. $col_el_class . '" data-stellar-background-ratio="' . $col_parallax_image_speed . '" ' . $animation_output . ' style="' . $inline_style . '">';
+                    $parallax_layer_styles[] = 'background-image: url(' . $img_url[0] . ');';
+                    $output .= "\n\t" . '<div class="spb-column-container spb-row-parallax spb_parallax_asset spb-parallax-stellar spb_content_element bg-type-' . $col_bg_type . ' ' . $width . ' ' . $col_res . ' '. $col_el_class . '" ' . $animation_output . ' style="' . $inline_style . '">';
                 } else {
-                    $output .= "\n\t" . '<div class="spb-column-container spb_parallax_asset sf-parallax parallax-' . $col_parallax_image_movement . ' spb_content_element bg-type-' . $col_bg_type . ' ' . $width . ' ' . $col_res . ' ' . $col_el_class . '" ' . $animation_output . ' style="' . $inline_style . '">';
+                    $output .= "\n\t" . '<div class="spb-column-container spb_parallax_asset spb-parallax spb-parallax-' . $col_parallax_image_movement . ' spb_content_element bg-type-' . $col_bg_type . ' ' . $width . ' ' . $col_res . ' ' . $col_el_class . '" ' . $animation_output . ' style="' . $inline_style . '">';
                 }
             } else {
                 $output .= "\n\t" . '<div class="spb-column-container ' . $width . ' ' . $col_res . ' ' . $col_el_class . '" ' . $animation_output . ' style="'. $inline_style . ' ">';
             }
-            $output .= "\n\t\t" . '<div class="spb-asset-content" style="'.$inner_inline_style.'">';
+            $output .= "\n\t\t" . '<div class="spb-column-inner row clearfix" style="'.$inner_inline_style.'">';
             $output .= "\n\t\t" . spb_format_content( $content );
             $output .= "\n\t\t" . '</div>';
+
+            if ( $col_parallax_image_movement == "parallax" || $col_parallax_image_movement == "stellar" ) {
+            $output .= "\n\t\t" . '<div class="spb-row-parallax-layer-wrap">';
+            $output .= "\n\t\t\t" . '<div class="spb-row-parallax-layer" style="' . implode('', $parallax_layer_styles) . '"></div>';
+            $output .= "\n\t\t" . '</div>';
+            }
+
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
             $column_width = "";
@@ -162,7 +171,7 @@
                 'border_styling_global'       => '',
                 'back_color_global'           => '',
                 'border_styling_global'       => '',
-                'padding_horizontal'          => '15',
+                'padding_horizontal'          => '0',
                 'padding_vertical'            => '',
                 'margin_vertical'            => '',
                 'custom_css_percentage'       => '',
@@ -294,49 +303,11 @@
             ),
             array(
                  "type"       => "section_tab",
-                 "param_name" => "column_sizing_tab",
-                 "heading"    => __( "Custom Sizing", 'swift-framework-plugin' ),
-                 "value"      =>          "" 
-             ),
-           array( 
-                "type"        => "dropdown",
-                "heading"     => __( "XS", 'swift-framework-plugin' ),
-                "param_name"  => "col_xs",
-                "holder"      => 'indicator',
-                "value"       => array('', '1', '2', '3','4','5', '6', '7', '8', '9', '10', '11', '12'),
-                "description" => __( "XS", 'swift-framework-plugin' )
-            ),
-           array(
-                "type"        => "dropdown",
-                "heading"     => __( "SM", 'swift-framework-plugin' ),
-                "param_name"  => "col_sm",
-                "holder"      => 'indicator',
-                "value"       => array('1', '2', '3','4','5', '6', '7', '8', '9', '10', '11', '12'),
-                "description" => __( "SM", 'swift-framework-plugin' )
-            ),
-           array(
-                "type"        => "dropdown",
-                "heading"     => __( "MD", 'swift-framework-plugin' ),
-                "param_name"  => "col_md",
-                "holder"      => 'indicator',
-                "value"       => array('', '1', '2', '3','4','5', '6', '7', '8', '9', '10', '11', '12'),
-                "description" => __( "MD", 'swift-framework-plugin' )
-            ),
-           array(
-                "type"        => "dropdown",
-                "heading"     => __( "LG", 'swift-framework-plugin' ),
-                "param_name"  => "col_lg",
-                "holder"      => 'indicator',
-                "value"       => array('', '1', '2', '3','4','5', '6', '7', '8', '9', '10', '11', '12'),
-                "description" => __( "LG", 'swift-framework-plugin' )
-            ),
-            array(
-                 "type"       => "section_tab",
                  "param_name" => "background_tab",
                  "heading"    => __( "Background Options", 'swift-framework-plugin' ),
                  "value"      => "" 
-             ),
-             array(
+            ),
+            array(
                 "type"        => "colorpicker",
                 "heading"     => __( "Background color", 'swift-framework-plugin' ),
                 "param_name"  => "col_bg_color",
@@ -423,6 +394,44 @@
                 "step"        => "1",
                 "max"         => "100",
                 "description" => __( "Add a custom z-index to the column, for use with offsets and layering.", 'swift-framework-plugin' )
-            )
+            ),
+            array(
+                 "type"       => "section_tab",
+                 "param_name" => "column_sizing_tab",
+                 "heading"    => __( "Custom Sizing", 'swift-framework-plugin' ),
+                 "value"      =>          "" 
+            ),
+            array( 
+                "type"        => "dropdown",
+                "heading"     => __( "XS", 'swift-framework-plugin' ),
+                "param_name"  => "col_xs",
+                "holder"      => 'indicator',
+                "value"       => array('', '1', '2', '3','4','5', '6', '7', '8', '9', '10', '11', '12'),
+                "description" => __( "XS", 'swift-framework-plugin' )
+            ),
+            array(
+                "type"        => "dropdown",
+                "heading"     => __( "SM", 'swift-framework-plugin' ),
+                "param_name"  => "col_sm",
+                "holder"      => 'indicator',
+                "value"       => array('1', '2', '3','4','5', '6', '7', '8', '9', '10', '11', '12'),
+                "description" => __( "SM", 'swift-framework-plugin' )
+            ),
+            array(
+                "type"        => "dropdown",
+                "heading"     => __( "MD", 'swift-framework-plugin' ),
+                "param_name"  => "col_md",
+                "holder"      => 'indicator',
+                "value"       => array('', '1', '2', '3','4','5', '6', '7', '8', '9', '10', '11', '12'),
+                "description" => __( "MD", 'swift-framework-plugin' )
+            ),
+            array(
+                "type"        => "dropdown",
+                "heading"     => __( "LG", 'swift-framework-plugin' ),
+                "param_name"  => "col_lg",
+                "holder"      => 'indicator',
+                "value"       => array('', '1', '2', '3','4','5', '6', '7', '8', '9', '10', '11', '12'),
+                "description" => __( "LG", 'swift-framework-plugin' )
+            ),
         )
     ) );

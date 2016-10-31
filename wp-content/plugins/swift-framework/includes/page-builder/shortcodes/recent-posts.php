@@ -37,6 +37,11 @@
                 'el_class'       => ''
             ), $atts ) );
 
+            // Enqueue
+            if ( $carousel == "yes" ) {
+                wp_enqueue_script( 'owlcarousel' );
+            }
+
             $view_all_icon = apply_filters( 'sf_view_all_icon' , '<i class="ss-layergroup"></i>' );
             $pagination_view_icon = apply_filters( 'sf_pagination_view_icon' , '<i class="sf-icon-quickview"></i>' );
 
@@ -184,15 +189,23 @@
                 $items .= '</div>';
             }
 
-            $el_class = $this->getExtraClass( $el_class );
+            /* FULL WIDTH CONFIG
+            ================================================== */
+            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
+                $fullwidth = true;
+            } else {
+                $fullwidth = false;
+            }
+
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
             $width    = spb_translateColumnWidthToSpan( $width );
 
             $has_button  = false;
             $page_button = $title_wrap_class = $view_all = "";
             $blog_page   = __( $sf_options['blog_page'], 'swift-framework-plugin' );
-            if ( $category_slug != "" ) {
+            if ( $category_slug != "" && strpos($category_slug, ',') != true ) {
                 $has_button    = true;
-                $category_id   = get_cat_ID( $category_slug );
+                $category_id   = get_category_by_slug( $category_slug );
                 $category_link = get_category_link( $category_id );
                 $page_button   = '<a class="sf-button medium white sf-icon-stroke " href="' . esc_url( $category_link ) . '">' . $view_all_icon . '<span class="text">' . __( "VIEW ALL ARTICLES", 'swift-framework-plugin' ) . '</span></a>';
                 $view_all = '<a class="view-all hidden" href="' . esc_url( $category_link ) . '">' . $pagination_view_icon . '</a>';
@@ -204,7 +217,7 @@
             if ( $has_button && $button_enabled == "yes" ) {
                 $title_wrap_class .= 'has-button ';
             }
-            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
+            if ( $fullwidth ) {
                 $title_wrap_class .= 'container ';
             }
 
@@ -242,12 +255,8 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
-
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
+            
             global $sf_include_isotope, $sf_include_carousel;
             $sf_include_isotope = true;
 
@@ -276,7 +285,7 @@
     	);
     }
 
-    if ( sf_theme_supports('posts-showcase') ) {
+    if ( spb_theme_supports('posts-showcase') ) {
         $display_types = array(
             __( 'Standard', 'swift-framework-plugin' )   => "standard",
             __( 'Standard Row', 'swift-framework-plugin' )   => "standard-row",
@@ -378,6 +387,7 @@
                     __( 'Yes', 'swift-framework-plugin' ) => "yes"
                 ),
                 "buttonset_on"  => "yes",
+                "std" => "no",
                 "description" => __( "Select if you'd like the asset to be full width (edge to edge). NOTE: only possible on pages without sidebars.", 'swift-framework-plugin' )
             ),
             array(

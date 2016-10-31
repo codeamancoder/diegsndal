@@ -264,6 +264,9 @@ img.alignleft, img.alignright, img.aligncenter {
     box-sizing: border-box;
     clear: both;
 }
+#spb_edit_form .row-fluid.spb-depreciated {
+    display: none;
+}
 #spb #spb_edit_form .row-fluid .col.s12 {
     padding: 0;
 }
@@ -547,6 +550,9 @@ img.alignleft, img.alignright, img.aligncenter {
     font-size: 14px;
     color: #b6b6b6;
 }
+#spb .spb_edit_wrap .minicolors-theme-default input.spb-colorpicker {
+    background-image: none;
+}
 .spb_edit_wrap .minicolors-theme-default .minicolors-swatch {
     width: 26px;
     height: 26px;
@@ -557,6 +563,7 @@ img.alignleft, img.alignright, img.aligncenter {
 #spb .spb_edit_wrap .minicolors-theme-default .minicolors-panel {
     left: auto;
     right: 0;
+    top: 30px!important;
 }
 
 .spb_edit_wrap .minicolors-theme-default.minicolors + .description {
@@ -592,6 +599,9 @@ img.alignleft, img.alignright, img.aligncenter {
     -webkit-box-shadow: 2px 3px 5px 0 rgba(0,0,0,.12);
     box-shadow: 2px 3px 5px 0 rgba(0,0,0,.12);
     position: relative;
+}
+.spb_content_element {
+    min-height: 66px;
 }
 
 .spb_column, .spb_row {
@@ -1427,6 +1437,14 @@ div.controls a:hover {
     text-align: right;
     margin-right: -8px;
     height: 20px;
+}
+
+#swift-builder .spb_column .controls_right {
+    width: auto;
+}
+
+#swift-builder .spb_column .controls_right a {
+    padding: 0 5px;
 }
 
 #spb .controls_right a {
@@ -2523,11 +2541,10 @@ li.spb_no_templates span {
     border: 0;
     padding: 0;
 }
-
-.svg_icon + .font-icon-grid li.selected, .font-icon-grid.svg-grid li.selected {
-    background-color: #1dc6df;
+.svg_icon + .font-icon-grid li:not(.bg-image-icon) i, .font-icon-grid.svg-grid li:not(.bg-image-icon) i  {
+    background-size: 32px 32px;
+    background-position: center;
 }
-
 .font-icon-grid li:hover {
     cursor: pointer;
 }
@@ -3608,7 +3625,7 @@ li:hover .sf-close-image-bar{
     border: 2px solid #fdfdfd;
 }*/
 .spb_image .el_name_holder, .spb_image_banner .el_name_holder, .spb_multilayer_parallax_layer .el_name_holder {
-    margin-left: 70px;
+    margin-left: 20px;
 }
 .spb_sortable_container_dragging .spb_column_container{
     height: 0px;

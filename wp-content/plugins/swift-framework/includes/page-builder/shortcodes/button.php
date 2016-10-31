@@ -96,10 +96,10 @@
         'sf-icon-stroke' => __('Icon', 'swiftframework'),
     );
     
-    if (!sf_theme_supports( '3drotate-button' )) {
+    if (!spb_theme_supports( '3drotate-button' )) {
         unset($button_types['rotate-3d']);
     }
-    if (!sf_theme_supports( 'bordered-button' )) {
+    if (!spb_theme_supports( 'bordered-button' )) {
         unset($button_types['bordered']);
     }
     

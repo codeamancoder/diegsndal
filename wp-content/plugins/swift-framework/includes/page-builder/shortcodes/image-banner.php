@@ -43,7 +43,7 @@ class SwiftPageBuilderShortcode_spb_image_banner extends SwiftPageBuilderShortco
         	$image_width = $img_object[1];
         	$image_height = $img_object[2];
         }
-		$image_meta 		= sf_get_attachment_meta( $image_id );
+		$image_meta 		= spb_get_attachment_meta( $image_id );
 		$image_alt = $image_title = $caption_html = "";
 		if ( isset($image_meta) ) {
 			$image_title 		= esc_attr( $image_meta['title'] );
@@ -59,7 +59,7 @@ class SwiftPageBuilderShortcode_spb_image_banner extends SwiftPageBuilderShortco
 
         $output .= "\n\t" . '<div class="spb_content_element spb_image_banner ' . $width . $el_class . '">';
         $output .= "\n\t\t" . '<div class="spb-asset-content">';
-        $output .= "\n\t\t" . do_shortcode( '[sf_imagebanner image_id="'.$image_id.'" image_size="'.$image_size.'" fixed_height="'.$fixed_height.'" image="'.$img_url.'" image_width="'.$image_width.'" image_height="'.$image_height.'" image_alt="'.$image_alt.'" animation="'.$animation.'" contentpos="'.$content_pos.'" textalign="'.$content_textalign.'" href="'.$image_link.'" target="'.$link_target.'"]'.$content.'[/sf_imagebanner]' );
+        $output .= "\n\t\t" . do_shortcode( '[sf_imagebanner image_id="'.$image_id.'" image_size="'.$image_size.'" fixed_height="'.$fixed_height.'" image="'.$img_url.'" image_width="'.$image_width.'" image_height="'.$image_height.'" image_alt="'.$image_alt.'" animation="'.$animation.'" animation_delay="'.$animation_delay.'" contentpos="'.$content_pos.'" textalign="'.$content_textalign.'" href="'.$image_link.'" target="'.$link_target.'"]'.$content.'[/sf_imagebanner]' );
         $output .= "\n\t\t" . '</div>';
         $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
@@ -92,19 +92,6 @@ class SwiftPageBuilderShortcode_spb_image_banner extends SwiftPageBuilderShortco
     }
 }
 
-$image_sizes = array(
-                __( "Full", 'swift-framework-plugin' )               => "full",
-                __( "Large", 'swift-framework-plugin' )              => "large",
-                __( "Medium", 'swift-framework-plugin' )             => "medium",
-                __( "Thumbnail", 'swift-framework-plugin' )          => "thumbnail",
-                __( "Small 4/3 Cropped", 'swift-framework-plugin' )  => "thumb-image",
-                __( "Medium 4/3 Cropped", 'swift-framework-plugin' ) => "thumb-image-twocol",
-                __( "Large 4/3 Cropped", 'swift-framework-plugin' )  => "thumb-image-onecol",
-                __( "Large 1/1 Cropped", 'swift-framework-plugin' )  => "large-square",
-            );
-
-$image_sizes = apply_filters('sf_image_sizes', $image_sizes);
-
 SPBMap::map( 'spb_image_banner', array(
     "name"   => __( "Image Banner", 'swift-framework-plugin' ),
     "base"   => "spb_image_banner",
@@ -119,10 +106,11 @@ SPBMap::map( 'spb_image_banner', array(
             "description" => ""
         ),
         array(
-            "type"        => "dropdown",
+            "type"        => "dropdown-id",
             "heading"     => __( "Image Size", 'swift-framework-plugin' ),
             "param_name"  => "image_size",
-            "value"       => $image_sizes,
+            "value"       => spb_get_image_sizes(),
+            "std"         => 'full',
             "description" => __( "Select the source size for the image (NOTE: this doesn't affect it's size on the front-end, only the quality).", 'swift-framework-plugin' )
         ),
         array(

@@ -125,10 +125,14 @@
             return $output;
         }
 
-        public function getExtraClass( $el_class ) {
+        public function getExtraClass( $el_class, $fullwidth = false ) {
             $output = '';
             if ( $el_class != '' ) {
                 $output = " " . str_replace( ".", "", $el_class );
+            }
+
+            if ( $fullwidth ) {
+                $output .= ' spb-full-width-element';
             }
 
             return $output;
@@ -204,11 +208,16 @@
             if ( strpos( $position, 'first' ) !== false ) {
                 if ( $fullwidth ) {
                     $output = ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- START row (1) -->' . "\n" : '' ) . '<section ' . $id . ' class="row fw-row ' . $el_class . '">';
-                } else if ( $sf_sidebar_config == "no-sidebars" ) {
-                    $output = ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- START row (2) -->' . "\n" : '' ) . '<section ' . $id . ' class="container ' . $el_class . '"><div class="row">';
                 } else {
-                    $output = ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- START row (3) -->' . "\n" : '' ) . '<section ' . $id . ' class="row ' . $el_class . '">';
+                    $output = ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- START row (2) -->' . "\n" : '' ) . '<section ' . $id . ' class="row ' . $el_class . '">';
                 }
+                // if ( $fullwidth ) {
+                //     $output = ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- START row (1) -->' . "\n" : '' ) . '<section ' . $id . ' class="row fw-row ' . $el_class . '">';
+                // } else if ( $sf_sidebar_config == "no-sidebars" ) {
+                //     $output = ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- START row (2) -->' . "\n" : '' ) . '<section ' . $id . ' class="container ' . $el_class . '"><div class="row">';
+                // } else {
+                //     $output = ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- START row (3) -->' . "\n" : '' ) . '<section ' . $id . ' class="row ' . $el_class . '">';
+                // }
             }
 
             return $output;
@@ -222,7 +231,7 @@
          * @return string
          */
 
-        public function endRow( $position, $column = "", $fullwidth = false ) {
+        public function endRow( $position, $column = "", $fullwidth = false, $row = false ) {
 
             global $sf_sidebar_config;
 
@@ -232,13 +241,20 @@
 
             $output = '';
             if ( strpos( $position, 'last' ) !== false ) {
-                if ( $fullwidth ) {
+                if ( $row ) {
                     $output = '</section>' . ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- END row (1) --> ' . "\n" : '' . "\n" );
-                } else if ( $sf_sidebar_config == "no-sidebars" ) {
-                    $output = '</div></section>' . ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- END row (2) --> ' . "\n" : '' . "\n" );
+                } else if ( $fullwidth ) {
+                    $output = '<div class="spb-fw-sizer"></div></section>' . ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- END row (1-fw) --> ' . "\n" : '' . "\n" );
                 } else {
-                    $output = '</section>' . ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- END row (3) --> ' . "\n" : '' . "\n" );
+                    $output = '</section>' . ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- END row (2) --> ' . "\n" : '' . "\n" );
                 }
+                // if ( $fullwidth ) {
+                //     $output = '</section>' . ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- END row (1) --> ' . "\n" : '' . "\n" );
+                // } else if ( $sf_sidebar_config == "no-sidebars" ) {
+                //     $output = '</div></section>' . ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- END row (2) --> ' . "\n" : '' . "\n" );
+                // } else {
+                //     $output = '</section>' . ( ! empty( $_GET['spb_debug'] ) && $_GET['spb_debug'] == 'true' ? "\n" . '<!-- END row (3) --> ' . "\n" : '' . "\n" );
+                // }
             }
 
             return $output;
@@ -518,6 +534,10 @@
 
             if ( $param['type'] == "buttonset" ) {
                 $row_el_class = 'lb_buttonset';
+            }
+
+            if ( $param['depreciated'] ) {
+                $row_el_class .= ' spb-depreciated';
             }
 
             if ( isset($param['param_type']) && $param['param_type'] == "repeater" ) {
@@ -1110,11 +1130,25 @@
             } else if ( $param['type'] == 'icon-picker' ) {
                 $value = __( $param_value, 'swift-framework-plugin' );
                 $value = $param_value;
-                $icon_grid_data = sf_get_icons_list();
-                if ( isset($param['data']) ) {
-                    $icon_grid_data = $param['data'];
+                $icon_type = isset( $param['icon_type'] ) ? $param['icon_type'] : 'font';
+                $icon_grid_data = "";
+                if ( $icon_type == "font" ) {
+                    $icon_grid_data = sf_get_icons_list();
+                } else if ( $icon_type == "svg" ) {
+                    if ( is_array($param['data']) ) {
+                        foreach ($param['data'] as $path => $icon) {
+                            $icon_grid_data .= '<li class="svg-icon" data-icon="'.$icon.'" data-path="'.$path.'"><i class="svg-icon-picker-item" style="background-image: url(' . $path . ');"></i></li>';
+                        }
+                    } else {
+                        $icon_grid_data = $param['data'];
+                    }
                 }
-                $param_line .= '<div class="span9 edit_form_line"><input type="text" class="search-icon-grid textfield" placeholder="Search Icon"></div><input name="'.$param['param_name'].'" class="spb_param_value '.$param['param_name'].' '.$param['type'].'" type="text" value="'.$value.'" style="visibility: hidden;height: 0;" /><ul class="font-icon-grid std-grid">'.$icon_grid_data.'</ul>';
+                
+                if ( $icon_type == "svg" ) {
+                    $param_line .= '<div class="span9 edit_form_line" style="display: none;"><input type="text" class="search-icon-grid textfield" placeholder="Search Icon"></div><input name="'.$param['param_name'].'" class="spb_param_value '.$param['param_name'].' '.$param['type'].'" type="text" value="'.$value.'" /><ul class="font-icon-grid std-grid">'.$icon_grid_data.'</ul>';
+                } else {
+                    $param_line .= '<div class="span9 edit_form_line"><input type="text" class="search-icon-grid textfield" placeholder="Search Icon"></div><input name="'.$param['param_name'].'" class="spb_param_value '.$param['param_name'].' '.$param['type'].'" type="text" value="'.$value.'" style="visibility: hidden;height: 0;" /><ul class="font-icon-grid std-grid">'.$icon_grid_data.'</ul>';
+                }
             }
 
 

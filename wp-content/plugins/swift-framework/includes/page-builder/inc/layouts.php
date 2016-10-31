@@ -403,13 +403,10 @@
                                     <li>
                                         <a id="spb-revisions" href="#" data-activates="dropdown-history" class="dropdown-button"><span class="icon-undo pb-main-icon"></span></a><ul id="dropdown-history"  style="display:none;" class="dropdown-content">';
             $output .= '<li><a href="#">Page Builder History</a></li><li class="divider"></li>';        
-                                           
-                                             $spb_history = get_option( 'spb_history_' . $post->ID );
-
-                                            if ( isset( $spb_history ) && is_array( $spb_history ) ) { 
-                                                
                                                                                       
-                                              
+                                            $spb_history = get_post_meta($post->ID, 'spb_history_' . $post->ID , true);
+
+                                            if ( isset( $spb_history ) && is_array( $spb_history ) ) {                                                                                     
                                                 $spb_history = array_reverse($spb_history);
 
                                                 if( count(  $spb_history ) > 0 ){
@@ -418,7 +415,7 @@
                                                     }
                                                 }
                                             } else{
-                                                    $output .=  '<li><a href="#">No history.</a>';
+                                                $output .=  '<li><a href="#">No history.</a>';
                                             }
 
             $output .= '</ul></li></ul>';
@@ -548,11 +545,11 @@
 						</div>
 					</div><div id="container-helper-block" style="display: none;">' . $this->getContainerHelper() . '</div>';
 
-            $spb_status = sf_get_post_meta( $post->ID, '_spb_js_status', true );
+            $spb_status = spb_get_post_meta( $post->ID, '_spb_status', true );
             if ( $spb_status == "" || ! isset( $spb_status ) ) {
                 $spb_status = 'false';
             }
-            $output .= '<input type="hidden" id="spb_js_status" name="spb_js_status" value="' . $spb_status . '" />';
+            $output .= '<input type="hidden" id="spb_status" name="spb_status" value="' . $spb_status . '" />';
             $output .= '<input type="hidden" id="spb_loading" name="spb_loading" value="' . __( "Loading, please wait...", 'swift-framework-plugin' ) . '" />';
 
             $clone_id = rand(20000,30000);

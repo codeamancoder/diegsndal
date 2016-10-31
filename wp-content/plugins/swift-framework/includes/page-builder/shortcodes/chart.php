@@ -30,6 +30,10 @@
             $el_class = $this->getExtraClass( $el_class );
             $width    = spb_translateColumnWidthToSpan( $width );
 
+            // Enqueue script
+            wp_enqueue_script( 'easypiechart' );
+
+            // Output
             $output .= "\n\t" . '<div class="spb_chart spb_content_element ' . $width . $el_class . '">';
             $output .= "\n\t\t" . '<div class="spb-asset-content">';
             $output .= "\n\t\t\t" . do_shortcode( '[sf_chart percentage="' . $percentage . '" size="' . $chart_size . '" barcolour="' . $bar_colour . '" trackcolour="' . $track_colour . '" content="' . $chart_content . '" align="' . $chart_align . '"]' );

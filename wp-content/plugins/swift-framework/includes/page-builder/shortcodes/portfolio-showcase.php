@@ -31,8 +31,13 @@
 
             // TYPE CHECK
             $alt_display = false;
-            if ( sf_theme_supports( 'spb-port-showcase-alt' ) ) {
+            if ( spb_theme_supports( 'spb-port-showcase-alt' ) ) {
                 $alt_display = true;
+            }
+
+            // Enqueue
+            if ( $alt_display ) {
+                wp_enqueue_script( 'owlcarousel' );
             }
 
             // CATEGORY SLUG MODIFICATION
@@ -68,7 +73,7 @@
             $portfolio_items = new WP_Query( $portfolio_args );
 
             // OUTPUT
-            if ( $alt_display == "yes" ) {
+            if ( $alt_display ) {
                 if ( $pagination == "yes" ) {
                     $wrap_class = "has-pagination ";
                 }
@@ -99,7 +104,7 @@
                     $thumb_img_url = "";
 
                     $item_title    = get_the_title();
-                    $item_subtitle = sf_get_post_meta( $post->ID, 'sf_portfolio_subtitle', true );
+                    $item_subtitle = spb_get_post_meta( $post->ID, 'sf_portfolio_subtitle', true );
 
                     $thumb_image              = rwmb_meta( 'sf_thumbnail_image', 'type=image&size=full' );
 
@@ -131,7 +136,7 @@
                         $thumb_img_url = "default";
                     }
 
-                    $image = sf_aq_resize( $thumb_img_url, $image_width, $image_height, true, false );
+                    $image = spb_image_resizer( $thumb_img_url, $image_width, $image_height, true, false );
 
                     if ( $image ) {
                         $items .= '<a ' . $item_link['config'] . '>';
@@ -167,7 +172,7 @@
             $width    = spb_translateColumnWidthToSpan( $width );
             $el_class = $this->getExtraClass( $el_class );
 
-            $sidebar_config = sf_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
+            $sidebar_config = spb_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
 
             $sidebars = '';
             if ( ( $sidebar_config == "left-sidebar" ) || ( $sidebar_config == "right-sidebar" ) ) {
@@ -180,7 +185,7 @@
 
             $view_all = "";
             $portfolio_page   = __( $sf_options['portfolio_page'], 'swift-framework-plugin' );
-            if ( $category_slug != "" ) {
+            if ( $category_slug != "" && strpos($category_slug, ',') != true ) {
                 $has_button    = true;
                 $category_id   = get_cat_ID( $category_slug );
                 $category_link = get_category_link( $category_id );
@@ -226,7 +231,7 @@
             ),
             "description" => __( "Choose the number of items to display for the asset.", 'swift-framework-plugin' )
         );
-    if ( sf_theme_supports( 'spb-port-showcase-alt' ) ) {
+    if ( spb_theme_supports( 'spb-port-showcase-alt' ) ) {
         $count_options = array(
             "type"        => "textfield",
             "heading"     => __( "Number of items", 'swift-framework-plugin' ),
@@ -253,7 +258,7 @@
         ),
         $count_options,
     );
-    if ( sf_theme_supports( 'spb-port-showcase-alt' ) ) {
+    if ( spb_theme_supports( 'spb-port-showcase-alt' ) ) {
         $params[] = array(
             "type"        => "buttonset",
             "heading"     => __( "Include Pagination", 'swift-framework-plugin' ),

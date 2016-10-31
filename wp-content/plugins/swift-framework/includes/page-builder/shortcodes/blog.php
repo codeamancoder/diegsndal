@@ -52,10 +52,13 @@
 
             $width = spb_translateColumnWidthToSpan( $width );
 
+            // Enqueue script
+            wp_enqueue_script( 'isotope' );
+
 
             /* SIDEBAR CONFIG
             ================================================== */
-            $sidebar_config = sf_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
+            $sidebar_config = spb_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
 
             $sidebars = '';
             if ( ( $sidebar_config == "left-sidebar" ) || ( $sidebar_config == "right-sidebar" ) ) {
@@ -67,11 +70,13 @@
             }
 
 
-            /* BLOG AUX
+            /* FULL WIDTH CONFIG
             ================================================== */
-//          if ($show_blog_aux == "yes" && $sidebars == "no-sidebars") {
-//              $blog_aux = sf_blog_aux($width);
-//          }
+            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
+                $fullwidth = true;
+            } else {
+                $fullwidth = false;
+            }
 
 
             /* BLOG ITEMS
@@ -85,10 +90,13 @@
             if ( $blog_filter == "yes" ) {
                 $title_wrap_class .= 'has-filter ';
             }
-            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
+            if ( $fullwidth ) {
                 $title_wrap_class .= 'container ';
             }
-            $el_class = $this->getExtraClass( $el_class );
+            if ( $fullwidth == "yes" ) {
+                $el_class .= ' spb-full-width-element';
+            }
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
 
             $output .= "\n\t" . '<div class="spb_blog_widget blog-wrap spb_content_element ' . $width . $el_class . '">';
             $output .= "\n\t\t" . '<div class="spb-asset-content">';
@@ -110,12 +118,8 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth == "yes" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
-
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
+            
             global $sf_has_blog, $sf_include_imagesLoaded;
             $sf_include_imagesLoaded = true;
             $sf_has_blog             = true;

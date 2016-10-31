@@ -110,6 +110,9 @@
             ), $atts ) );
             $output = '';
 
+            // Enqueue
+            wp_enqueue_script( 'jquery-ui' );
+
             $el_class = $this->getExtraClass( $el_class );
             $width    = spb_translateColumnWidthToSpan( $width );
 

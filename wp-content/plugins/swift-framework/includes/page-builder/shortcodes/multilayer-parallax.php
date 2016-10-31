@@ -79,6 +79,10 @@
                 'el_class'    => '',
                 'el_position' => ''
             ), $atts ) );
+
+            // Enqueue script
+            wp_enqueue_script('mlparallax');
+
             $output = '';
 
             $el_class = $this->getExtraClass( $el_class );

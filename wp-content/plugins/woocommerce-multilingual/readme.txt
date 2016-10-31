@@ -1,41 +1,52 @@
 === WooCommerce Multilingual - run WooCommerce with WPML ===
-Contributors: AmirHelzer, dominykasgel, dgwatkins, adelval
+Contributors: AmirHelzer, sergey.r, mihaimihai, EduardMaghakyan
 Donate link: http://wpml.org/documentation/related-projects/woocommerce-multilingual/
 Tags: CMS, woocommerce, commerce, ecommerce, e-commerce, products, WPML, multilingual, e-shop, shop
 License: GPLv2
-Requires at least: 3.0
-Tested up to: 4.3
-Stable tag: 3.6.9
+Requires at least: 3.9
+Tested up to: 4.6.1
+Stable tag: 3.9.2
 
 Allows running fully multilingual e-commerce sites using WooCommerce and WPML.
 
 == Description ==
 
-This 'glue' plugin makes it possible to run fully multilingual e-commerce sites using [WooCommerce](http://wordpress.org/extend/plugins/woocommerce/) and [WPML](http://wpml.org). It makes products and store pages translatable, lets visitors switch languages and order products in their language.
+This 'glue' plugin makes it possible to run fully multilingual e-commerce sites using [WooCommerce](https://wordpress.org/plugins/woocommerce/) and [WPML](http://wpml.org).
 
-= Features =
+= Key Features =
 
-* Lets you translate different kinds of WooCommerce product types
-* Central management for translating product categories, tags and custom attributes
-* Automatically synchronizes product variations and images
+* Translate all WooCommerce products (simple, variable, grouped, external)
+* Easy translation management for products, categories and attributes
 * Keeps the same language through the checkout process
-* Sends emails to clients and admins in their selected language
+* Sends emails to clients and admins in their language
 * Allows inventory tracking without breaking products into languages
 * Enables running a single WooCommerce store with multiple currencies
+
+= Compatibility with WooCommerce Extensions =
+
+Almost every WooCommerce store uses some extensions. WooCommerce Multilingual is fully compatible with popular extensions, including:
+
+* [WooCommerce Bookings](https://wpml.org/documentation/woocommerce-extensions-compatibility/translating-woocommerce-bookings-woocommerce-multilingual/)
+* [WooCommerce Table Rate Shipping](https://wpml.org/documentation/woocommerce-extensions-compatibility/translating-woocommerce-table-rate-shipping-woocommerce-multilingual/)
+* [WooCommerce Subscriptions](https://wpml.org/documentation/woocommerce-extensions-compatibility/translating-woocommerce-subscriptions-woocommerce-multilingual/)
+* [WooCommerce Product Add-ons](https://wpml.org/documentation/woocommerce-extensions-compatibility/translating-woocommerce-product-add-ons-woocommerce-multilingual/)
+* [WooCommerce Tab Manager](https://wpml.org/documentation/woocommerce-extensions-compatibility/translating-woocommerce-tab-manager-woocommerce-multilingual/)
+
+Looking for other extensions that are tested and compatible with WPML? See the complete [list of WooCommerce extensions that are compatible with WPML](https://wpml.org/documentation/woocommerce-extensions-compatibility/).
 
 = Usage Instructions =
 
 For step by step instructions on setting up a multilingual shop, please go to [WooCommerce Multilingual Manual](http://wpml.org/documentation/related-projects/woocommerce-multilingual/) page.
 
-After installing, go to WPML->WooCommerce Multilingual. The 'General settings' tab will let you translate the store pages and report what taxonomy requires translation.
+After installing, follow the steps of the *setup wizard* to translate the store pages, configure what attributes should be translated, enable the multi-currency mode and other settings.
 
-Then, continue to the 'Products' and any categories, tags and custom taxonomy that you use.
+Then, continue to the 'Products' and any categories, tags and attributes that you use.
 
 When you need help, go to [WooCommerce Multilingual support forum](http://wpml.org/forums/topic-tag/woocommerce/).
 
 = Downloads =
 
-This version of WooCommerce Multilingual works with WooCommerce 2.x.
+This version of WooCommerce Multilingual works with WooCommerce > 2.1
 
 You will also need [WPML](http://wpml.org), together with the String Translation and the Translation Management modules, which are part of the [Multilingual CMS](http://wpml.org/purchase/) package.
 
@@ -43,18 +54,46 @@ You will also need [WPML](http://wpml.org), together with the String Translation
 
 WooCommerce Multilingual checks that the following versions of WPML and their components are active:
 
-* WPML Multilingual CMS       - 3.1.5
+* WPML Multilingual CMS       - 3.4
 * WPML String Translation     - 2.0
-* WPML Translation Management - 1.9
+* WPML Translation Management - 2.2
 * WPML Media                  - 2.1
 
 Without having all these running, WooCommerce Multilingual will not be able to run.
 
 == Installation ==
 
+= Minimum Requirements =
+
+* WordPress 3.9 or later
+* PHP version 5.6 or later
+* MySQL version 5.6 or later
+
+* WooCommerce 2.1 or later
+* WPML Multilingual CMS 3.4 or later
+* WPML String Translation 2.0 or later
+* WPML Translation Management 2.2 or later
+* WPML Media 2.1 or later
+
+= WordPress automatic installation =
+In your WordPress dashboard, go to the Plugins section and click 'Add new'.
+
+= WPML Installer =
+If you're already using WPML on your site, in your WordPress dashboard, go to the Plugins section, click 'Add new' and go to the 'Commercial' tab.
+
+= Manual Installation =
 1. Upload 'woocommerce-multilingual' to the '/wp-content/plugins/' directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Translate the shop pages
+
+= Setup =
+After installing the plugin either automatically or manually:
+
+1. Follow the steps of the setup wizard for the basic required configuration
+2. Translate existing content: products, attributes, permalink bases
+3. Optionally, add secondary currencies
+
+= Updating =
+Once you installer WooCommerce Multilingual, the built in Installer works together with the WordPress automatic update built in logic to make the updating process as easy as it can be.
 
 == Frequently Asked Questions ==
 
@@ -70,13 +109,296 @@ Make sure that your theme is not hard-coding any URL. Always use API calls to re
 
 In order for the checkout and store pages to appear translated, you need to create several WordPress pages and insert the WooCommerce shortcodes into them. You'll have to go over the [documentation](http://wpml.org/documentation/related-projects/woocommerce-multilingual/) and see that you performed all steps on the way.
 
+= Can I have different urls for the store in the different languages? =
+
+Yes. You can translate the product permalink base, product category base, product tag base and the product attribute base on the Store URLs section.
+
+= Why do my product category pages return a 404 error? =
+
+In this case, you may need to translate the product category base. You can do that on the Store URLs section.
+
+= Can I set the prices in the secondary currencies? =
+
+By default, the prices in the secondary currencies are determined using the exchange rates that you fill in when you add or edit a currency. On individual products, however, you can override this and set prices manually for the secondary currencies.
+
+= Can I have separate currencies for each language? =
+
+Yes. By default, each currency will be available for all languages, but you can customize this and disable certain currencies on certain languages.
+
+= Is this plugin compatible with other WooCommerce extensions? =
+
+WooCommerce Multilingual is compatible with all major WooCommerce extensions. We're continuously work on checking and maintaining compatibility and collaborate closely with the authors of these extensions.
+
+
+
 == Screenshots ==
 
-1. Translation controls for products
-2. Product categories translations
-3. Multiple currencies
+1. Products translation screen
+2. Product translation editor
+3. Global attributes translation
+4. Multiple currencies
+5. Status Page
+6. Shop URLs translation screen
 
 == Changelog ==
+
+= 3.9.2 =
+* Bug fix: User with the Shop Manager role was could not access WooCommerce Multilingual menu
+* Bug fix: the shipping tax was not applied correctly when using a WooCommerce version prior 2.6
+* Bug fix: Translations for variaiton descriptions were not saved correctly
+* Bug fix: New order emails sent to admins included incorrectly translated strings
+* Bug fix: A fatal error was occurring when upgrading from WooCommerce Multilingual 3.3 (or older)
+* Product add-on titles were missing from order pages and emails
+
+= 3.9.1.1 =
+* Bug fix: Fixed a bug causing fatal error on older PHP versions (before 5.6)
+
+= 3.9.1 =
+* Fixed a bug related to the stock information not syncing correctly across translations
+* Bug fix: and incorrect value for products out of stock was show on the dashboard
+* Bug fix: the link to edit custom prices was not working for variations
+
+= 3.9 =
+* Added compatibility with WooCommerce 2.7 (orders, coupons etc...)
+* Included the custom taxonomies associated with products in the WooCommerce Multilingual menu
+* Added the possibility to translate the attribute slugs
+* Added possibility to include some HTML tags in the currency switcher
+* Added the option to show the cart total in the currency switcher
+* Import payment methods translations from mo files upon activation
+* Many usability improvements
+* Moved the WooCommerce Multilingual submenu under the WooCommerce menu
+* Added two new subsections to the Status section: products and multi-currency
+* Bug fix: table Rates labels were not showing up on the cart page when WCML was active
+* Bug fix: the currency order preview was not including the newly added currencies
+* Bug fix: number of untranslated terms was sometimes wrong in the Status area
+* Bug fix: in some cases a variation description field showed up twice in the Translation Editor
+* Bug fix: orders showed the attributes slugs instead of names
+* Bug fix: for products without prices (no purchase button), the translations were showing up as 'Free' (with purchase button)
+* Fixed a compatibility issue with WooCommerce Bookings: custom prices were not displayed correctly in the second currency
+* Added fixed to the compatibility class for WooCommerce Tab Manager
+* Fixed a compatibility problem with the recent version W3TC related to the currency switcher
+* Fixed compatibility issues with WooCommerce Product Add-ons
+
+
+= 3.8.6 =
+* Fix shipping cost conversion issue specific to PHP 5.6
+* Bug fix: an incorrect shipping cost was displayed on the backend when the order was placed in a secondary currency
+* Bug fix: users with the Shop Manager role were not able to translate products
+* Bug fix: changing an order language in the backend did not change the language for attributes in the order
+* Bug fix: for every e-mail action took when editing an order a new order e-mail was sent to the admin
+
+= 3.8.5 =
+* Fixed more problems related to converting shipping costs in secondary currencies
+* Fixed one compatibility problem with WooCommerce Show Single Variations
+* Bug fix: product translations were not synchronized correctly when marking an existing product as a translation of another one
+* Bug fix: variation names not displayed in tooltips on the orders screen in the backend
+* Updated the wpml-config.xml configuration file: copy prices to product translations also when multi-currency is not on
+* Other small fixes for the admin interface
+
+= 3.8.4 =
+* Bug fix: minimum required amount was not calculated correctly for secondary currencies (not included in the previous version)
+
+= 3.8.3 =
+* Added improvements to the Translation Editor for translating custom fields for products and variations
+* Added access for translator subscribers to translate content
+* Fixed compatibility issues with WooCommerce Visual Products Configurator (wrong amount in cart)
+* Fixed a compatibility issue with WooCommerce Product Addons (untranslated labels)
+* Fixed compatibility issues with WooCommerce Composite products
+* Fixed some new compatibility issues with WooCommerce Bookings
+* Bug fix: when using language as parameter and the 'dropdown' option was used for the product categories widget, translated urls were not working
+* Bug fix: shipping costs were not showing on the secondary languages in some cases
+* Bug fix: the shipping costs were not calculated correctly for currencies using less decimals than the default currency
+* Bug fix: adding a product to the cart and then adding its translation too could lead to a fatal error
+* Bug fix: switching the language on the cart page when using different domains for different languages was emptying the cart
+* Bug fix: minimum required amount was not calculated correctly for secondary currencies
+* Bug fix: incorrect currency symbol was displayed on the 'Filter by Price' widget
+
+= 3.8.2 =
+* Bug fix: cart strings not displaying in the correct language in some conditions
+* Bug fix: prices in secondary currencies were not updated on the front end after changing the price (the cache was not invalidated)
+* Bug fix: shipping classes were not synchronized for translated products in some circumstances
+* Bug fix: translated endpoints were missing from teh rewrite rules after updating the permalinks
+* Bug fix: stock status was sometimes not synchronized correctly when changing the stock manually
+* Bug fix: when using the default category base the language switcher did not show translated urls on the front end
+* Updated the cart cache hashes logic according to new WooCommerce logic
+* Added a new filter: 'wcml_product_custom_prices'
+* Added separate section for translatable fields for external products in the translations editor
+* Fixed compatibility issues with WooCommerce Table Rate Shipping 3.0+
+* Fixed one compatibility issue with WooCommerce Dynamic Pricing: the discount was not shown on the mini-cart
+* Fixed compatibility with Product Add-ons: strings were not translated
+
+= 3.8.1 =
+* Fixed one compatibility issue with WooCommerce Ajax Cart: cart quantities were not updating
+* Fixed one compatibility issue with WooCommerce Bookings: incorrect bookings were shown in the backend when toggling between admin languages
+* Fixed one compatibility issue with the Adventure Tours theme
+* Fixed one compatibility issue with the Aurum theme
+* Fixed compatibility issues with the Composite Products plugin
+* Bug fix: auto-generated slugs on the products translation editor were not made unique
+* Bug fix: sometimes prices with decimals were subtracted 0.01
+* Made translation controls on the WooCommerce products page disabled by default
+* Optimized autoloading of PHP classes for better performance
+
+= 3.8 =
+* A new design, a new look and feel complementing the new WPML 3.4
+* A new translation editor for the products
+* New options for translating product attributes
+* An enhanced and dedicated configuration screen for multi-currency
+* Easier translation of URLs
+* Immediate attention to configuration issues on the Status page
+* Improved support for the WooCommerce REST API
+* Straightforward setup wizard to run WooCommerce Multilingual
+* Bundled Installer makes it effortless to add in the required plugins
+* Option for downloadable products to share files under each product
+* Other price types can be set custom values for secondary currencies
+* Translating WooCommerce email strings also got simpler
+* Numerous bug fixes and enhancements
+
+= 3.7.16 =
+* Compatibility with WooCommerce 2.6 (woocommerce_term_meta tables removed)
+* Fixed a compatibility issue with WooCommerce Table Rate Shipping (shipping class not showing on secondary language)
+* Bug fix: Translated shipping classes were sometimes not displayed for secondary languages
+* Bug fix: WooCommerce Booking & Appointments causes Fatal Error when Translation Management
+* Bug fix: Yoast custom fields were not shown in the translation editor
+
+= 3.7.15 =
+* Fixed a problem with BACS payment gateway strings not being translated in order confirmation page
+* Fixed some compatibility issues with WooCommerce Tab Manager
+
+= 3.7.14 =
+* Fixed a problem introduced in the previous version: Mollie payment methods not working when using the 'Mollie Payments for WooCommerce' plugin
+
+= 3.7.13 =
+* Bug fix: When adding a global attribute inline while creating a product in a secondary language, the term was created in the wrong language
+* Fixed a compatibility issues with WooCommerce Tab Manager: fatal error when trying to translate a product
+* Fixed another compatibility issues with WooCommerce Tab Manager: when a product had only a global tab, the translated tab didn't show up on the translated product
+* Improvements for how the gateways strings are registered for translation
+* Updated logic for registering and translating Shipping zones and methods according to changes in WooCommerce 2.6
+
+= 3.7.12 =
+* Fixed a bug that made the shop pages return 404 errors on WordPress 4.5
+* Fixed warnings caused by terms translated before the WooCommerce Multilingual activation
+* Bug fix: WooCommerce Multilingual locales for secondary languages were not loaded correctly
+
+= 3.7.11 =
+* Bug fix: the downloadable products were not synced properly with their translations
+* Bug fix: the confirmation for installing WooCommerce translations for the secondary languages was not saved
+* Bug fix: The option to "Show only products with custom prices in secondary currencies" was not working well for variable products
+* Bug fix: saving custom prices when creating a new product didn't work
+* Removed backward compatibility with WooCommerce versions older than 2.1
+* Small compatibility fixes for the upcoming WordPress 4.5
+* Fixed a problem with the pagination on the products list page under the WooCommerce Multilingual section
+
+= 3.7.10 =
+* Fixed a small issue with the product translations editor (additional toolbar showing)
+* Fixed a compatibility issue with Memcached on Siteground: product category archive pages were returning 404
+* Bug fix: the price widget was not using the correct values with multi-currency mode on
+* Bug fix: in some cases the costs for International Shipping were not calculated correctly in the secondary languages
+* Bug fix: When using comma for a decimal separator, for custom prices, the rounded values were not determined correctly
+* Bug fix: In some cases, translated product variations were displayed as 'out of stock' on the front end.
+* Fixed a fatal error occurring when selecting the WPML admin language to 'All languages' on the WooCommerce settings page
+* Compatibility with WooThemes Mix and Match Products
+* Fixed a bug preventing a shipping to be set to a variation when the default language of the product was not English
+* Fixed a bug that was sometimes preventing the 'incl. vat' suffix to be displayed on prices
+* Fixed a compatibility issue with Gravity Forms Product Add-Ons
+
+= 3.7.9 =
+* Fixed an issue prevent the correct plugin activation in some cases
+* Fixed an issue potentially causing  uncatched errors when using some specific payment gateways
+
+= 3.7.8 =
+* Updated the logic for downloading WooCommerce translations from translate.wordpress.org
+* Compatibility with WooCommerce Bookings 1.9 (and fixed othe small compatibility issues with older versions)
+* Fixed a compatibility issue with WooCommerce Subscriptions: the sign-up fee was not correct in the 2nd currency
+* Fixed a compatibility issue with WooCommerce Subscriptions: a fatal error was triggered during the checkout process in some circumstances
+* Fixed other compatibility issues with WooCommerce Subscriptions: endpoints, incorrect signup fee in secondary currency
+* Fixed a compatibility issue with WooCommerce Payment Gateways: some strings were registered/changed when on checkout
+* Bug fix: variations created with Any were not showing the user selected attribute when added to the cart
+* Bug fix: it was not possible to changeor or set the "Set prices in other currencies manually" option for a duplicate product
+* Fixed a compatibiilty issue with WooCommerce Bulk Stock Management (the 'out of stock' flag was not synced)
+* Bug fix: private products were visible to all users on grouped products
+* Bug fix: the tax label could register in the wrong language sometimes and then it was not possible to translate it correctly
+* Bug fix: partial the subject and heading for the refund emails were not translated when sent to users who had placed orders in secondary languages
+
+= 3.7.7 =
+* Fixed an issue that was causing a fatal error for sites using the Flatsome theme
+* Fixed an issue with translating standard tax rate name
+* Fixed an issue with product categories widget
+* Fixed issue with variable products in cart ( local attributes not translated after switching language )
+* Added filter for _load_filters function in multi-currency class
+* Set variations as translatable post type
+
+= 3.7.6 =
+* Fixed several problems with the permalinks when using the slash character in the bases
+* Fixed an issue with coupons: the coupons were not applied according to the minimum amount of the cart in the current currency
+* Fixed one compatibility issue with the Flatsome theme
+* Fixed a bug preventing the shop page link to be translated correctly to the other languages (when using WPML 3.3.1+)
+
+= 3.7.5 =
+* Fixed a backward compatibility with WPML versions prior 3.2 (causing fatal error)
+* Bug fix: in some specific cases variations were not created correctly - 'Any %name%' instead of term value
+* Bug fix: updating a product for which attached media had been deleted caused a warning (WooCommerce issue: 9681)
+* Fixed an issue with completing PayPal payments when using the default permalinks and the language as a parameter in the urls
+* Fixed an issue with order notes in the WP admin: 'array' was displayed instead of the actual note
+
+= 3.7.4 =
+* Fixed a problem with the previous version that caused a fatal error when upgrading
+
+= 3.7.3 =
+* Added support for translating custom attributes (for variations) via the professional translation
+* Added support for translating products tab information (WooCommerce Tab Manager) via the professional translation
+* Added support for translating persons and resources (WooCommerce Bookings) via the professional translation
+* Added support for translating products bundle data (WooCommerce Product Bundles) via the professional translation
+* Added extended compatibility and support for professional translation for WooCommerce Composite Products
+* Bug fix: it was not possible to set a product translation as draft when the original was published
+* Bug fix: in some cases the product categories hierarchy (and count) was not sycned across translations
+* Bug fix: the custom title and description of a bundle of a translated product was removed after updating the original product
+* Bug fix: custom fields that did not have any translation preference were wrongfully copied across translations
+* Bug fix: multi-currency was not working properly for product variations when the "Show only products with custom prices in secondary currencies" option was on
+* Fixed an important compatibility issue with Yoast SEO (fatal error when using Yoast SEO 3.0+)
+* Bug fix: wcml_check_on_duplicate_products_in_cart was incorrectly duplicated specific items in the cart
+
+= 3.7.2 =
+* Added synchronization for the 'featured' flag (star) for products across translations
+* Fixed one compatibility problem with WooCommerce Bookings: bookings were not filtered by language on the front end
+* Fixed one compatibility problem with WooCommerce Composite Products (causing a fatal error when viewing a composite product)
+* Bug fix: in some cases the cart total in a secondary currency was wrongfully rounded instead of showing the decimals
+* Bug fix: translated products were not published on the same schedule when using the future publishing
+* Bug fix: in some situations variations could not be created for a variable product with global attributes that contained special characters
+* Bug fix: wrong currency was used in an order when the currency was changed while placing the order and checkingout with Paypal
+* Bug fix: the relationship of a duplicate product with the original was lost when the original was updated.
+
+= 3.7.1 =
+* Compatibility fixes for WooCommerce Bookings and WooCommerce Composite Products
+* Fixed a typo in a function that caused a fatal error
+
+= 3.7 =
+* Added support for strings in different languages. Translated strings are not required to be in English (Requires WPML 3.3+)
+* Fixed a compatibility issue with WooCommerce Bookings: bookings in all languages showing on calendar (requires WooCommerce Bookings 1.8+)
+* Fixed a compatibility issue with WooCommerce Bookings: deleting a reservation did not delete translations too (requires WooCommerce Bookings 1.8+)
+* Fixed a PayPal checkout issue when multi-currency was enabled and the decimal separator was set to comma and thousands separator was set to dot
+* Fixed a compatibility issue with WooCommerce Product Addons: adding a second item for the same product added the first product again too
+* Bug fix: a slash character was missing the in product breadcrumb when the translated page slug was identical to the one in the default language
+* Bug fix: incorrect cost for the flat rate shipping was displayed in certain circumstances
+* Improved compatibility with Gravity Forms Product Addons for translating the cart data
+* Removed a deprecated hook used for the compatibility with WooCommerce Subscriptions
+* Bug fix: cart_widget.js code was loaded in places that it wasn't needed
+* Bug fix: in a specific case, the price in a secondary currency was not displayed correctly (the amount in the original currency was displayed)
+* Bug fix: content was disappearing when switching between the visual and text editors on the product translation editor
+* Bug fix: when using attributes that were numeric values a catchable fatal error was triggered
+
+= 3.6.11 =
+* Fixed one issue that was causing a fatal error when an older version WPML was used (3.1.9.7)
+
+= 3.6.10 =
+* Bug fix: Custom prices for variations were not saved when clicking the 'Save changes' button
+* Bug fix: Pagination was not working for a category having the term id equal to the id of the account page
+* Bug fix: 'Shop' was appearing two times in the breadcrumbs when using the shop base + category for a product url base
+* Bug fix: Fixed one issue with WooCommerce Bookings - adding two separate bookings to the cart showed as one item instead of two
+* Bug fix: The products menu order was not synced in some situations
+* Fixed a compatibility issue with the Peddlar theme
+* Fixed a styling issue on the custom prices section for product variations
+* Updates for the compatibility with WooCommerce Product Bundles from the plugin author
+* Bug fix: Sometimes it was not possible to enable the slug translation for a custom post when WooCommerce Multilingual was active
 
 = 3.6.9 =
 * Bug fix: Prices for variable products were not converted correctly when using multiple currencies after the WooCommerce 2.4 update
@@ -106,7 +428,7 @@ In order for the checkout and store pages to appear translated, you need to crea
 * Bug fix: After a product translation was edited in the standard product editor, the WooCommerce custom attribute translations were lost
 * Bug fix: The product variations failed to sync when the term_id was different than the term_taxonomy_id for the terms used to create the variations
 * Bug fix: Some product translations were showing non existing discounted prices
-* Fixed a couple of compatibility issues with WooCommerce Product Bundles (e.g. with using the Flatsome theme) 
+* Fixed a couple of compatibility issues with WooCommerce Product Bundles (e.g. with using the Flatsome theme)
 * Fixed a small usability issue related to Sensei
 * Bug fix: Stock quantity not synchronized when items were used in orders created in the backend
 * Bug fix: Payment gateways strings were not registered for string translation
@@ -140,7 +462,7 @@ In order for the checkout and store pages to appear translated, you need to crea
 * Bug fix: The product category template was not working correctly in secondary languages
 * Bug fix: Fixed a problem with sanitize_title for variations in Danish and German
 * Moved the Tab manager settings to separate file from the WCML config
-* Duplicates for media are now being created, if missing, when product translations are created. 
+* Duplicates for media are now being created, if missing, when product translations are created.
 * Bug fix: Fixed a fatal error that was occurring when the WPML was not updated to version 3.2 while the WPML addons were updated to the latest versions.
 
 = 3.6.1 =
@@ -367,7 +689,7 @@ In order for the checkout and store pages to appear translated, you need to crea
 * Bug: Emails not sent in the correct language when uses bulk action on orders list page
 * Bug: Order notes email in wrong language in certain circumstances
 * Bug: Shipping method names are being registered in the wrong language
-* Bug: WooCommerce Multilingual menu doesn't display for translators 
+* Bug: WooCommerce Multilingual menu doesn't display for translators
 * Bug: Using 'category' for products cat slug conflicts with posts 'category'
 * Bug: Paypal rejects payments with decimals on certain currencies
 
@@ -403,8 +725,8 @@ In order for the checkout and store pages to appear translated, you need to crea
 
 = 3.0 =
 * Brand new GUI and workflow
-* Support for easy taxonomy translation 
-* Bariations synchronization
+* Support for easy taxonomy translation
+* Variations synchronization
 * Product images synchronization
 
 
@@ -492,7 +814,7 @@ In order for the checkout and store pages to appear translated, you need to crea
 * Fixed all custom fields synchronization between translations
 * Fixed the stock issue for translations
 * Fixed the price filter widget for multiple currencies feature
-* Fixed product duplication to a second language 
+* Fixed product duplication to a second language
 * Payment gateways texts now are translatable
 * Custom variables translations now will be shown in the correct language
 
@@ -506,7 +828,7 @@ In order for the checkout and store pages to appear translated, you need to crea
 
 = 1.1 =
 * Added multi-currency feature
-* Fixed synchronization of attributes and variations 
+* Fixed synchronization of attributes and variations
 * Fixed translation of attributes
 * Fixed JS error in the checkout page
 * Fixed enable guest checkout (no account required) issue

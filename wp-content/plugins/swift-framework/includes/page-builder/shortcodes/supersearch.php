@@ -27,7 +27,6 @@
             /* PAGE BUILDER OUTPUT
             ================================================== */
             $width    = spb_translateColumnWidthToSpan( $width );
-            $el_class = $this->getExtraClass( $el_class );
             if ( $fullwidth == "yes" && $width == "col-sm-12" ) {
                 $fullwidth = true;
                 $contained = "true";
@@ -35,6 +34,7 @@
                 $fullwidth = false;
                 $contained = "false";
             }
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
 
             $output .= "\n\t" . '<div class="spb_supersearch_widget spb_content_element ' . $width . $el_class . '">';
             $output .= "\n\t\t" . '<div class="spb-asset-content">';
@@ -43,12 +43,8 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth == "yes" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
-
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
+            
             return $output;
 
         }
@@ -68,6 +64,7 @@
                     __( 'No', 'swift-framework-plugin' )  => "no",
                     __( 'Yes', 'swift-framework-plugin' ) => "yes"
                 ),
+                "std" => "no",
                 "description" => __( "Select yes if you'd like the divider to be full width (only to be used with no sidebars, and with Standard/Thin/Dotted divider types).", 'swift-framework-plugin' )
             ),
             array(

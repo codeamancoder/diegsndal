@@ -28,7 +28,7 @@
 
             /* SIDEBAR CONFIG
             ================================================== */
-            $sidebar_config = sf_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
+            $sidebar_config = spb_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
 
             $sidebars = '';
             if ( ( $sidebar_config == "left-sidebar" ) || ( $sidebar_config == "right-sidebar" ) ) {
@@ -147,12 +147,21 @@
                 'el_class'       => ''
             ), $atts ) );
 
+            $width    = spb_translateColumnWidthToSpan( $width );
+
             if ( isset($atts['display_layout']) && $atts['display_layout'] == "grid" ) {
                 $atts['display_layout'] = "standard";
             }
 
             $view_all_icon = apply_filters( 'sf_view_all_icon' , '<i class="ss-layergroup"></i>' );
 
+
+            // Enqueue script
+            if ( $multi_masonry == "yes" ) {
+                wp_enqueue_script( 'isotope' );
+                wp_enqueue_script( 'isotope-packery' );
+            }
+            
 
             /* SIDEBAR CONFIG
             ================================================== */
@@ -165,6 +174,14 @@
                 $sidebars = 'both-sidebars';
             } else {
                 $sidebars = 'no-sidebars';
+            }
+
+            /* FULL WIDTH CONFIG
+            ================================================== */
+            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" && $width == "col-sm-12" ) {
+                $fullwidth = true;
+            } else {
+                $fullwidth = false;
             }
 
 
@@ -187,8 +204,8 @@
                 $sf_product_display_layout = $display_layout;
             }
 
-            $el_class = $this->getExtraClass( $el_class );
-            $width    = spb_translateColumnWidthToSpan( $width );
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
+            
             $page_button   = $title_wrap_class = "";
             $has_button    = true;
             $shop_page_url = get_permalink( wc_get_page_id( 'shop' ) );
@@ -197,7 +214,7 @@
             if ( $has_button && $button_enabled == "yes" ) {
                 $title_wrap_class .= 'has-button ';
             }
-            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" && $width == "col-sm-12" ) {
+            if ( $fullwidth ) {
                 $title_wrap_class .= 'container ';
             }
 
@@ -223,11 +240,7 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" && $width == "col-sm-12" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
 
             if ( $carousel == "yes" ) {
                 global $sf_include_carousel;
@@ -251,7 +264,7 @@
                 __( 'Gallery Bordered', 'swift-framework-plugin' )   => "gallery-bordered",
             );
 
-    if ( sf_theme_supports('product-preview-slider') ) {
+    if ( spb_theme_supports('product-preview-slider') ) {
         $product_display_type = array(
                 __( 'Standard', 'swift-framework-plugin' )  => "standard",
                 __( 'Gallery', 'swift-framework-plugin' )   => "gallery",
@@ -315,7 +328,7 @@
         "value"       => $product_display_type
     );
 
-    if ( sf_theme_supports('product-layout-opts') ) {
+    if ( spb_theme_supports('product-layout-opts') ) {
         $params[] = array(
             "type"        => "dropdown",
             "heading"     => __( "Product display layout", 'swift-framework-plugin' ),
@@ -325,7 +338,7 @@
         );
     }
 
-    if ( sf_theme_supports('product-multi-masonry') ) {
+    if ( spb_theme_supports('product-multi-masonry') ) {
     	$params[] = array(
     		    "type"        => "buttonset",
     		    "heading"     => __( "Multi-Masonry display", 'swift-framework-plugin' ),
@@ -361,6 +374,7 @@
     	        __( 'Yes', 'swift-framework-plugin' ) => "yes"
     	    ),
             "buttonset_on"  => "yes",
+            "std" => "no",
     	);
     $params[] = array(
     	    "type"        => "dropdown",

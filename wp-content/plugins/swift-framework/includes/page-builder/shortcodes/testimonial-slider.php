@@ -28,6 +28,10 @@
                 'width'       => '1/1'
             ), $atts ) );
 
+            // ENQUEUE SCRIPT
+            wp_enqueue_script('lightSlider');
+
+
             $output = '';
 
             // CATEGORY SLUG MODIFICATION
@@ -69,8 +73,8 @@
             while ( $testimonials->have_posts() ) : $testimonials->the_post();
 
                 $testimonial_text         = get_the_content();
-                $testimonial_cite         = sf_get_post_meta( $post->ID, 'sf_testimonial_cite', true );
-                $testimonial_cite_subtext = sf_get_post_meta( $post->ID, 'sf_testimonial_cite_subtext', true );
+                $testimonial_cite         = spb_get_post_meta( $post->ID, 'sf_testimonial_cite', true );
+                $testimonial_cite_subtext = spb_get_post_meta( $post->ID, 'sf_testimonial_cite_subtext', true );
 
                 $items .= '<li class="testimonial">';
                 $items .= '<div class="slide-content-wrap">';
@@ -87,7 +91,7 @@
                         $testimonial_image     = get_post_thumbnail_id();
                         $testimonial_image_url = wp_get_attachment_url( $testimonial_image, 'full' );
                     }
-                    $testimonial_image = sf_aq_resize( $testimonial_image_url, 70, 70, true, false );
+                    $testimonial_image = spb_image_resizer( $testimonial_image_url, 70, 70, true, false );
 
                     // Testimonial Image
                     if ( $testimonial_image ) {
@@ -131,7 +135,7 @@
             $el_class = $this->getExtraClass( $el_class );
             $width    = spb_translateColumnWidthToSpan( $width );
 
-            $sidebar_config = sf_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
+            $sidebar_config = spb_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
 
             $sidebars = '';
             if ( ( $sidebar_config == "left-sidebar" ) || ( $sidebar_config == "right-sidebar" ) ) {

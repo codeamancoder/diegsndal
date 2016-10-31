@@ -37,6 +37,12 @@
             ), $atts ) );
 
 
+            // Enqueue script
+            if ( $display_type == "masonry" || $display_type == "masonry-gallery" ) {
+                wp_enqueue_script( 'isotope' );
+            }
+
+
             /* SIDEBAR CONFIG
             ================================================== */
             global $sf_sidebar_config;
@@ -50,6 +56,14 @@
                 $sidebars = 'no-sidebars';
             }
 
+            /* FULL WIDTH CONFIG
+            ================================================== */
+            if ( $fullwidth == "yes" && $sidebars == 'no-sidebars' ) {
+                $fullwidth = true;
+            } else {
+                $fullwidth = false;
+            }
+
 
             /* GALLERIES
             ================================================== */
@@ -59,7 +73,7 @@
             /* PAGE BUILDER OUTPUT
             ================================================== */
             $width    = spb_translateColumnWidthToSpan( $width );
-            $el_class = $this->getExtraClass( $el_class );
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
 
             $title_wrap_class = "";
 
@@ -86,12 +100,8 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
-
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
+            
             global $sf_include_isotope, $sf_has_galleries;
             $sf_include_isotope = true;
             $sf_has_galleries   = true;
@@ -142,6 +152,7 @@
                 __( 'No', 'swift-framework-plugin' )  => "no"
             ),
             "buttonset_on"  => "yes",
+            "std" => "no",
             "description" => __( "Select if you'd like the asset to be full width (edge to edge). NOTE: only possible on pages without sidebars.", 'swift-framework-plugin' )
         ),
         array(

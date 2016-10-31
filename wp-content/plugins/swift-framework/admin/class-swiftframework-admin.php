@@ -127,29 +127,29 @@ class SwiftFramework_Admin {
 				<ul>
 					<li>Preview functionality for elements.</li>
 				</ul>
+
 				<div class="divide"></div>
-				<h3>Latest Update (v2.4.1)</h3>
+				<h3>Latest Update (v2.5.19)</h3>
 				<p></p>
 				<ul>
-					<li>FRONTEND: Added option of custom X/Y column offset, for advanced layouts (inc custom z-index value).</li>
-					<li>FRONTEND: Added link target option to client element.</li>
-					<li>FRONTEND: Fixed Swift Slider issue with trackpad scrolling in curtain mode.</li>
-					<li>FRONTEND: Fixed mobile display issue.</li>
-					<li>BACKEND: Set google fonts to weekly update.</li>
-					<li>BACKEND: Fixed tabs helper display issue.</li>
-					<li>BACKEND: Set vertical center defaulted to off in row edit options.</li>
-					<li>BACKEND: Fixed issue with GoPricing table select.</li>
-					<li>BACKEND: Fixed issue with multilayer parallax text.</li>
-					<li>BACKEND: Fixed slider input field width, added a bit more space.</li>
+					<li>FRONTEND: Fixed issue with parallax background positioning</li>
+					<li>FRONTEND: Fixed issue with background size on columns</li>
+					<li>FRONTEND: Fixed charts animation issue</li>
+					<li>FRONTEND: Fixed issue with spacing on mobiles</li>
+					<li>FRONTEND: Fixed icon box icons colour issue</li>
 				</ul>
 				<div class="divide"></div>
-				<h3>Previous Update (v2.4.0)</h3>
+				<h3>Previous Update (v2.5.0)</h3>
 				<p></p>
 				<ul>
-					<li>FRONTEND: Fixed issue with rows introduced in v2.3.13</li>
-					<li>FRONTEND: Fixed issue with curtain slider glitching with trackpad in chrome</li>
-					<li>BACKEND: Added authentication option panel for Google Maps. Please go to Swift Framework > Google Maps Auth.</li>
-					<li>BACKEND: Fixed issue with address field label not showing on map element edit modal</li>
+					<li><strong>NOTE: This version requires the following theme versions: Atelier v2.4.0, Cardinal v2.5.6, Joyn v2.5.6, Uplift v1.3.0</strong></li>
+					<li>FRONTEND: Improved row and full width row performance</li>
+					<li>FRONTEND: Added row column position option, allowing you to set the position of columns within the row</li>
+					<li>FRONTEND: Added row column spacing option, allowing you to set the spacing between columns within the row</li>
+					<li>FRONTEND: Added row column content position, allowing you to set the position of content within columns of a row</li>
+					<li>FRONTEND: Added row column equal heights option, allowing you to set the columns within a row to be equal height</li>
+					<li>FRONTEND: Improved overally frontend performance with conditional loading where possible</li>
+					<li>FRONTEND: Various fixes</li>
 				</ul>
 			</div>
 		</div>

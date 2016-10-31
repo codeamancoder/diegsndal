@@ -44,6 +44,13 @@
             $view_all_icon = apply_filters( 'sf_view_all_icon' , '<i class="ss-layergroup"></i>' );
 
 
+            // Enqueue script
+            wp_enqueue_script( 'isotope' );
+            if ( $display_type == "multi-size-masonry" ) {
+                wp_enqueue_script( 'isotope-packery' );
+            }
+
+
             /* SIDEBAR CONFIG
             ================================================== */
             global $sf_sidebar_config, $sf_options;
@@ -57,6 +64,13 @@
                 $sidebars = 'no-sidebars';
             }
 
+            /* FULL WIDTH CONFIG
+            ================================================== */
+            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
+                $fullwidth = true;
+            } else {
+                $fullwidth = false;
+            }
 
             /* PORTFOLIO ITEMS
             ================================================== */
@@ -66,7 +80,7 @@
             /* PAGE BUILDER OUTPUT
             ================================================== */
             $width    = spb_translateColumnWidthToSpan( $width );
-            $el_class = $this->getExtraClass( $el_class );
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
 
             $has_button     = false;
             $page_button    = $title_wrap_class = "";
@@ -103,11 +117,7 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
 
             global $sf_include_isotope, $sf_has_portfolio;
             $sf_include_isotope = true;
@@ -165,6 +175,7 @@
                 __( 'Yes', 'swift-framework-plugin' ) => "yes"
             ),
             "buttonset_on"  => "yes",
+            "std" => "no",
             "description" => __( "Select if you'd like the asset to be full width (edge to edge). NOTE: only possible on pages without sidebars.", 'swift-framework-plugin' )
         ),
         array(

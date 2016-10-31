@@ -23,6 +23,8 @@
                 'width'       => '1'
             ), $atts ) );
 
+            wp_enqueue_script( 'prism' );
+
             $output = '';
 
             $el_class = $this->getExtraClass( $el_class );

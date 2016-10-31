@@ -30,28 +30,22 @@
             $width = spb_translateColumnWidthToSpan( $width );
 
 
-            /* SIDEBAR CONFIG
+            // Enqueue script
+            wp_enqueue_script( 'isotope' );
+
+
+            /* FULL WIDTH CONFIG
             ================================================== */
-            $sidebar_config = sf_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
-
-            $sidebars = '';
-            if ( ( $sidebar_config == "left-sidebar" ) || ( $sidebar_config == "right-sidebar" ) ) {
-                $sidebars = 'one-sidebar';
-            } else if ( $sidebar_config == "both-sidebars" ) {
-                $sidebars = 'both-sidebars';
+            if ( $fullwidth == "yes" ) {
+                $fullwidth = true;
             } else {
-                $sidebars = 'no-sidebars';
+                $fullwidth = false;
             }
-
-            $items_output = "";
-
-            global $sf_options, $sf_sidebar_config;
-
 
             /* COUNT CALC
             ================================================== */
             $item_class = "col-sm-4";
-            if ( $fullwidth == "yes" ) {
+            if ( $fullwidth ) {
                 $item_class = "col-sm-sf-5";
                 $item_count = $item_count * 5;
             } else {
@@ -84,7 +78,7 @@
             /* TWEETS
             ================================================== */
             if ( $twitter_username != "" ) {
-                $items_output .= '<ul class="blog-tweets">' . sf_get_tweets( $twitter_username, $tweet_count, 'blog-grid', $item_class ) . '</ul>';
+                $items_output .= '<ul class="blog-tweets" data-username="' . $twitter_username . '" data-count="' . $tweet_count .  '">' . sf_get_tweets( $twitter_username, $tweet_count, 'blog-grid', $item_class ) . '</ul>';
             }
 
 
@@ -103,12 +97,7 @@
 
             /* FINAL OUTPUT
             ================================================== */
-            if ( $fullwidth == "yes" ) {
-                $fullwidth = true;
-            } else {
-                $fullwidth = false;
-            }
-            $el_class = $this->getExtraClass( $el_class );
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
 
             $output .= "\n\t" . '<div class="spb_blog_grid_widget blog-wrap spb_content_element ' . $width . $el_class . '">';
             $output .= "\n\t\t" . '<div class="spb-asset-content">';
@@ -117,12 +106,8 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
-
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
+            
             global $sf_has_blog, $sf_include_imagesLoaded;
             $sf_include_imagesLoaded = true;
             $sf_has_blog             = true;
@@ -180,6 +165,7 @@
                     __( 'No', 'swift-framework-plugin' )  => "no"
                 ),
                 "buttonset_on"  => "yes",
+                "std" => "no",
                 "description" => __( "Select if you'd like the asset to be full width (edge to edge). NOTE: only possible on pages without sidebars.", 'swift-framework-plugin' )
             ),
             array(

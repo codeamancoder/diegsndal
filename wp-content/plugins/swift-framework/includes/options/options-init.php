@@ -154,6 +154,15 @@
                 'options' => array('1' => 'Disabled','0' => 'Enabled'),
                 'default' => '0'
                 ),
+            // array(
+            //     'id' => 'spb_dynamic_scripts',
+            //     'type' => 'button_set',
+            //     'title' => __('Dynamic scripts/styles output', 'swiftframework'),
+            //     'subtitle' => __('Enable/Disable dynamic output for the SPB scripts/styles. If you enable this, then any page/post where the Page Builder is not active on, will not load the scripts/styles for the builder output. This is an experimental feature, so please test your pages.', 'swiftframework'),
+            //     'desc' => '',
+            //     'options' => array('0' => 'Disabled','1' => 'Enabled'),
+            //     'default' => '0'
+            //     ),
             array(
                 'id' => 'spb_color_scheme',
                 'type' => 'select',

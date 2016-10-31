@@ -21,6 +21,8 @@
                 'title'       => '',
                 'link'        => '',
                 'size'        => '1280x720',
+                'remove_related' => 'no',
+                'autoplay'    => 'no',
                 'el_position' => '',
                 'width'       => '1/1',
                 'full_width'  => 'no',
@@ -32,6 +34,15 @@
                 return null;
             }
             $video_h  = '';
+
+            /* FULL WIDTH CONFIG
+            ================================================== */
+            if ( $full_width == "yes" && $width == '1/1' ) {
+                $fullwidth = true;
+            } else {
+                $fullwidth = false;
+            }
+
             $el_class = $this->getExtraClass( $el_class );
             $width    = spb_translateColumnWidthToSpan( $width );
             $size     = str_replace( array( 'px', ' ' ), array( '', '' ), $size );
@@ -40,11 +51,19 @@
             if ( count( $size ) > 1 ) {
                 $video_h = $size[1];
             }
+            $extra_params = '';
 
-            $embed = sf_video_embed( $link, $video_w, $video_h );
+            if ( $remove_related == "yes" ) {
+                $extra_params .= '&rel=0';
+            }
+            if ( $autoplay == "yes" ) {
+                $extra_params .= '&amp;autoplay=1';
+            }
 
-            if ( $full_width == "yes" ) {
-                $output .= "\n\t" . '<div class="spb_video_widget full-width spb_content_element ' . $width . $el_class . '">';
+            $embed = spb_video_embed( $link, $video_w, $video_h, $extra_params );
+
+            if ( $fullwidth ) {
+                $output .= "\n\t" . '<div class="spb_video_widget full-width spb-full-width-element spb_content_element ' . $width . $el_class . '">';
             } else {
                 $output .= "\n\t" . '<div class="spb_video_widget spb_content_element ' . $width . $el_class . '">';
             }
@@ -54,7 +73,7 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
 
             return $output;
         }
@@ -78,8 +97,8 @@
                 "heading"     => __( "Video link", 'swift-framework-plugin' ),
                 "param_name"  => "link",
                 "value"       => "",
-                "description" => __( 'Link to the video. More about supported formats at http://codex.wordpress.org/Embeds', 'swift-framework-plugin' ),
-                "link"        =>  '<a class="spb_field_link" href="http://codex.wordpress.org/Embeds#Okay.2C_So_What_Sites_Can_I_Embed_From.3F" target="_blank">'. __('More about supported formats click this link', 'swift-framework-plugin' ) . '</a>'
+                "description" => __( 'Link to the video. YouTube or Vimeo.', 'swift-framework-plugin' ),
+                //"link"        =>  '<a class="spb_field_link" href="http://codex.wordpress.org/Embeds#Okay.2C_So_What_Sites_Can_I_Embed_From.3F" target="_blank">'. __('More about supported formats click this link', 'swift-framework-plugin' ) . '</a>'
             ),
             array(
                 "type"        => "textfield",
@@ -90,6 +109,29 @@
             ),
             array(
                 "type"        => "buttonset",
+                "heading"     => __( "Remove related (YouTube)", 'swift-framework-plugin' ),
+                "param_name"  => "remove_related",
+                "value"       => array(
+                    __( 'Yes', 'swift-framework-plugin' ) => "yes",
+                    __( 'No', 'swift-framework-plugin' )  => "no"
+                ),
+                "buttonset_on"  => "yes",
+                "description" => __( "Select this if you would like to remove the related videos shown at the end of the video.", 'swift-framework-plugin' )
+            ),
+            array(
+                "type"        => "buttonset",
+                "heading"     => __( "Autoplay", 'swift-framework-plugin' ),
+                "param_name"  => "autoplay",
+                "value"       => array(
+                    __( 'Yes', 'swift-framework-plugin' ) => "yes",
+                    __( 'No', 'swift-framework-plugin' )  => "no"
+                ),
+                "buttonset_on"  => "yes",
+                "std"         => 'no',
+                "description" => __( "Select this if you would like the video to autoplay.", 'swift-framework-plugin' )
+            ),
+            array(
+                "type"        => "buttonset",
                 "heading"     => __( "Full width", 'swift-framework-plugin' ),
                 "param_name"  => "full_width",
                 "value"       => array(
@@ -97,6 +139,7 @@
                     __( 'No', 'swift-framework-plugin' )  => "no"
                 ),
                 "buttonset_on"  => "yes",
+                "std"         => 'no',
                 "description" => __( "Select this if you want the video to be the full width of the page container (leave the above size blank).", 'swift-framework-plugin' )
             ),
             array(
@@ -153,11 +196,12 @@
             }
 
             $output = '';
-            if ( $fullwidth == "yes" && $width == "1/1" ) {
+            if ( $fullwidth == "yes" && $width == '1/1' ) {
                 $fullwidth = true;
             } else {
                 $fullwidth = false;
             }
+
             // $img      = spb_getImageBySize( array(
             //     'attach_id'  => preg_replace( '/[^\d]/', '', $image ),
             //     'thumb_size' => $image_size
@@ -165,10 +209,9 @@
             $img_id   = preg_replace( '/[^\d]/', '', $image );
             $img      = wp_get_attachment_image( $img_id, $image_size, false );
             $img_url  = wp_get_attachment_image_src( $image, 'large' );
-            $el_class = $this->getExtraClass( $el_class );
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
             $width    = spb_translateColumnWidthToSpan( $width );
             // $content =  !empty($image) ? '<img src="'..'" alt="">' : '';
-            $content = '';
             if ( $image_width != "" ) {
                 $image_width = 'style="width:' . $image_width . 'px;margin:0 auto;"';
             }
@@ -196,6 +239,11 @@
                 $el_class .= ' image-overflow-right';
             }
 
+            if ( $lightbox == "yes" ) {
+                $el_class .= ' ' . spb_lightbox_wrap_class();
+            }
+
+
             if ( $intro_animation != "none" ) {
                 $output .= "\n\t" . '<div class="spb_content_element spb_image sf-animation ' . $frame . ' ' . $width . $el_class . '" data-animation="' . $intro_animation . '" data-delay="' . $animation_delay . '">';
             } else {
@@ -203,10 +251,10 @@
             }
             $output .= "\n\t\t" . '<div class="spb-asset-content">';
             $output .= ( $title != '' ) ? "\n\t\t\t" . $this->spb_title( $title, '', $fullwidth ) : '';
-            if ( $caption_pos == "hover" && $caption != "" ) {
+            if ( $caption_pos == "hover" && ( $caption != "" || $content != "" ) ) {
                 $output .= '<figure class="animated-overlay overlay-style caption-hover clearfix" ' . $image_width . '>';
             } else if ( $lightbox == "yes" || $image_link != "" ) {
-                $output .= '<figure class="animated-overlay overlay-alt clearfix" ' . $image_width . '>';
+                $output .= '<figure class="animated-overlay has-link overlay-alt clearfix" ' . $image_width . '>';
             } else {
                 $output .= '<figure class="clearfix" ' . $image_width . '>';
             }
@@ -220,7 +268,11 @@
                     if ( $view_icon_svg != "" ) {
                         $output .= $view_icon_svg;
                     }
-                    $output .= '<h4>' . $caption . '</h4>';
+                    if ( $content != "" ) {
+                        $output .= $content;
+                    } else {
+                        $output .= '<h4>' . $caption . '</h4>';
+                    }
                 } else {
                     $output .= '<div class="thumb-info thumb-info-alt">';
                     if ( $link_icon_svg != "" ) {
@@ -233,17 +285,30 @@
             } else if ( $lightbox == "yes" ) {
                 $output .= '<div class="img-wrap">' . $img . '</div>';
                 if ( $img_url[0] != "" ) {
-                    $output .= '<a class="lightbox" href="' . $img_url[0] . '" data-rel="ilightbox[' . $image . '-' . rand( 0, 1000 ) . ']" data-caption="' . $caption . '"></a>';
+                    $lightbox_id = $image . '-' . rand( 0, 1000 );
+                    $atts = array(
+                        'image_id'    => $img_id,
+                        'lightbox_id' => $lightbox_id,
+                        'caption'     => $caption,
+                        'extra_class' => '',
+                        'is_slider'   => false
+                    );
+                    $link_config = spb_lightbox_link_config( $atts );
+                    $output .= '<a ' . $link_config . '></a>';
                 }
                 $output .= '<div class="figcaption-wrap"></div>';
                 $output .= '<figcaption>';
                 if ( $caption_pos == "hover" ) {
-                    if ( $caption != "" ) {
+                    if ( $caption != "" || $content != "" ) {
                         $output .= '<div class="thumb-info">';
                         if ( $view_icon_svg != "" ) {
                             $output .= $view_icon_svg;
                         }
-                        $output .= '<h4>' . $caption . '</h4>';
+                        if ( $content != "" ) {
+                            $output .= $content;
+                        } else {
+                            $output .= '<h4>' . $caption . '</h4>';
+                        }
                     } else {
                         $output .= '<div class="thumb-info thumb-info-alt">';
                         if ( $view_icon_svg != "" ) {
@@ -264,30 +329,34 @@
             } else {
                 $output .= "\n\t\t" . '<div class="img-wrap">' . $img . '</div>';
                 $output .= '<div class="figcaption-wrap"></div>';
-                if ( $caption_pos == "hover" && $caption != "" ) {
+                if ( $caption_pos == "hover" && ( $caption != "" || $content != "" ) ) {
                     $output .= '<figcaption>';
                     $output .= '<div class="thumb-info">';
                     if ( $link_icon_svg != "" ) {
                         $output .= $link_icon_svg;
                     }
-                    $output .= '<h4>' . $caption . '</h4>';
+                    if ( $content != "" ) {
+                        $output .= $content;
+                    } else {
+                        $output .= '<h4>' . $caption . '</h4>';
+                    }
                     $output .= '</div></figcaption>';
                 }
             }
             $output .= '</figure>';
-            if ( $caption_pos == "below" && $caption != "" ) {
+            if ( $caption_pos == "below" && ( $caption != "" || $content != "" ) ) {
                 $output .= '<div class="image-caption">';
-                $output .= '<h4>' . $caption . '</h4>';
+                if ( $content != "" ) {
+                    $output .= $content;
+                } else {
+                    $output .= '<h4>' . $caption . '</h4>';
+                }
                 $output .= '</div>';
             }
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth == "yes" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
 
             return $output;
         }
@@ -340,19 +409,6 @@
         }
     }
 
-    $image_sizes = array(
-                __( "Full", 'swift-framework-plugin' )               => "full",
-                __( "Large", 'swift-framework-plugin' )              => "large",
-                __( "Medium", 'swift-framework-plugin' )             => "medium",
-                __( "Thumbnail", 'swift-framework-plugin' )          => "thumbnail",
-                __( "Small 4/3 Cropped", 'swift-framework-plugin' )  => "thumb-image",
-                __( "Medium 4/3 Cropped", 'swift-framework-plugin' ) => "thumb-image-twocol",
-                __( "Large 4/3 Cropped", 'swift-framework-plugin' )  => "thumb-image-onecol",
-                __( "Large 1/1 Cropped", 'swift-framework-plugin' )  => "large-square",
-            );
-
-    $image_sizes = apply_filters('sf_image_sizes', $image_sizes);
-
     SPBMap::map( 'spb_image', array(
         "name"   => __( "Image", 'swift-framework-plugin' ),
         "base"   => "spb_image",
@@ -373,10 +429,11 @@
                 "value"       => ""
             ),
             array(
-                "type"        => "dropdown",
+                "type"        => "dropdown-id",
                 "heading"     => __( "Image Size", 'swift-framework-plugin' ),
                 "param_name"  => "image_size",
-                "value"       => $image_sizes,
+                "value"       => spb_get_image_sizes(),
+                "std"         => 'full',
                 "description" => __( "Select the source size for the image (NOTE: this doesn't affect it's size on the front-end, only the quality).", 'swift-framework-plugin' )
             ),
             array(
@@ -405,6 +462,16 @@
                 "value"       => "",
                 "description" => __( "If you would like a caption to be shown below the image, add it here.", 'swift-framework-plugin' )
             ),
+            array(
+                    "type"        => "textarea_html",
+                    "holder"      => "div",
+                    "class"       => "",
+                    "heading"     => __( "HTML Caption", 'swift-framework-plugin' ),
+                    "param_name"  => "content",
+                    "value"       => '',
+                    //"value" => __("<p>This is a text block. Click the edit button to change this text.</p>", 'swift-framework-plugin'),
+                    "description" => __( "If you would like to use HTML for the caption, then you can do so here.", 'swift-framework-plugin' )
+                ),
             array(
                 "type"        => "dropdown",
                 "heading"     => __( "Caption Position", 'swift-framework-plugin' ),
@@ -435,6 +502,7 @@
                     __( "Yes", 'swift-framework-plugin' ) => "yes",
                 ),
                 "buttonset_on"  => "yes",
+                "std" => "no",
                 "description" => __( "Select if you want the image to be the full width of the page. (Make sure the element width is 1/1 too).", 'swift-framework-plugin' )
             ),
             array(
@@ -488,6 +556,7 @@
                     __( "No", 'swift-framework-plugin' )  => "no"
                 ),
                 "buttonset_on"  => "yes",
+                "std" => "no",
                 "description" => __( "Select if you want the image to open in a lightbox on click", 'swift-framework-plugin' )
             ),
             array(
@@ -596,23 +665,29 @@
             ), $atts ) );
             $output = '';
 
-            $el_class = $this->getExtraClass( $el_class );
-            $width    = spb_translateColumnWidthToSpan( $width );
-            $size     = str_replace( array( 'px', ' ' ), array( '', '' ), $size );
-            if ( $fullscreen == "yes" && $width == "col-sm-12" ) {
-                $fullscreen = true;
+            // Enqueue
+            wp_enqueue_script('google-maps');
+
+            /* FULL WIDTH CONFIG
+            ================================================== */
+            if ( $fullscreen == "yes" ) {
+                $fullwidth = true;
             } else {
-                $fullscreen = false;
+                $fullwidth = false;
             }
 
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
+            $width    = spb_translateColumnWidthToSpan( $width );
+            $size     = str_replace( array( 'px', ' ' ), array( '', '' ), $size );
 
-            if ( $fullscreen ) {
+
+            if ( $fullwidth ) {
                 $output .= "\n\t" . '<div class="spb_gmaps_widget fullscreen-map spb_content_element ' . $width . $el_class . '">';
             } else {
                 $output .= "\n\t" . '<div class="spb_gmaps_widget spb_content_element ' . $width . $el_class . '">';
             }
             $output .= "\n\t\t" . '<div class="spb-asset-content">';
-            $output .= ( $title != '' ) ? "\n\t\t\t" . $this->spb_title( $title, '', $fullscreen ) : '';
+            $output .= ( $title != '' ) ? "\n\t\t\t" . $this->spb_title( $title, '', $fullwidth ) : '';
             $output .= '<div class="spb_map_wrapper">';
 
             if ( $advanced_styling == "yes" ) {
@@ -628,11 +703,8 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullscreen ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
+
             global $sf_include_maps;
             $sf_include_maps = true;
 
@@ -714,7 +786,7 @@
     	)
     );
 
-    if ( sf_theme_supports( 'advanced-map-styles' ) ) {
+    if ( spb_theme_supports( 'advanced-map-styles' ) ) {
     	$params[] = array(
     	                "type"        => "buttonset",
     	                "heading"     => __( "Show Controls", 'swift-framework-plugin' ),
@@ -775,6 +847,7 @@
                         
                     ),
                     "buttonset_on"  => "yes",
+                    "std" => "no",
                     "description" => __( "If yes, the map will be displayed from screen edge to edge.", 'swift-framework-plugin' )
                 );
 	$params[] = array(

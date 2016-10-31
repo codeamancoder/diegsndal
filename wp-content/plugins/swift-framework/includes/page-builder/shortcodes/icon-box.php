@@ -45,7 +45,7 @@
 
             if ( $image != "" ) {
                 $img_url      = wp_get_attachment_url( $image, 'full' );
-                $image_object = sf_aq_resize( $img_url, 70, 70, true, false );
+                $image_object = spb_image_resizer( $img_url, 70, 70, true, false );
                 $image_url    = $image_object[0];
             }
 
@@ -77,6 +77,7 @@
     $icon_box_icon_types = array(
         '' => '',
         __( "Icon", 'swift-framework-plugin' )  => "icon",
+        __( "SVG", 'swift-framework-plugin' )  => "svg",
         __( "Character", 'swift-framework-plugin' )  => "character",
         __( "Image", 'swift-framework-plugin' )  => "image",
     );
@@ -167,6 +168,7 @@
                 "type"        => "icon-picker",
                 "heading"     => __( "Icon Box SVG", 'swift-framework-plugin' ),
                 "param_name"  => "svg_icon",
+                "icon_type"   => "svg",
                 "data"        => spb_get_svg_icons(),
                 "value"       => "",
                 "required"    => array("box_icon_type", "=", "svg"),

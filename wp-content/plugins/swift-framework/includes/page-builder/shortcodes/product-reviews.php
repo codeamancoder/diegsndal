@@ -35,6 +35,11 @@
             
             $next_icon = apply_filters( 'sf_next_icon', '<i class="ss-navigateright"></i>' );
 
+            // Enqueue script
+            if ( $display_type == "masonry" ) {
+                wp_enqueue_script( 'isotope' );
+            }
+
             // REVIEWS QUERY SETUP
             global $woocommerce,  $wpdb, $product;
 

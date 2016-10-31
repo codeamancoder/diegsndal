@@ -29,6 +29,11 @@
                 'el_class'         => ''
             ), $atts ) );
 
+            // Enqueue
+            if ( $carousel == "yes" ) {
+                wp_enqueue_script( 'owlcarousel' );
+            }
+
             // CATEGORY SLUG MODIFICATION
             if ( $category == "All" ) {
                 $category = "all";
@@ -68,10 +73,13 @@
 
             if ( $item_columns == "5" ) {
                 $item_class = 'col-sm-sf-5';
+                $client_width  = 210;
             } else if ( $item_columns == "6" ) {
                 $item_class = 'col-sm-2';
+                $client_width  = 170;
             } else if ( $item_columns == "4" ) {
                 $item_class = 'col-sm-3';
+                $client_width  = 260;
             } else if ( $item_columns == "3" ) {
                 $item_class    = 'col-sm-4';
                 $client_width  = 400;
@@ -99,8 +107,8 @@
 
                 $client_image    = get_post_thumbnail_id();
                 $client_img_url  = wp_get_attachment_url( $client_image, 'full' );
-                $client_link_url = sf_get_post_meta( $post->ID, 'sf_client_link', true );
-                $image_alt       = esc_attr( sf_get_post_meta( $client_image, '_wp_attachment_image_alt', true ) );
+                $client_link_url = spb_get_post_meta( $post->ID, 'sf_client_link', true );
+                $image_alt       = esc_attr( spb_get_post_meta( $client_image, '_wp_attachment_image_alt', true ) );
 
                 if ( $carousel == "yes" ) {
                     $items .= '<div class="clearfix carousel-item">';
@@ -109,7 +117,7 @@
                 }
                 $items .= '<figure>';
 
-                $image = sf_aq_resize( $client_img_url, $client_width, $client_height, true, false );
+                $image = spb_image_resizer( $client_img_url, $client_width, $client_height, false, false );
 
                 if ( $image ) {
 

@@ -79,6 +79,8 @@ class SwiftFramework {
 		global $sf_opts;
 		$sf_opts = get_option('swift_framework_opts');
 
+		$this->include_image_resizer();
+
 		// DISABLE CHECK
 		$disable_spb = $disable_ss = $safety = true;
 		if ( $this->current_theme != "" ) {
@@ -188,9 +190,7 @@ class SwiftFramework {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new SwiftFramework_Admin( $this->get_SwiftFramework(), $this->get_version() );
-
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_swiftframework_menu' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'init', $this, 'unregister_post_types' );
@@ -204,12 +204,7 @@ class SwiftFramework {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-
 		$plugin_public = new SwiftFramework_Public( $this->get_SwiftFramework(), $this->get_version() );
-
-		//$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		//$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
 	}
 
 	/**
@@ -251,7 +246,15 @@ class SwiftFramework {
 	public function get_version() {
 		return $this->version;
 	}
-	
+		
+	/**
+     * Include Custom Post Types
+     * @since    1.0.0
+	 */
+    public function include_image_resizer() {
+        include_once( plugin_dir_path( dirname( __FILE__ ) ) . 'includes/image-resize/spb_image_resizer.php' );
+    }
+
 	/**
      * Include Custom Post Types
      * @since    1.0.0

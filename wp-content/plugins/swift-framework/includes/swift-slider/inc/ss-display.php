@@ -8,6 +8,28 @@
     *
     */
 
+    /* HEX TO RGB COLOR
+    ================================================== */
+    if ( ! function_exists( 'swiftslider_hex2rgb' ) ) {
+        function swiftslider_hex2rgb( $colour ) {
+            if ( $colour[0] == '#' ) {
+                $colour = substr( $colour, 1 );
+            }
+            if ( strlen( $colour ) == 6 ) {
+                list( $r, $g, $b ) = array( $colour[0] . $colour[1], $colour[2] . $colour[3], $colour[4] . $colour[5] );
+            } elseif ( strlen( $colour ) == 3 ) {
+                list( $r, $g, $b ) = array( $colour[0] . $colour[0], $colour[1] . $colour[1], $colour[2] . $colour[2] );
+            } else {
+                return false;
+            }
+            $r = hexdec( $r );
+            $g = hexdec( $g );
+            $b = hexdec( $b );
+
+            return array( 'red' => $r, 'green' => $g, 'blue' => $b );
+        }
+    }
+
     function swift_slider( $atts, $content = null ) {
         extract( shortcode_atts( array(
             "parallax"    => 'false',
@@ -92,7 +114,7 @@
         <?php if ( $swift_slider_slides->have_posts() ) {
 
 	        $swift_slider_output .= '<div class="swift-slider-outer">';
-            $swift_slider_output .= '<div id="' . $sliderID . '" class="swift-slider swiper-container" data-type="' . $type . '" data-fullscreen="' . $fullscreen . '" data-max-height="' . $max_height . '" data-transition="' . $transition . '" data-loop="' . $loop . '" data-slide-count="' . $slide_count . '" data-autoplay="' . $autoplay . '" data-continue="' . $continue . '">';
+            $swift_slider_output .= '<div id="' . $sliderID . '" class="swift-slider swiper-container" data-slider-type="' . $type . '" data-fullscreen="' . $fullscreen . '" data-max-height="' . $max_height . '" data-transition="' . $transition . '" data-loop="' . $loop . '" data-slide-count="' . $slide_count . '" data-autoplay="' . $autoplay . '" data-continue="' . $continue . '">';
             $swift_slider_output .= '<div class="swiper-wrapper">';
 
             while ( $swift_slider_slides->have_posts() ) : $swift_slider_slides->the_post();
@@ -175,28 +197,28 @@
 
             // Get the meta values
             $slide_title       = get_the_title();
-            $bg_type           = sf_get_post_meta( $postID, 'ss_bg_type', true );
-            $bg_color          = sf_get_post_meta( $postID, 'ss_bg_color', true );
-            $bg_opacity        = sf_get_post_meta( $postID, 'ss_bg_opacity', true );
+            $bg_type           = spb_get_post_meta( $postID, 'ss_bg_type', true );
+            $bg_color          = spb_get_post_meta( $postID, 'ss_bg_color', true );
+            $bg_opacity        = spb_get_post_meta( $postID, 'ss_bg_opacity', true );
             $bg_image          = rwmb_meta( 'ss_background_image', 'type=image&size=full' );
-            $background_size   = sf_get_post_meta( $postID, 'ss_background_size', true );
-            $background_valign = sf_get_post_meta( $postID, 'ss_background_valign', true );
-            $background_halign = sf_get_post_meta( $postID, 'ss_background_halign', true );
-            $mobile_background_halign = sf_get_post_meta( $postID, 'ss_mobile_background_halign', true );
+            $background_size   = spb_get_post_meta( $postID, 'ss_background_size', true );
+            $background_valign = spb_get_post_meta( $postID, 'ss_background_valign', true );
+            $background_halign = spb_get_post_meta( $postID, 'ss_background_halign', true );
+            $mobile_background_halign = spb_get_post_meta( $postID, 'ss_mobile_background_halign', true );
             $bg_mp4            = rwmb_meta( 'ss_background_video_mp4', 'type=file' );
             $bg_webm           = rwmb_meta( 'ss_background_video_webm', 'type=file' );
             $bg_ogg            = rwmb_meta( 'ss_background_video_ogg', 'type=file' );
-            $video_loop        = sf_get_post_meta( $postID, 'ss_video_loop', true );
-            $video_mute        = sf_get_post_meta( $postID, 'ss_video_mute', true );
-            $video_overlay     = sf_get_post_meta( $postID, 'ss_video_overlay', true );
-            $slide_style       = sf_get_post_meta( $postID, 'ss_slide_style', true );
-            $caption_title     = sf_get_post_meta( $postID, 'ss_caption_title', true );
-            $caption_text      = sf_content_filter( sf_get_post_meta( $postID, 'ss_caption_text', true ) );
-            $caption_x         = sf_get_post_meta( $postID, 'ss_caption_x', true );
-            $caption_y         = sf_get_post_meta( $postID, 'ss_caption_y', true );
-            $caption_size      = sf_get_post_meta( $postID, 'ss_caption_size', true );
-            $slide_link        = sf_get_post_meta( $postID, 'ss_slide_link', true );
-            $slide_link_url    = sf_get_post_meta( $postID, 'ss_slide_link_url', true );
+            $video_loop        = spb_get_post_meta( $postID, 'ss_video_loop', true );
+            $video_mute        = spb_get_post_meta( $postID, 'ss_video_mute', true );
+            $video_overlay     = spb_get_post_meta( $postID, 'ss_video_overlay', true );
+            $slide_style       = spb_get_post_meta( $postID, 'ss_slide_style', true );
+            $caption_title     = spb_get_post_meta( $postID, 'ss_caption_title', true );
+            $caption_text      = spb_shortcode_content_filter( spb_get_post_meta( $postID, 'ss_caption_text', true ) );
+            $caption_x         = spb_get_post_meta( $postID, 'ss_caption_x', true );
+            $caption_y         = spb_get_post_meta( $postID, 'ss_caption_y', true );
+            $caption_size      = spb_get_post_meta( $postID, 'ss_caption_size', true );
+            $slide_link        = spb_get_post_meta( $postID, 'ss_slide_link', true );
+            $slide_link_url    = spb_get_post_meta( $postID, 'ss_slide_link_url', true );
 
             // Mobile Background align
             if ( $mobile_background_halign == "" ) {
@@ -220,7 +242,7 @@
                 break;
             }
             if ( $bg_mp4_url == "" ) {
-                $bg_mp4_url = sf_get_post_meta( $postID, 'ss_background_video_mp4_url', true );
+                $bg_mp4_url = spb_get_post_meta( $postID, 'ss_background_video_mp4_url', true );
             }
 
             // WEBM
@@ -230,7 +252,7 @@
                 break;
             }
             if ( $bg_webm_url == "" ) {
-                $bg_webm_url = sf_get_post_meta( $postID, 'ss_background_video_webm_url', true );
+                $bg_webm_url = spb_get_post_meta( $postID, 'ss_background_video_webm_url', true );
             }
 
             // OGG
@@ -240,7 +262,7 @@
                 break;
             }
             if ( $bg_ogg_url == "" ) {
-                $bg_ogg_url = sf_get_post_meta( $postID, 'ss_background_video_ogg_url', true );
+                $bg_ogg_url = spb_get_post_meta( $postID, 'ss_background_video_ogg_url', true );
             }
 
             // Get video size from .mp4 or .webm file
@@ -271,7 +293,7 @@
 
                 if ( ! empty( $bg_opacity ) && $bg_opacity > 0 ) {
                     $bg_opacity_d = $bg_opacity / 100; // Decimal value
-                    $bg_c         = sf_hex2rgb( $bg_color ); // RGB array
+                    $bg_c         = swiftslider_hex2rgb( $bg_color ); // RGB array
                     $bg_c         = $bg_c['red'] . "," . $bg_c['green'] . "," . $bg_c['blue']; // rgba string
                     $swift_slider_slide .= '<div class="overlay" style="-ms-filter: \'progid:DXImageTransform.Microsoft.Alpha(Opacity=' . $bg_opacity . ')\';filter: alpha(opacity=' . $bg_opacity . ');-moz-opacity: ' . $bg_opacity_d . ';-khtml-opacity: ' . $bg_opacity_d . ';opacity: ' . $bg_opacity_d . ';background-color: ' . $bg_color . ';"></div>';
                 }

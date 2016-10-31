@@ -34,11 +34,9 @@
             ), $atts ) );
             $output = '';
 
-            $width    = spb_translateColumnWidthToSpan( $width );
-            $el_class = $this->getExtraClass( $el_class );
-
-            $sidebar_config = sf_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
-
+            /* SIDEBAR CONFIG
+            ================================================== */
+            $sidebar_config = spb_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
             $sidebars = '';
             if ( ( $sidebar_config == "left-sidebar" ) || ( $sidebar_config == "right-sidebar" ) ) {
                 $sidebars = 'one-sidebar';
@@ -47,6 +45,17 @@
             } else {
                 $sidebars = 'no-sidebars';
             }
+
+            /* FULL WIDTH CONFIG
+            ================================================== */
+            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
+                $fullwidth = true;
+            } else {
+                $fullwidth = false;
+            }
+
+            $width    = spb_translateColumnWidthToSpan( $width );
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
 
             if ( $bg_color != "" ) {
                 $inline_style .= 'background-color:' . $bg_color . ';';
@@ -88,12 +97,8 @@
             $output .= '</div>';
             $output .= '</div> ' . $this->endBlockComment( '.spb-promo-wrap' ) . "\n";
 
-            if ( $fullwidth == "yes" && $sidebars == "no-sidebars" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
-
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
+            
             return $output;
         }
     }
@@ -260,6 +265,7 @@
                     __( 'Yes', 'swift-framework-plugin' ) => "yes",
                     __( 'No', 'swift-framework-plugin' )  => "no"
                 ),
+                "std" => "no",
                 "description" => __( "Select if you'd like the asset to be full width (edge to edge). NOTE: only possible on pages without sidebars.", 'swift-framework-plugin' )
             ),
             array(

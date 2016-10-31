@@ -97,21 +97,33 @@
             if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
                 return $post_id;
             }
-            $value = $this->post( 'spb_js_status' );
+            $value = $this->post( 'spb_status' );
+            $legacy_value = $this->post( 'spb_js_status' );
             if ( $value !== null ) {
-                //var_dump(sf_get_post_meta($post_id, '_spb_js_status'));
-                // Get the value
-                //var_dump($value);
-
                 // Add value
-                if ( sf_get_post_meta( $post_id, '_spb_js_status' ) == '' ) {
+                if ( spb_get_post_meta( $post_id, '_spb_status' ) == '' ) {
+                    add_post_meta( $post_id, '_spb_status', $value, true );
+                } // Update value
+                elseif ( $value != spb_get_post_meta( $post_id, '_spb_status', true ) ) {
+                    update_post_meta( $post_id, '_spb_status', $value );
+                } // Delete value
+                elseif ( $value == '' ) {
+                    delete_post_meta( $post_id, '_spb_status', spb_get_post_meta( $post_id, '_spb_status', true ) );
+                }
+                if ( $value != spb_get_post_meta( $post_id, '_spb_js_status', true ) ) {
+                    delete_post_meta( $post_id, '_spb_js_status' );
+                }
+            }
+            if ( $value !== null ) {
+                // Add value
+                if ( spb_get_post_meta( $post_id, '_spb_js_status' ) == '' ) {
                     add_post_meta( $post_id, '_spb_js_status', $value, true );
                 } // Update value
-                elseif ( $value != sf_get_post_meta( $post_id, '_spb_js_status', true ) ) {
+                elseif ( $value != spb_get_post_meta( $post_id, '_spb_js_status', true ) ) {
                     update_post_meta( $post_id, '_spb_js_status', $value );
                 } // Delete value
                 elseif ( $value == '' ) {
-                    delete_post_meta( $post_id, '_spb_js_status', sf_get_post_meta( $post_id, '_spb_js_status', true ) );
+                    delete_post_meta( $post_id, '_spb_js_status', spb_get_post_meta( $post_id, '_spb_js_status', true ) );
                 }
             }
         }
@@ -319,38 +331,30 @@
        ---------------------------------------------------------- */
         public function spb_save_pb_history() {
             
-            $element_name = $this->post( 'data_element' );
-
-            //Not being used. If everyting works fine in testing, remove this lines
-           // $element_type = $this->post( 'data_element_type' );
+            $element_name = $this->post( 'data_element' );        
             $type = $this->post( 'data_type' );
             $pb_content = $this->post( 'data_pb_content' );
             $pb_page_id = $this->post( 'data_page_id' );
-           
             $op_type = __( $type, 'swift-framework-plugin' );
-            
-            
-            if ( get_option( 'spb_history_'. $pb_page_id ) ){
-                $spb_history_array = get_option( 'spb_history_'. $pb_page_id);    
-            }else{
-                $spb_history_array = array();
-            }
+            $spb_history_array = get_post_meta( $pb_page_id, 'spb_history_' . $pb_page_id , true);
 
-            if(count($spb_history_array) >= 20) {
-                  array_shift($spb_history_array); 
-            } 
+            if ( $spb_history_array == '' ) :
+                 $spb_history_array = array();
+            endif;
+            
+            if ( count( $spb_history_array ) >= 20 ) : 
+                  array_shift( $spb_history_array ); 
+            endif;
 
             $spb_history_array[ date("Y-m-d H:i:s") . ' - ' . $op_type . ' '.$element_name] = $pb_content;
-            update_option( 'spb_history_'. $pb_page_id, $spb_history_array );
-
+            update_post_meta( $pb_page_id, 'spb_history_'. $pb_page_id, $spb_history_array); 
             $history_html = '<li><a href="#">Page Builder History</a></li><li class="divider"></li>';
-
-            $spb_history = get_option( 'spb_history_' . $pb_page_id);
+            $spb_history = get_post_meta( $pb_page_id, 'spb_history_' . $pb_page_id , true);
             $spb_history = array_reverse($spb_history);
 
-            foreach ($spb_history as $history_item => $value) {
+            foreach ($spb_history as $history_item => $value) :
                     $history_html .=  '<li><a href="#" data-revision-value="' .  esc_attr( $value ) . '"><span class="icon-undo"></span>' . $history_item . '</a></li>';
-            }
+            endforeach;
 
             echo  $history_html ;
             wp_die();

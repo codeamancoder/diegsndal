@@ -34,20 +34,12 @@
             ), $atts ) );
             $output = '';
 
-            /* SIDEBAR CONFIG
-            ================================================== */
-            global $sf_sidebar_config;
-
-            $sidebars = '';
-            if ( ( $sf_sidebar_config == "left-sidebar" ) || ( $sf_sidebar_config == "right-sidebar" ) ) {
-                $sidebars = 'one-sidebar';
-            } else if ( $sf_sidebar_config == "both-sidebars" ) {
-                $sidebars = 'both-sidebars';
-            } else {
-                $sidebars = 'no-sidebars';
+            // Enqueue scripts 
+            if ( $parallax_type == "image" || $parallax_image_movement == "stellar" ) {
+                wp_enqueue_script( 'parallax' );
             }
 
-            $el_class = $this->getExtraClass( $el_class );
+            $el_class = $this->getExtraClass( $el_class, true );
             $width    = spb_translateColumnWidthToSpan( $width );
 
             $img_url = wp_get_attachment_image_src( $bg_image, 'full' );
@@ -66,7 +58,7 @@
             } else {
                 if ( $img_url[0] != "" ) {
                     if ( $parallax_image_movement == "stellar" ) {
-                        $output .= "\n\t" . '<div class="spb_parallax_asset sf-parallax parallax-' . $parallax_image_height . ' parallax-' . $parallax_image_movement . ' spb_content_element bg-type-' . $bg_type . ' ' . $width . $el_class . '" style="background-image: url(' . $img_url[0] . ');" data-stellar-background-ratio="' . $parallax_image_speed . '" data-v-center="true">';
+                        $output .= "\n\t" . '<div class="spb_parallax_asset spb-row-parallax sf-parallax parallax-' . $parallax_image_height . ' parallax-' . $parallax_image_movement . ' spb_content_element bg-type-' . $bg_type . ' ' . $width . $el_class . '" data-parallax-speed="' . $parallax_image_speed . '" data-v-center="true">';
                     } else {
                         $output .= "\n\t" . '<div class="spb_parallax_asset sf-parallax parallax-' . $parallax_image_height . ' parallax-' . $parallax_image_movement . ' spb_content_element bg-type-' . $bg_type . ' ' . $width . $el_class . '" style="background-image: url(' . $img_url[0] . ');" data-v-center="true">';
                     }
@@ -93,16 +85,18 @@
                 $output .= '</video>';
                 $output .= '<div class="video-overlay overlay-' . $parallax_video_overlay . '"></div>';
             }
+
+            if ( $parallax_type == "image" && ($parallax_image_movement == "parallax" || $parallax_image_movement == "stellar") ) :
+                $parallax_layer_styles = array();
+                $parallax_layer_styles[] = 'background-image: url(' . $img_url[0] . ');';
+                $output .= '<div class="spb-row-parallax-layer-wrap">';
+                    $output .= '<div class="spb-row-parallax-layer" style="' . implode('', $parallax_layer_styles) . '"></div>';
+                $output .= '</div>';
+            endif;
+
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $sidebars == 'no-sidebars' ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
-
-            global $sf_include_parallax;
-            $sf_include_parallax = true;
+            $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
 
             return $output;
         }
@@ -115,6 +109,7 @@
         "icon"          => "icon-parallax",
         "wrapper_class" => "clearfix",
         "controls"      => "full",
+        "depreciated"   => true,
         "params"        => array(
             array(
                 "type"        => "textfield",
@@ -241,7 +236,11 @@
                 "type"        => "textfield",
                 "heading"     => __( "Parallax Image Speed (Stellar Only)", 'swift-framework-plugin' ),
                 "param_name"  => "parallax_image_speed",
-                "value"       => "0.5",
+                "value"       => array(
+                    __( "Standard", 'swift-framework-plugin' ) => "standard",
+                    __( "Fast", 'swift-framework-plugin' )     => "fast",
+                    __( "Slow", 'swift-framework-plugin' )     => "slow",
+                ),
                 "required"       => array("parallax_type", "=", "image"),
                 "description" => "The speed at which the parallax image moves in relation to the page scrolling. For example, 0.5 would mean the image scrolls at half the speed of the standard page scroll. (Default 0.5)."
             ),

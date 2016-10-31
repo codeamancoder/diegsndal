@@ -32,7 +32,15 @@
                 'el_class'    => ''
             ), $atts ) );
 
-            $el_class = $this->getExtraClass( $el_class );
+            /* FULL WIDTH CONFIG
+            ================================================== */
+            if ( $fullwidth == "yes" ) {
+                $fullwidth = true;
+            } else {
+                $fullwidth = false;
+            }
+
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
             $width    = spb_translateColumnWidthToSpan( $width );
 
             $output .= "\n\t" . '<div class="spb_swift-slider spb_content_element ' . $width . $el_class . '">';
@@ -41,12 +49,8 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth == "yes" && $width == "col-sm-12" ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
-
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
+            
             global $sf_has_swiftslider;
             $sf_has_swiftslider = true;
 
@@ -84,7 +88,7 @@
                 "heading"     => __( "Slide Count", 'swift-framework-plugin' ),
                 "param_name"  => "slidecount",
                 "value"       => "5",
-                "description" => __( "Set the number of slides to show. If blank then all will show.", 'swift-framework-plugin' )
+                "description" => __( "Set the number of slides to show. If you'd like to show all, then please set this to -1.", 'swift-framework-plugin' )
             ),
             array(
                 "type"        => "select-multiple",
@@ -163,6 +167,7 @@
                     __( 'No', 'swift-framework-plugin' )  => "no"
                 ),
                 "buttonset_on"  => "yes",
+                "std" => "no",
                 "description" => __( "Select if you'd like the slider to be full width (edge to edge). NOTE: only possible on pages without sidebars.", 'swift-framework-plugin' )
             ),
             array(

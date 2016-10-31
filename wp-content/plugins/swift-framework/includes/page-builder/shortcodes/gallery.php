@@ -37,9 +37,18 @@
             $search_icon = apply_filters( 'sf_search_icon' , '<i class="ss-search"></i>' );
             $view_icon_svg = apply_filters( 'sf_view_icon_svg' , '' );
 
+            
+            // Enqueue script
+            if ( $display_type == "masonry" ) {
+                wp_enqueue_script( 'isotope' );
+            } else if ( $display_type == "slider" ) {
+                wp_enqueue_script( 'lightSlider' );
+            }
+
+
             /* SIDEBAR CONFIG
             ================================================== */
-            $sidebar_config = sf_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
+            $sidebar_config = spb_get_post_meta( get_the_ID(), 'sf_sidebar_config', true );
 
             $sidebars = '';
             if ( ( $sidebar_config == "left-sidebar" ) || ( $sidebar_config == "right-sidebar" ) ) {
@@ -118,6 +127,10 @@
                         $gallery_image_size = $image_size;
                     }
 
+                    if ( $enable_lightbox == "yes" ) {
+                        $list_class .= ' ' . spb_lightbox_wrap_class();
+                    }
+
                     $gallery_images = rwmb_meta( 'sf_gallery_images', 'type=image&size=' . $gallery_image_size );
 
                     $masonry_gallery .= '<div class="masonry-gallery filterable-items ' . $list_class . '">' . "\n";
@@ -130,10 +143,18 @@
                         $masonry_gallery .= '<figure class="animated-overlay overlay-style">';
 
                         if ( $enable_lightbox == "yes" ) {
-                            $masonry_gallery .= '<a href="' . $image['full_url'] . '" class="lightbox" data-rel="ilightbox[' . $lightbox_id . ']" data-caption="' . $image['caption'] . '"></a>';
+                            $atts = array(
+                                'image_id'    => $image['ID'],
+                                'lightbox_id' => $lightbox_id,
+                                'caption'     => $image['caption'],
+                                'extra_class' => '',
+                                'is_slider'   => false
+                            );
+                            $link_config = spb_lightbox_link_config( $atts );
+                            $masonry_gallery .= '<a ' . $link_config . '></a>';
                         }
 
-                        $masonry_gallery .= '<img src="' . $image['url'] . '" width="' . $image['width'] . '" height="' . $image['height'] . '" alt="' . $image['alt'] . '" /></a>';
+                        $masonry_gallery .= '<img src="' . $image['url'] . '" width="' . $image['width'] . '" height="' . $image['height'] . '" alt="' . $image['alt'] . '" />';
 
                         if ( $show_captions == "yes" ) {
                             $masonry_gallery .= '<figcaption><div class="thumb-info">';
@@ -167,7 +188,12 @@
 
 						$gallery_images = rwmb_meta( 'sf_gallery_images', 'type=image&size=thumb-square' );
 
-						$main_slider .= '<div class="flexslider gallery-slider" data-transition="' . $slider_transition . '" data-autoplay="' . $autoplay . '" data-thumbs="'.$show_thumbs.'"><ul class="slides">' . "\n";
+                        $slider_class = 'flexslider gallery-slider';
+                        if ( $enable_lightbox == "yes" ) {
+                            $slider_class .= ' ' . spb_lightbox_wrap_class();
+                        }
+
+						$main_slider .= '<div class="' . $slider_class . '" data-transition="' . $slider_transition . '" data-autoplay="' . $autoplay . '" data-thumbs="'.$show_thumbs.'"><ul class="slides">' . "\n";
 
 	                    $lightbox_id = $gallery_id . '-' . rand();
 
@@ -179,9 +205,17 @@
 								$main_slider .= '<li>';
 							}
 
-	                        if ( $enable_lightbox == "yes" ) {
-	                            $main_slider .= "<a href='{$image['full_url']}' class='lightbox zoom' data-rel='ilightbox[galleryid-" . $lightbox_id ."]' data-caption='{$image['caption']}'><i class='fa-search-plus'></i></a>";
-	                        }
+                            if ( $enable_lightbox == "yes" ) {
+                                $atts = array(
+                                    'image_id'    => $image['ID'],
+                                    'lightbox_id' => $lightbox_id,
+                                    'caption'     => $image['caption'],
+                                    'extra_class' => 'zoom',
+                                    'is_slider'   => true
+                                );
+                                $link_config = spb_lightbox_link_config( $atts );
+                                $main_slider .= '<a ' . $link_config . '><i class="fa-search-plus"></i></a>';
+                            }
 
                             if ( isset($image['image_srcset']) ) {
                                 $main_slider .= $image['image_srcset'];
@@ -211,8 +245,16 @@
 
                             $main_slider .= "<li>";
 
-	                        if ( $enable_lightbox == "yes" ) {
-	                            $main_slider .= "<a href='{$image['full_url']}' class='lightbox' data-rel='ilightbox[galleryid-" . $lightbox_id ."]' data-caption='{$image['caption']}'>";
+                            if ( $enable_lightbox == "yes" ) {
+                                $atts = array(
+                                    'image_id'    => $image['ID'],
+                                    'lightbox_id' => $lightbox_id,
+                                    'caption'     => $image['caption'],
+                                    'extra_class' => 'zoom',
+                                    'is_slider'   => true
+                                );
+                                $link_config = spb_lightbox_link_config( $atts );
+                                $main_slider .= '<a ' . $link_config . '>';
                             }
 
                             if ( isset($image['image_srcset']) ) {
@@ -263,7 +305,7 @@
                 $fullwidth = false;
             }
             $width    = spb_translateColumnWidthToSpan( $width );
-            $el_class = $this->getExtraClass( $el_class );
+            $el_class = $this->getExtraClass( $el_class, $fullwidth );
 
             $output .= "\n\t" . '<div class="spb_gallery_widget gallery-' . $display_type . ' spb_content_element ' . $width . $el_class . '">';
             $output .= "\n\t\t" . '<div class="spb-asset-content">';
@@ -272,11 +314,7 @@
             $output .= "\n\t\t" . '</div>';
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
-            if ( $fullwidth ) {
-                $output = $this->startRow( $el_position, '', true ) . $output . $this->endRow( $el_position, '', true );
-            } else {
-                $output = $this->startRow( $el_position ) . $output . $this->endRow( $el_position );
-            }
+            $output = $this->startRow( $el_position, '', $fullwidth ) . $output . $this->endRow( $el_position, '', $fullwidth );
 
             global $sf_has_gallery;
             $sf_has_gallery = true;
@@ -289,18 +327,6 @@
     /* PARAMS
     ================================================== */
     $list_galleries = array();
-    $image_sizes = array(
-                __( "Full", 'swift-framework-plugin' )               => "full",
-                __( "Large", 'swift-framework-plugin' )              => "large",
-                __( "Medium", 'swift-framework-plugin' )             => "medium",
-                __( "Thumbnail", 'swift-framework-plugin' )          => "thumbnail",
-                __( "Small 4/3 Cropped", 'swift-framework-plugin' )  => "thumb-image",
-                __( "Medium 4/3 Cropped", 'swift-framework-plugin' ) => "thumb-image-twocol",
-                __( "Large 4/3 Cropped", 'swift-framework-plugin' )  => "thumb-image-onecol",
-                __( "Large 1/1 Cropped", 'swift-framework-plugin' )  => "large-square",
-            );
-
-    $image_sizes = apply_filters('sf_image_sizes', $image_sizes);
 
     if ( is_admin() ) {
         $list_galleries = array(
@@ -356,6 +382,7 @@
                 __( 'No', 'swift-framework-plugin' )  => "no"
             ),
             "buttonset_on"  => "yes",
+            "std" => "no",
             "description" => __( "Select if you'd like the asset to be full width (edge to edge). NOTE: only possible on pages without sidebars.", 'swift-framework-plugin' )
         ),
         array(
@@ -371,10 +398,11 @@
             "description" => __( "Select if you'd like spacing between the gallery items, or not.", 'swift-framework-plugin' )
         ),
         array(
-            "type"        => "dropdown",
+            "type"        => "dropdown-id",
             "heading"     => __( "Image Size Override", 'swift-framework-plugin' ),
             "param_name"  => "image_size",
-            "value"       => $image_sizes,
+            "value"       => spb_get_image_sizes(),
+            "std"         => 'full',
             "required"       => array("display_type", "=", "masonry"),
             "description" => __( "Override the source size for the images (NOTE: this doesn't affect it's size on the front-end, only the quality).", 'swift-framework-plugin' )
         ),
@@ -391,7 +419,7 @@
         ),
         array(
             "type"        => "buttonset",
-            "heading"     => __( "Show thumbnail navigation", 'swift-framework-plugin' ),
+            "heading"     => __( "Show thumbnail nav", 'swift-framework-plugin' ),
             "param_name"  => "show_thumbs",
             "value"       => array(
                 __( "Yes", 'swift-framework-plugin' ) => "yes",

@@ -1,18 +1,3 @@
-/*
- * Swiper 2.5.5
- * Mobile touch slider and framework with hardware accelerated transitions
- *
- * http://www.idangero.us/sliders/swiper/
- *
- * Copyright 2010-2014, Vladimir Kharlampidi
- * The iDangero.us
- * http://www.idangero.us/
- *
- * Licensed under GPL & MIT
- *
- * Released on: March 23, 2014
-*/
-
 /* --------------------------------------------
 	DEFAULT SWIPER STYLES
 -------------------------------------------- */
@@ -93,7 +78,7 @@
     opacity: 0;
 }
 .swift-slider[data-transition="fade"] .swiper-slide.swiper-slide-active {
-    opacity: 1
+    opacity: 1;
     z-index: 50;
 }
 
@@ -115,6 +100,7 @@
     -webkit-backface-visibility: hidden;
     z-index: 1;
     position: relative;
+    clear: both;
 }
 
 .swift-slider-outer.not-visible {
@@ -356,7 +342,7 @@
     background-image: url('../images/vo_horizontal_lines_light.png');
 }
 
-.swiper-slide .video-wrap .video-overlay.overlay-horizgdark {
+.swiper-slide .video-wrap .video-overlay.overlay-horizdark {
     background-image: url('../images/vo_horizontal_lines_dark.png');
 }
 
@@ -364,7 +350,7 @@
     background-image: url('../images/vo_vertical_lines_light.png');
 }
 
-.swiper-slide .video-wrap .video-overlay.overlay-vertzgdark {
+.swiper-slide .video-wrap .video-overlay.overlay-vertdark {
     background-image: url('../images/vo_vertical_lines_dark.png');
 }
 
@@ -395,14 +381,14 @@
 	CURTAIN SLIDER
 -------------------------------------------- */
 
-.swift-slider[data-type="curtain"] .swiper-wrapper {
+.swift-slider[data-slider-type="curtain"] .swiper-wrapper {
     -webkit-perspective: 1200px;
     -moz-perspective: 1200px;
     -ms-perspective: 1200px;
     perspective: 1200px;
 }
 
-.swift-slider[data-type="curtain"] .swiper-slide {
+.swift-slider[data-slider-type="curtain"] .swiper-slide {
     -webkit-transform-style: preserve-3d;
     -moz-transform-style: preserve-3d;
     -ms-transform-style: preserve-3d;
@@ -569,7 +555,7 @@ a.swift-slider-prev:hover, a.swift-slider-next:hover {
     transform: translateY(200%);
 }
 
-.swift-slider[data-type="curtain"] .swift-slider-pagination {
+.swift-slider[data-slider-type="curtain"] .swift-slider-pagination {
     bottom: auto;
     top: 50%;
     right: 20px;
@@ -577,22 +563,22 @@ a.swift-slider-prev:hover, a.swift-slider-next:hover {
     height: auto;
 }
 
-.swift-slider[data-type="curtain"] .swift-slider-pagination .dot {
+.swift-slider[data-slider-type="curtain"] .swift-slider-pagination .dot {
     display: block;
     margin: 15px 5px;
 }
 
-.swift-slider[data-type="curtain"] .swift-slider-pagination .dot:after {
+.swift-slider[data-slider-type="curtain"] .swift-slider-pagination .dot:after {
     -webkit-transform: translateX(-200%);
     transform: translateX(-200%);
 }
 
-.swift-slider[data-type="curtain"] .swift-slider-pagination .dot.active:after {
+.swift-slider[data-slider-type="curtain"] .swift-slider-pagination .dot.active:after {
     -webkit-transform: translateX(0%);
     transform: translateX(0%);
 }
 
-.swift-slider[data-type="curtain"] .swift-slider-pagination .dot.active span {
+.swift-slider[data-slider-type="curtain"] .swift-slider-pagination .dot.active span {
     -webkit-transform: translateX(200%);
     transform: translateX(200%);
 }
@@ -730,7 +716,7 @@ a.swift-slider-prev:hover, a.swift-slider-next:hover {
         bottom: 10px!important;
     }
 
-    .swift-slider[data-type="curtain"] .swift-slider-pagination {
+    .swift-slider[data-slider-type="curtain"] .swift-slider-pagination {
         bottom: auto!important;
     }
 

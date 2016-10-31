@@ -23,6 +23,135 @@
 		add_action('wp_head','spb_ajaxurl_global');
 	}
 
+    /* GET IMAGE SIZES
+    ================================================== */
+    if ( ! function_exists( 'spb_get_image_sizes' ) ) {
+        function spb_get_image_sizes() {
+            $image_sizes = array();
+            foreach ( get_intermediate_image_sizes() as $size_name ) {
+                $image_sizes[ $size_name ] = $size_name;
+            }
+            $image_sizes[ 'full' ] = 'full';
+            $image_sizes = apply_filters('spb_image_sizes', $image_sizes);
+            return $image_sizes;
+        }
+    }
+
+    /* COUNTDOWN SHORTCODE LOCALE
+    ================================================== */
+    if ( ! function_exists( 'sf_countdown_shortcode_locale' ) ) {
+        function sf_countdown_shortcode_locale() {
+            ?>
+            <div id="countdown-locale" data-label_year="<?php _e( 'Year', 'swift-framework-plugin' ); ?>"
+                 data-label_years="<?php _e( 'Years', 'swift-framework-plugin' ); ?>"
+                 data-label_month="<?php _e( 'Month', 'swift-framework-plugin' ); ?>"
+                 data-label_months="<?php _e( 'Months', 'swift-framework-plugin' ); ?>"
+                 data-label_weeks="<?php _e( 'Weeks', 'swift-framework-plugin' ); ?>"
+                 data-label_week="<?php _e( 'Week', 'swift-framework-plugin' ); ?>"
+                 data-label_days="<?php _e( 'Days', 'swift-framework-plugin' ); ?>"
+                 data-label_day="<?php _e( 'Day', 'swift-framework-plugin' ); ?>"
+                 data-label_hours="<?php _e( 'Hours', 'swift-framework-plugin' ); ?>"
+                 data-label_hour="<?php _e( 'Hour', 'swift-framework-plugin' ); ?>"
+                 data-label_mins="<?php _e( 'Mins', 'swift-framework-plugin' ); ?>"
+                 data-label_min="<?php _e( 'Min', 'swift-framework-plugin' ); ?>"
+                 data-label_secs="<?php _e( 'Secs', 'swift-framework-plugin' ); ?>"
+                 data-label_sec="<?php _e( 'Sec', 'swift-framework-plugin' ); ?>"></div>
+        <?php
+        }
+        add_action( 'wp_footer', 'sf_countdown_shortcode_locale' );
+    }
+
+
+    if ( ! function_exists( 'sf_get_embed_src' ) ) {
+        function sf_get_embed_src( $url ) {
+            if ( strpos( $url, 'youtube' ) ) {
+                preg_match( '/[\\?\\&]v=([^\\?\\&]+)/', $url, $video_id );
+                $youtube_params = apply_filters( 'sf_youtube_embed_src_params', '?autoplay=1' );
+                if ( is_ssl() ) {
+                    if ( isset( $video_id[1] ) ) {
+                        return 'https://www.youtube.com/embed/' . $video_id[1] . $youtube_params;
+                    }
+                } else {
+                    if ( isset( $video_id[1] ) ) {
+                        return 'http://www.youtube.com/embed/' . $video_id[1] . $youtube_params;
+                    }
+                }
+            } else {
+                $url          = str_replace( 'https://', 'http://', $url );
+                $video_id     = sf_get_vimeoid( $url );
+                $time_stamp = explode('#',$url);
+                $video_id  = (!empty($time_stamp[1]))?$video_id.'#'.$time_stamp[1]:$video_id;
+                $vimeo_params = apply_filters( 'sf_vimeo_embed_src_params', '?title=0&byline=0&portrait=0&autoplay=1' );
+                if ( is_ssl() ) {
+                    if ( $video_id != "" ) {
+                        return 'https://player.vimeo.com/video/' . $video_id . $vimeo_params;
+                    }
+                } else {
+                    if ( $video_id != "" ) {
+                        return 'http://player.vimeo.com/video/' . $video_id . $vimeo_params;
+                    }
+                }
+            }
+        }
+    }
+
+    /* LIGHTBOX WRAP CLASS
+    ================================================== */
+    if ( ! function_exists( 'spb_lightbox_wrap_class' ) ) {
+        function spb_lightbox_wrap_class() {
+            return apply_filters( 'spb_lightbox_wrap_class', '' );
+        }   
+    }
+
+
+    /* LIGHTBOX LINK CONFIG
+    ================================================== */
+    if ( ! function_exists( 'spb_lightbox_link_config' ) ) {
+        function spb_lightbox_link_config( $atts ) {
+            
+            // GET UPLOADS URL
+            $uploads = wp_upload_dir(); 
+
+            // IMAGE
+            $image = wp_get_attachment_metadata( $atts['image_id'] );
+
+            // CLASS
+            $link_class = 'lightbox';
+            if ( isset($atts['extra_class']) && $atts['extra_class'] != "" ) {
+                $link_class .= ' ' . $atts['extra_class'];
+            }
+            $link_class = apply_filters( 'spb_lightbox_link_class', $link_class );
+            if ( isset($atts['is_slider']) && $atts['is_slider'] ) {
+                $link_class .= ' is-slider-link';
+            }
+            $link_config = 'class="' . $link_class . '"';
+
+            // LIGHTBOX ID
+            if ( isset($atts['lightbox_id']) && $atts['lightbox_id'] != "" ) {
+                $link_config .= ' data-rel="ilightbox[' . $atts["lightbox_id"] . ']"';  
+            }
+
+            // CAPTION
+            if ( isset($atts['caption']) && $atts['caption'] != "" ) {
+                $link_config .= ' data-caption="' . $atts['caption'] . '"';   
+            }
+
+            // TITLE
+            if ( isset($atts['title']) && $atts['title'] != "" ) {
+                $link_config .= ' data-title="' . $atts['title'] . '" title="' . $atts['title'] . '"';   
+            }
+
+            // IMAGE HREF
+            if ( $image ) {
+                $url = esc_url( $uploads['baseurl'] . '/' . $image['file'] );
+                $link_config .= ' href="' . $url . '"';
+            }
+
+            // RETURN
+            return apply_filters( 'spb_lightbox_link_config', $link_config, $atts );
+        }   
+    }
+
 
     /* CONTAINER OVERLAY
     ================================================== */
@@ -67,17 +196,17 @@
 		            $query->the_post();
 
 		            $member_name     	= get_the_title();
-		            $member_position 	= sf_get_post_meta( $postID, 'sf_team_member_position', true );
-	                $custom_excerpt  	= sf_get_post_meta( $postID, 'sf_custom_excerpt', true );
-	                $member_email       = sf_get_post_meta( $postID, 'sf_team_member_email', true );
-				    $member_phone       = sf_get_post_meta( $postID, 'sf_team_member_phone_number', true );
-				    $member_twitter     = sf_get_post_meta( $postID, 'sf_team_member_twitter', true );
-				    $member_facebook    = sf_get_post_meta( $postID, 'sf_team_member_facebook', true );
-				    $member_linkedin    = sf_get_post_meta( $postID, 'sf_team_member_linkedin', true );
-				    $member_skype       = sf_get_post_meta( $postID, 'sf_team_member_skype', true );
-				    $member_google_plus = sf_get_post_meta( $postID, 'sf_team_member_google_plus', true );
-				    $member_instagram   = sf_get_post_meta( $postID, 'sf_team_member_instagram', true );
-				    $member_dribbble    = sf_get_post_meta( $postID, 'sf_team_member_dribbble', true );
+		            $member_position 	= spb_get_post_meta( $postID, 'sf_team_member_position', true );
+	                $custom_excerpt  	= spb_get_post_meta( $postID, 'sf_custom_excerpt', true );
+	                $member_email       = spb_get_post_meta( $postID, 'sf_team_member_email', true );
+				    $member_phone       = spb_get_post_meta( $postID, 'sf_team_member_phone_number', true );
+				    $member_twitter     = spb_get_post_meta( $postID, 'sf_team_member_twitter', true );
+				    $member_facebook    = spb_get_post_meta( $postID, 'sf_team_member_facebook', true );
+				    $member_linkedin    = spb_get_post_meta( $postID, 'sf_team_member_linkedin', true );
+				    $member_skype       = spb_get_post_meta( $postID, 'sf_team_member_skype', true );
+				    $member_google_plus = spb_get_post_meta( $postID, 'sf_team_member_google_plus', true );
+				    $member_instagram   = spb_get_post_meta( $postID, 'sf_team_member_instagram', true );
+				    $member_dribbble    = spb_get_post_meta( $postID, 'sf_team_member_dribbble', true );
 
 				    $unfiltered_content = str_replace( '<!--more-->', '', $query->post->post_content );
 					$filtered_content   = apply_filters( 'the_content', $unfiltered_content );
@@ -228,12 +357,12 @@
 
                 }
 
-                $pin_img_url      = wp_get_attachment_image_src( sf_get_post_meta( $result->ID, 'sf_directory_map_pin', true ), 'full' );
+                $pin_img_url      = wp_get_attachment_image_src( spb_get_post_meta( $result->ID, 'sf_directory_map_pin', true ), 'full' );
                 $img_src          = wp_get_attachment_image_src( get_post_thumbnail_id( $result->ID ), 'thumb-image' );
                 $pin_logo_url     = $pin_img_url[0];  
                 $pin_thumbnail    = $img_src[0];
-                $pin_link    = esc_url( sf_get_post_meta( $result->ID, 'sf_directory_pin_link', true ) );
-                $pin_link    = esc_url( sf_get_post_meta( $result->ID, 'sf_directory_pin_link', true ) );
+                $pin_link    = esc_url( spb_get_post_meta( $result->ID, 'sf_directory_pin_link', true ) );
+                $pin_link    = esc_url( spb_get_post_meta( $result->ID, 'sf_directory_pin_link', true ) );
 
                 $listing_output .= '<div class="directory-results container"><div class="directory-list-results">';
                 $listing_output .= '<div class="directory-item clearfix">';
@@ -279,8 +408,8 @@
         
             $categories     = wp_get_post_terms( $listing_id, "directory-category" );
             $locations      = wp_get_post_terms( $listing_id, "directory-location" );
-            $featured_image_url = wp_get_attachment_image_src( sf_get_post_meta($listing_id, '_thumbnail_id', true), 'medium' );          
-            $pin_image_url = wp_get_attachment_image_src( sf_get_post_meta($listing_id, 'sf_directory_map_pin', true), 'medium' );          
+            $featured_image_url = wp_get_attachment_image_src( spb_get_post_meta($listing_id, '_thumbnail_id', true), 'medium' );          
+            $pin_image_url = wp_get_attachment_image_src( spb_get_post_meta($listing_id, 'sf_directory_map_pin', true), 'medium' );          
 
             $listing_output .= '<div id="edit-modal-header"><h2>' .  __( "Edit", "swiftframework" ) .' ' . get_the_title( $listing_id ) . ' ' .  __( "Listing", "swiftframework" ) . '</h2><div class="edit_form_actions"><a href="#" class="cancel-listing-modal">Cancel</a><a href="#" class="save-listing-modal button-primary" data-listing-id="' . $listing_id . '">' . __( 'Save', 'swiftframework' ) . '</a></div></div>';
             $listing_output .=  '<div class="directory-submit-wrap">';    
@@ -336,16 +465,16 @@
 
             // Address 
             $listing_output .=  '<p><label for="sf_directory_address">' . __( "Address", "swiftframework" ) . '</label>';
-            $listing_output .=  '<input type="text" value="' . sf_get_post_meta( $listing_id, 'sf_directory_address', true ) . '" tabindex="5" size="16" name="sf_directory_address" id="sf_directory_address"/>';
+            $listing_output .=  '<input type="text" value="' . spb_get_post_meta( $listing_id, 'sf_directory_address', true ) . '" tabindex="5" size="16" name="sf_directory_address" id="sf_directory_address"/>';
             $listing_output .=  '<a href="#" id="sf_directory_calculate_coordinates" class="sf-button accent hide-if-no-js">' . __( "Generate Coordinates", "swiftframework" ) . '</a></p>';
             
             // Latitude Coordinate
             $listing_output .=  '<p><label for="sf_directory_lat_coord">' . __( "Latitude Coordinate", "swiftframework" ) . '</label>';
-            $listing_output .=  '<input type="text" value="' . sf_get_post_meta( $listing_id, 'sf_directory_lat_coord', true ) . '" tabindex="5" size="16" name="sf_directory_lat_coord" id="sf_directory_lat_coord"/></p>';
+            $listing_output .=  '<input type="text" value="' . spb_get_post_meta( $listing_id, 'sf_directory_lat_coord', true ) . '" tabindex="5" size="16" name="sf_directory_lat_coord" id="sf_directory_lat_coord"/></p>';
             
              // Longitude Coordinate
             $listing_output .=  '<p><label for="sf_directory_lng_coord">' . __( "Longitude Coordinate", "swiftframework" ) . '</label>';
-            $listing_output .=  '<input type="text" value="' . sf_get_post_meta( $listing_id, 'sf_directory_lng_coord', true ) . '" tabindex="5" size="16" name="sf_directory_lng_coord" id="sf_directory_lng_coord"/></p>';
+            $listing_output .=  '<input type="text" value="' . spb_get_post_meta( $listing_id, 'sf_directory_lng_coord', true ) . '" tabindex="5" size="16" name="sf_directory_lng_coord" id="sf_directory_lng_coord"/></p>';
             
             // Pin Image
             $listing_output .=  '<p><label for="file">' .  __( "Pin Image", "swiftframework" ) . '</label></p>';
@@ -359,11 +488,11 @@
             
             // Pin Link Button
             $listing_output .=  '<p><label for="sf_directory_pin_link">' . __( "Pin Link", "swiftframework" ) . '</label>';
-            $listing_output .=  '<input type="text" value="' . sf_get_post_meta( $listing_id, 'sf_directory_pin_link', true ) . '" tabindex="5" size="16" name="sf_directory_pin_link" id="sf_directory_pin_link"/></p>';
+            $listing_output .=  '<input type="text" value="' . spb_get_post_meta( $listing_id, 'sf_directory_pin_link', true ) . '" tabindex="5" size="16" name="sf_directory_pin_link" id="sf_directory_pin_link"/></p>';
             
              // Pin Button Text
             $listing_output .=  '<p><label for="sf_directory_pin_button_text">' . __( "Pin Button Text", "swiftframework" ) . '</label>';
-            $listing_output .=  '<input type="text" value="' . sf_get_post_meta( $listing_id, 'sf_directory_pin_button_text', true ) . '" tabindex="5" size="16" name="sf_directory_pin_button_text" id="sf_directory_pin_button_text"/></p>';
+            $listing_output .=  '<input type="text" value="' . spb_get_post_meta( $listing_id, 'sf_directory_pin_button_text', true ) . '" tabindex="5" size="16" name="sf_directory_pin_button_text" id="sf_directory_pin_button_text"/></p>';
  
             //Form Key 
             $listing_output .= '<input type="hidden" id="form_key" name="form_key" value="frontend_edit_listing">';

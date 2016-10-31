@@ -21,6 +21,8 @@
                 'el_class'         => ''
             ), $atts ) );
 
+            // Enqueue
+            wp_enqueue_script('google-maps');
 
             $current_user = wp_get_current_user();
             $users_listings_output = sf_directory_user_listings($current_user->ID);
@@ -30,7 +32,7 @@
 
             $output .= "\n\t" . '<div class="spb_directory_user_listings_widget directory-results user-listing-results ' . $width . $el_class . '"   data-ajax-url="' . admin_url('admin-ajax.php') . '" >';
             $output .= "\n\t\t" . '<div class="spb-asset-content spb_wrapper latest-tweets-wrap clearfix">';
-            $output .= "\n\t\t\t" . '<ul class="tweet-wrap">' . $users_listings_output . "</ul>";
+            $output .= "\n\t\t\t" . '<ul class="listings-wrap">' . $users_listings_output . "</ul>";
             $output .= "\n\t\t" . '</div> ' . $this->endBlockComment( '.spb_wrapper' );
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
@@ -93,6 +95,9 @@
             ), $atts ) );
             $output = '';
 
+            // Enqueue
+            wp_enqueue_script('google-maps');
+
             $current_url = home_url(add_query_arg(array(),$wp->request));
             $el_class = $this->getExtraClass( $el_class );
             $width    = spb_translateColumnWidthToSpan( $width );
@@ -112,9 +117,9 @@
             }
 
             if ( $fullscreen ) {
-                $output .= "\n\t" . '<div class="spb_gmaps_widget fullscreen-map spb_content_element '  .$width. $el_class . '">';
+                $output .= "\n\t" . '<div class="spb_directory_widget spb_gmaps_widget fullscreen-map spb_content_element '  .$width. $el_class . '">';
             } else {
-                $output .= "\n\t" . '<div class="spb_gmaps_widget spb_content_element ' .$width. $el_class . '">';
+                $output .= "\n\t" . '<div class="spb_directory_widget spb_gmaps_widget spb_content_element ' .$width. $el_class . '">';
             }
 
             $output .= "\n\t\t" . '<div class="spb-asset-content">';
