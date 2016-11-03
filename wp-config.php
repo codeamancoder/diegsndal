@@ -1,4 +1,5 @@
 <?php
+
 define('DB_NAME', 'srkn_diegsnd');
 define('DB_USER', 'srkn_diegsnd');
 define('DB_PASSWORD', 'Y3cLkRJs');
