@@ -19,6 +19,7 @@
                 'title'            => '',
                 'fullwidth'        => 'yes',
                 "item_count"       => '5',
+                "standard_columns" => '3',
                 "instagram"     => '',
                 "twitter_username" => '',
                 'el_position'      => '',
@@ -49,7 +50,13 @@
                 $item_class = "col-sm-sf-5";
                 $item_count = $item_count * 5;
             } else {
-                $item_count = $item_count * 3;
+                if ( $standard_columns == '5' ) {
+                    $item_class = "col-sm-sf-5";
+                    $item_count = $item_count * 5;
+                } else {
+                    $item_class = "col-sm-4";
+                    $item_count = $item_count * 3;
+                }
             }
 
             $tweet_count = $instagram_count = floor( $item_count / 2 );
@@ -137,6 +144,14 @@
                 "param_name"  => "item_count",
                 "value"       => apply_filters( 'sf_blog_grid_item_counts', array( "1", "2", "3", "4", "5" ) ),
                 "description" => __( "The number of grid rows to show.", 'swift-framework-plugin' )
+            ),
+            array(
+                "type"        => "dropdown",
+                "class"       => "",
+                "heading"     => __( "Standard Width Columns", 'swift-framework-plugin' ),
+                "param_name"  => "standard_columns",
+                "value"       => apply_filters( 'sf_blog_grid_standard_item_columns', array( "3", "5" ) ),
+                "description" => __( "The number of columns to show, when not using Full Width mode.", 'swift-framework-plugin' )
             ),
             array(
                 "type"        => "textfield",

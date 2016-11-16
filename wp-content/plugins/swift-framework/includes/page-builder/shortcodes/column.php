@@ -111,6 +111,7 @@
 
             if ( $col_bg_image != "" && $img_url[0] != "" ) {
                 if ( $col_parallax_image_movement == "stellar" ) {
+                    wp_enqueue_script( 'parallax' );
                     $parallax_layer_styles[] = 'background-image: url(' . $img_url[0] . ');';
                     $output .= "\n\t" . '<div class="spb-column-container spb-row-parallax spb_parallax_asset spb-parallax-stellar spb_content_element bg-type-' . $col_bg_type . ' ' . $width . ' ' . $col_res . ' '. $col_el_class . '" ' . $animation_output . ' style="' . $inline_style . '">';
                 } else {

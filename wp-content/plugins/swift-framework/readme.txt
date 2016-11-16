@@ -17,6 +17,14 @@ Supported Themes: Uplift, Atelier, Cardinal, JOYN
 
 == Changelog ==
 
+= 2.5.20 =
+* FRONTEND: Set table shortcode to run on sf_table namespace
+* FRONTEND: Fixed column parallax output
+* FRONTEND: Added option of 3 or 5 column output to social grid when not using full width mode
+* FRONTEND: Fixed window height parallax display issue
+* FRONTEND: Fixed minor styling issues
+* BACKEND: Fixed icon shortcode output
+
 = 2.5.19 =
 * FRONTEND: Fixed issue with parallax background positioning
 * FRONTEND: Fixed issue with background size on columns

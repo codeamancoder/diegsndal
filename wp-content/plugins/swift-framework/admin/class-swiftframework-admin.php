@@ -129,14 +129,15 @@ class SwiftFramework_Admin {
 				</ul>
 
 				<div class="divide"></div>
-				<h3>Latest Update (v2.5.19)</h3>
+				<h3>Latest Update (v2.5.20)</h3>
 				<p></p>
 				<ul>
-					<li>FRONTEND: Fixed issue with parallax background positioning</li>
-					<li>FRONTEND: Fixed issue with background size on columns</li>
-					<li>FRONTEND: Fixed charts animation issue</li>
-					<li>FRONTEND: Fixed issue with spacing on mobiles</li>
-					<li>FRONTEND: Fixed icon box icons colour issue</li>
+					<li>FRONTEND: Set table shortcode to run on sf_table namespace</li>
+					<li>FRONTEND: Fixed column parallax output</li>
+					<li>FRONTEND: Added option of 3 or 5 column output to social grid when not using full width mode</li>
+					<li>FRONTEND: Fixed window height parallax display issue</li>
+					<li>FRONTEND: Fixed minor styling issues</li>
+					<li>BACKEND: Fixed icon shortcode output</li>
 				</ul>
 				<div class="divide"></div>
 				<h3>Previous Update (v2.5.0)</h3>

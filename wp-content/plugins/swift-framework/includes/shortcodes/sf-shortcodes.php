@@ -642,6 +642,7 @@
 
         }
         add_shortcode( 'table', 'sf_table_wrap' );
+        add_shortcode( 'sf_table', 'sf_table_wrap' );
     }
 
     if ( !function_exists('sf_table_row') ) {

@@ -1,5 +1,5 @@
 <?php
-
+define('DISALLOW_FILE_EDIT', true);
 define('DB_NAME', 'srkn_diegsnd');
 define('DB_USER', 'srkn_diegsnd');
 define('DB_PASSWORD', 'Y3cLkRJs');
@@ -17,9 +17,10 @@ define('LOGGED_IN_SALT',   'RJX1<&&JYKD;)WK;6TjW!|0[W6}D~>KKSF0@mCO4MNhemqCO45sT
 define('NONCE_SALT',       '8p!jh3d8x!Gg3c>TRRHSo[R1#D8|a=UfZ6?q;5az[f83%b2*74lIPJK+hu76w7A.');
 
 
-$table_prefix  = 'wp_40265_';
+$table_prefix  = 'smcyg_';
 define('WPLANG', 'tr_TR');
 define('WP_DEBUG', false);
+
 
 if ( !defined('ABSPATH') )
 define('ABSPATH', dirname(__FILE__) . '/');

@@ -46,7 +46,6 @@
 		<?php wp_head(); ?>
 
 	<!--// CLOSE HEAD //-->
-
 </head>
 
 	<!--// OPEN BODY //-->

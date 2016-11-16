@@ -244,10 +244,10 @@ html.noscroll {
  	background-position: center;
     background-size: cover;
 }
-.spb-column-inner > .row {
+/*.spb-column-inner > .row {
 	margin-left: 0;
 	margin-right: 0;
-}
+}*/
 .no-flexbox .spb-row[data-col-equal-heights="true"] .spb-column-inner {
 	min-height: 100%;
 }
@@ -5007,6 +5007,7 @@ ul.jobs {
 }
 .spb_parallax_asset.parallax-window-height {
 	opacity: 0;
+	min-height: 100vh;
 }
 .spb_parallax_asset > .spb_content_wrapper, .spb_parallax_asset > .spb_content_element {
 	position: relative;
@@ -5016,6 +5017,8 @@ ul.jobs {
 }
 .spb_parallax_asset.parallax-window-height[data-v-center="true"] > .spb_content_wrapper, .spb_parallax_asset.parallax-window-height[data-v-center="true"] > .spb_content_element {
 	top: 50%;
+	position: absolute;
+	transform: translateY(-50%);
 }
 .sf-parallax-video > .spb_content_element {
 	position: relative;
