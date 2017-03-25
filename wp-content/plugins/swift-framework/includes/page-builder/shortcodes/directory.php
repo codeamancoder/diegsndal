@@ -13,7 +13,7 @@
 
         protected function content( $atts, $content = null ) {
 
-            $width = $el_class = $el_position = $output = '';
+            $width = $el_class = $el_position = $output = $users_listings_output = '';
 
             extract( shortcode_atts( array(
                 'el_position'      => '',
@@ -24,8 +24,10 @@
             // Enqueue
             wp_enqueue_script('google-maps');
 
-            $current_user = wp_get_current_user();
-            $users_listings_output = sf_directory_user_listings($current_user->ID);
+            if ( is_user_logged_in() ) {
+                $current_user = wp_get_current_user();
+                $users_listings_output = sf_directory_user_listings($current_user->ID);
+            }
 
             $el_class = $this->getExtraClass( $el_class );
             $width    = spb_translateColumnWidthToSpan( $width );

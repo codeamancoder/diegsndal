@@ -350,7 +350,7 @@
 
             /* FULL WIDTH CONFIG
             ================================================== */
-            if ( $fullwidth == "yes" ) {
+            if ( $fullwidth == "yes" && $width == "1/1" ) {
                 $fullwidth = true;
             } else {
                 $fullwidth = false;

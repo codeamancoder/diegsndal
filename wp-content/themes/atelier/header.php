@@ -51,6 +51,7 @@
 	<!--// OPEN BODY //-->
 	<body <?php body_class($page_class.' '.$extra_page_class); ?>>
 
+
 		<?php
 			/**
 			 * @hooked - sf_site_loading - 5

@@ -91,6 +91,12 @@
                 $items .= '<div class="portfolio-showcase-wrap"><ul class="portfolio-showcase-items clearfix" data-columns="' . $item_count . '">';
             }
 
+            if ( $alt_display) {
+                $items .= '<div itemscope class="clearfix carousel-item portfolio-item gallery-item left-holder">';
+                //$items .= 
+                $items .= '</div>';
+            }
+
             while ( $portfolio_items->have_posts() ) : $portfolio_items->the_post();
 
                 if ( $alt_display) {
@@ -185,6 +191,7 @@
 
             $view_all = "";
             $portfolio_page   = __( $sf_options['portfolio_page'], 'swift-framework-plugin' );
+            $portfolio_page = apply_filters('wpml_object_id', $portfolio_page, 'page', true);
             if ( $category_slug != "" && strpos($category_slug, ',') != true ) {
                 $has_button    = true;
                 $category_id   = get_cat_ID( $category_slug );

@@ -2,8 +2,8 @@
 Contributors: SwiftIdeas
 Tags: swift framework
 Requires at least: 3.6
-Tested up to: 4.6.1
-Stable tag: 4.6.1
+Tested up to: 4.7.2
+Stable tag: 4.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,6 +16,32 @@ The Swift Framework plugin provides the Custom Post Types, Swift Slider, and Swi
 Supported Themes: Uplift, Atelier, Cardinal, JOYN
 
 == Changelog ==
+
+= 2.5.31 =
+* BACKEND: Updated Redux Framework to fix cookie issue
+
+= 2.5.30 =
+* FRONTEND: Performance Improvements
+* FRONTEND: Mobile equal height column fix
+* FRONTEND: Fixed minor text issues
+* FRONTEND: Fixed swift slider curtain issues
+* FRONTEND: Fixed issue with rows on safari
+* FRONTEND: Translate pages in theme options using WPML filters instead of String
+translation.
+* BACKEND: Updated redux framework
+
+= 2.5.23 =
+* FRONTEND: Icon Box Character mode now supports 2 characters
+* FRONTEND: Minor fixes
+
+= 2.5.21 =
+* FRONTEND: Added testimonial image size filter
+* FRONTEND: Fixed row styling issues
+* FRONTEND: Fixed image caption output
+* FRONTEND: Fixed image banner output
+* BACKEND: Added author support for Portfolio
+* BACKEND: Fixed minor responsive issues
+* BACKEND: Fixed multi-select fields defaulting to first item
 
 = 2.5.20 =
 * FRONTEND: Set table shortcode to run on sf_table namespace

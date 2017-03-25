@@ -136,7 +136,7 @@
                 ),
                 'multiple' => false,
                 'std'      => 'light',
-                'desc'     => __( 'Choose light or dark styling for the caption, and controls.', 'swift-framework-plugin' )
+                'desc'     => __( 'Choose light or dark styling for the caption, and controls. NOTE: When you are using a naked header, this will change the logo to be light/dark to match the controls when the slider is visible.', 'swift-framework-plugin' )
             ),
             // SLIDE LINK
             array(

@@ -91,7 +91,8 @@
                         $testimonial_image     = get_post_thumbnail_id();
                         $testimonial_image_url = wp_get_attachment_url( $testimonial_image, 'full' );
                     }
-                    $testimonial_image = spb_image_resizer( $testimonial_image_url, 70, 70, true, false );
+                    $testimonial_size = apply_filters( 'spb_testimonial_image_size', 70 );
+                    $testimonial_image = spb_image_resizer( $testimonial_image_url, $testimonial_size, $testimonial_size, true, false );
 
                     // Testimonial Image
                     if ( $testimonial_image ) {

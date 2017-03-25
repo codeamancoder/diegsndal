@@ -3626,6 +3626,13 @@ li:hover .sf-close-image-bar{
 }*/
 .spb_image .el_name_holder, .spb_image_banner .el_name_holder, .spb_multilayer_parallax_layer .el_name_holder {
     margin-left: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 50%;
+}
+.spb_image .spb_element_wrapper .icon_holder, .spb_image_banner .spb_element_wrapper .icon_holder, .spb_multilayer_parallax_layer .spb_element_wrapper .icon_holder {
+    margin-right: 0;
 }
 .spb_sortable_container_dragging .spb_column_container{
     height: 0px;

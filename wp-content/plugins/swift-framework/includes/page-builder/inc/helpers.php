@@ -2,10 +2,10 @@
 
     /*
     *
-    *	Swift Page Builder - Helpers Class
-    *	------------------------------------------------
-    *	Swift Framework
-    * 	Copyright Swift Ideas 2016 - http://www.swiftideas.com
+    *   Swift Page Builder - Helpers Class
+    *   ------------------------------------------------
+    *   Swift Framework
+    *   Copyright Swift Ideas 2016 - http://www.swiftideas.com
     *
     */
 
@@ -459,8 +459,8 @@
         }
     }
 
-	/* ATTRIBUTE MAP
-	================================================== */
+    /* ATTRIBUTE MAP
+    ================================================== */
     function spb_map( $attributes ) {
         if ( ! isset( $attributes['base'] ) ) {
             trigger_error( "Wrong spb_map object. Base attribute is required", E_USER_ERROR );
@@ -470,8 +470,8 @@
     }
 
 
-	/* GET IMAGE BY SIZE
-	================================================== */
+    /* GET IMAGE BY SIZE
+    ================================================== */
     function spb_getImageBySize(
         $params = array(
             'post_id'    => null,
@@ -552,8 +552,8 @@
     }
 
 
-	/* GET COLUMN CONTROLS
-	================================================== */
+    /* GET COLUMN CONTROLS
+    ================================================== */
     function spb_getColumnControls( $width ) {
         switch ( $width ) {
 
@@ -765,63 +765,63 @@
     }
 
 
-	/* ANIMATIONS LIST
-	================================================== */
-	function spb_animations_list() {
+    /* ANIMATIONS LIST
+    ================================================== */
+    function spb_animations_list() {
 
-		if ( function_exists( 'sf_get_animations_list' ) ) {
+        if ( function_exists( 'sf_get_animations_list' ) ) {
 
-			return sf_get_animations_list(true);
+            return sf_get_animations_list(true);
 
-		} else {
+        } else {
 
-	        $array = array(
-	            __( "None", 'swift-framework-plugin' )              	=> "none",
-	            __( "Bounce", 'swift-framework-plugin' )            	=> "bounce",
-	            __( "Flash", 'swift-framework-plugin' )             	=> "flash",
-	            __( "Pulse", 'swift-framework-plugin' )             	=> "pulse",
-	            __( "Rubberband", 'swift-framework-plugin' )        	=> "rubberBand",
-	            __( "Shake", 'swift-framework-plugin' )             	=> "shake",
-	            __( "Swing", 'swift-framework-plugin' )             	=> "swing",
-	            __( "TaDa", 'swift-framework-plugin' )              	=> "tada",
-	            __( "Wobble", 'swift-framework-plugin' )            	=> "wobble",
-	            __( "Bounce In", 'swift-framework-plugin' )         	=> "bounceIn",
-	            __( "Bounce In Down", 'swift-framework-plugin' )     => "bounceInDown",
-	            __( "Bounce In Left", 'swift-framework-plugin' )     => "bounceInLeft",
-	            __( "Bounce In Right", 'swift-framework-plugin' )    => "bounceInRight",
-	            __( "Bounce In Up", 'swift-framework-plugin' )       => "bounceInUp",
-	            __( "Fade In", 'swift-framework-plugin' )            => "fadeIn",
-	            __( "Fade In Down", 'swift-framework-plugin' )       => "fadeInDown",
-	            __( "Fade In Down Big", 'swift-framework-plugin' )   => "fadeInDownBig",
-	            __( "Fade In Left", 'swift-framework-plugin' )       => "fadeInLeft",
-	            __( "Fade In Left Big", 'swift-framework-plugin' )   => "fadeInLeftBig",
-	            __( "Fade In Right", 'swift-framework-plugin' )      => "fadeInRight",
-	            __( "Fade In Right Big", 'swift-framework-plugin' )  => "fadeInRightBig",
-	            __( "Fade In Up", 'swift-framework-plugin' )         => "fadeInUp",
-	            __( "Fade In Up Big", 'swift-framework-plugin' )     => "fadeInUpBig",
-	            __( "Flip", 'swift-framework-plugin' )             	=> "flip",
-	            __( "Flip In X", 'swift-framework-plugin' )          => "flipInX",
-	            __( "Flip In Y", 'swift-framework-plugin' )          => "flipInY",
-	            __( "Lightspeed In", 'swift-framework-plugin' )      => "lightSpeedIn",
-	            __( "Rotate In", 'swift-framework-plugin' )          => "rotateIn",
-	            __( "Rotate In Down Left", 'swift-framework-plugin' ) => "rotateInDownLeft",
-	            __( "Rotate In Down Right", 'swift-framework-plugin' ) => "rotateInDownRight",
-	            __( "Rotate In Up Left", 'swift-framework-plugin' )  => "rotateInUpLeft",
-	            __( "Rotate In Up Right", 'swift-framework-plugin' ) => "rotateInUpRight",
-	            __( "Roll In", 'swift-framework-plugin' )            => "rollIn",
-	            __( "Zoom In", 'swift-framework-plugin' )            => "zoomIn",
-	            __( "Zoom In Down", 'swift-framework-plugin' )       => "zoomInDown",
-	            __( "Zoom In Left", 'swift-framework-plugin' )       => "zoomInLeft",
-	            __( "Zoom In Right", 'swift-framework-plugin' )      => "zoomInRight",
-	            __( "Zoom In Up", 'swift-framework-plugin' )         => "zoomInUp",
-	            __( "Slide In Down", 'swift-framework-plugin' )      => "slideInDown",
-	            __( "Slide In Left", 'swift-framework-plugin' )      => "slideInLeft",
-	            __( "Slide In Right", 'swift-framework-plugin' )     => "slideInRight",
-	            __( "Slide In Up", 'swift-framework-plugin' )        => "slideInUp",
-	        );
+            $array = array(
+                __( "None", 'swift-framework-plugin' )                  => "none",
+                __( "Bounce", 'swift-framework-plugin' )                => "bounce",
+                __( "Flash", 'swift-framework-plugin' )                 => "flash",
+                __( "Pulse", 'swift-framework-plugin' )                 => "pulse",
+                __( "Rubberband", 'swift-framework-plugin' )            => "rubberBand",
+                __( "Shake", 'swift-framework-plugin' )                 => "shake",
+                __( "Swing", 'swift-framework-plugin' )                 => "swing",
+                __( "TaDa", 'swift-framework-plugin' )                  => "tada",
+                __( "Wobble", 'swift-framework-plugin' )                => "wobble",
+                __( "Bounce In", 'swift-framework-plugin' )             => "bounceIn",
+                __( "Bounce In Down", 'swift-framework-plugin' )     => "bounceInDown",
+                __( "Bounce In Left", 'swift-framework-plugin' )     => "bounceInLeft",
+                __( "Bounce In Right", 'swift-framework-plugin' )    => "bounceInRight",
+                __( "Bounce In Up", 'swift-framework-plugin' )       => "bounceInUp",
+                __( "Fade In", 'swift-framework-plugin' )            => "fadeIn",
+                __( "Fade In Down", 'swift-framework-plugin' )       => "fadeInDown",
+                __( "Fade In Down Big", 'swift-framework-plugin' )   => "fadeInDownBig",
+                __( "Fade In Left", 'swift-framework-plugin' )       => "fadeInLeft",
+                __( "Fade In Left Big", 'swift-framework-plugin' )   => "fadeInLeftBig",
+                __( "Fade In Right", 'swift-framework-plugin' )      => "fadeInRight",
+                __( "Fade In Right Big", 'swift-framework-plugin' )  => "fadeInRightBig",
+                __( "Fade In Up", 'swift-framework-plugin' )         => "fadeInUp",
+                __( "Fade In Up Big", 'swift-framework-plugin' )     => "fadeInUpBig",
+                __( "Flip", 'swift-framework-plugin' )              => "flip",
+                __( "Flip In X", 'swift-framework-plugin' )          => "flipInX",
+                __( "Flip In Y", 'swift-framework-plugin' )          => "flipInY",
+                __( "Lightspeed In", 'swift-framework-plugin' )      => "lightSpeedIn",
+                __( "Rotate In", 'swift-framework-plugin' )          => "rotateIn",
+                __( "Rotate In Down Left", 'swift-framework-plugin' ) => "rotateInDownLeft",
+                __( "Rotate In Down Right", 'swift-framework-plugin' ) => "rotateInDownRight",
+                __( "Rotate In Up Left", 'swift-framework-plugin' )  => "rotateInUpLeft",
+                __( "Rotate In Up Right", 'swift-framework-plugin' ) => "rotateInUpRight",
+                __( "Roll In", 'swift-framework-plugin' )            => "rollIn",
+                __( "Zoom In", 'swift-framework-plugin' )            => "zoomIn",
+                __( "Zoom In Down", 'swift-framework-plugin' )       => "zoomInDown",
+                __( "Zoom In Left", 'swift-framework-plugin' )       => "zoomInLeft",
+                __( "Zoom In Right", 'swift-framework-plugin' )      => "zoomInRight",
+                __( "Zoom In Up", 'swift-framework-plugin' )         => "zoomInUp",
+                __( "Slide In Down", 'swift-framework-plugin' )      => "slideInDown",
+                __( "Slide In Left", 'swift-framework-plugin' )      => "slideInLeft",
+                __( "Slide In Right", 'swift-framework-plugin' )     => "slideInRight",
+                __( "Slide In Up", 'swift-framework-plugin' )        => "slideInUp",
+            );
 
             $array = apply_filters( 'spb_animations_list_array', $array );
-	        return $array;
+            return $array;
 
         }
     }
@@ -830,84 +830,84 @@
     ================================================== */
     function spb_responsive_vis_list() {
 
-	    $array = array(
-	    	__( 'Visible Globally', 'swift-framework-plugin' )          => "",
-		    __( 'Hidden on Desktop', 'swift-framework-plugin' )          => "hidden-lg_hidden-md",
-		    __( 'Hidden on Desktop', 'swift-framework-plugin' )          => "hidden-lg_hidden-md",
-		    __( 'Hidden on Tablet', 'swift-framework-plugin' )           => "hidden-sm",
-		    __( 'Hidden on Desktop + Tablet', 'swift-framework-plugin' ) => "hidden-lg_hidden-md_hidden-sm",
-		    __( 'Hidden on Desktop + Phone', 'swift-framework-plugin' )  => "hidden-lg_hidden-md_hidden-xs",
-		    __( 'Hidden on Tablet + Phone', 'swift-framework-plugin' )   => "hidden-xs_hidden-sm",
-		    __( 'Hidden on Phone', 'swift-framework-plugin' )            => "hidden-xs"
-		);
-		return $array;
+        $array = array(
+            __( 'Visible Globally', 'swift-framework-plugin' )          => "",
+            __( 'Hidden on Desktop', 'swift-framework-plugin' )          => "hidden-lg_hidden-md",
+            __( 'Hidden on Desktop', 'swift-framework-plugin' )          => "hidden-lg_hidden-md",
+            __( 'Hidden on Tablet', 'swift-framework-plugin' )           => "hidden-sm",
+            __( 'Hidden on Desktop + Tablet', 'swift-framework-plugin' ) => "hidden-lg_hidden-md_hidden-sm",
+            __( 'Hidden on Desktop + Phone', 'swift-framework-plugin' )  => "hidden-lg_hidden-md_hidden-xs",
+            __( 'Hidden on Tablet + Phone', 'swift-framework-plugin' )   => "hidden-xs_hidden-sm",
+            __( 'Hidden on Phone', 'swift-framework-plugin' )            => "hidden-xs"
+        );
+        return $array;
 
-	}
+    }
 
-	/* CAROUSEL ARROW OUTPUT
-	================================================== */
-	if ( ! function_exists( 'spb_carousel_arrows' ) ) {
-		function spb_carousel_arrows( $nowrap = false ) {
+    /* CAROUSEL ARROW OUTPUT
+    ================================================== */
+    if ( ! function_exists( 'spb_carousel_arrows' ) ) {
+        function spb_carousel_arrows( $nowrap = false ) {
             $carousel_arrows = "";
             if ( $nowrap ) {
                 $carousel_arrows = apply_filters('spb_carousel_arrows_nowrap_html', '<a href="#" class="carousel-prev"><i class="ss-navigateleft"></i></a><a href="#" class="carousel-next"><i class="ss-navigateright"></i></a>');
             } else {
                 $carousel_arrows = apply_filters('spb_carousel_arrows_html', '<div class="carousel-arrows"><a href="#" class="carousel-prev"><i class="ss-navigateleft"></i></a><a href="#" class="carousel-next"><i class="ss-navigateright"></i></a></div>');
             }
-			return $carousel_arrows;
+            return $carousel_arrows;
 
-		}
-	}
+        }
+    }
 
-	/* GET POST TYPES
-	================================================== */
-	if ( ! function_exists( 'spb_get_post_types' ) ) {
-		function spb_get_post_types() {
-			$args       = array(
-			    'public' => true
-			);
-		    $post_types = get_post_types($args);
-		    array_unshift($post_types, "");
+    /* GET POST TYPES
+    ================================================== */
+    if ( ! function_exists( 'spb_get_post_types' ) ) {
+        function spb_get_post_types() {
+            $args       = array(
+                'public' => true
+            );
+            $post_types = get_post_types($args);
+            array_unshift($post_types, "");
 
-		    // Unset specfic results
-		    unset($post_types['attachment']);
-		    unset($post_types['spb-section']);
-		    unset($post_types['swift-slider']);
+            // Unset specfic results
+            unset($post_types['attachment']);
+            unset($post_types['spb-section']);
+            unset($post_types['swift-slider']);
 
-		    return $post_types;
-		}
-	}
+            return $post_types;
+        }
+    }
 
-	/* GET PRODUCTS
-	================================================== */
-	if ( ! function_exists( 'spb_get_products' ) ) {
-		function spb_get_products() {
+    /* GET PRODUCTS
+    ================================================== */
+    if ( ! function_exists( 'spb_get_products' ) ) {
+        function spb_get_products() {
 
-			if ( !is_admin() ) {
-				return;
-			}
+            if ( !is_admin() ) {
+                return;
+            }
 
-		    $attr = array(
-		    	'post_type'       => array( 'product', 'product_variation' ),
+            $attr = array(
+                'post_type'       => array( 'product', 'product_variation' ),
                 'fields'          => 'ids',
-		    	"orderby"		   => "name",
-		    	"order"			   => "asc",
-		    	'posts_per_page'   => -1
-		    );
-		    $results = get_posts($attr);
-			$products_array = array();
+                "orderby"          => "name",
+                "order"            => "asc",
+                'posts_per_page'   => -1
+            );
+            $results = get_posts($attr);
+            $products_array = array();
 
-			$products_array[] = "";
-		    foreach ($results as $id) {
+            $products_array[] = "";
+            foreach ($results as $id) {
                 $title = get_the_title($id);
-		    	$products_array[$id] = $title;
-		    }
+                $products_array[$id] = $title;
+            }
 
             wp_cache_flush();
 
-		    return $products_array;
-		}
-	}
+            return $products_array;
+        }
+    }
 
     /* GET THEME NAME
     ================================================== */
@@ -917,15 +917,18 @@
         }
     }
     
-	/* GET PRODUCT CATEGORIES
-	================================================== */
+    /* GET PRODUCT CATEGORIES
+    ================================================== */
     if ( ! function_exists( 'spb_get_product_categories' ) ) {
         function spb_get_product_categories() {
  
             $get_category  = get_categories( array( 'taxonomy' => 'product_cat' ) );
-            //$get_category  = get_categories( array( 'taxonomy' => $category_name ) );
-             //$category_list = array( '0' => '' );
+           
             $category_list = array();
+            
+            //dummy empty value
+            $category_list[''] = "";
+
             foreach ( $get_category as $category ) {
                   $category_list[$category->slug] = $category->cat_name ;
             }
@@ -1639,8 +1642,8 @@
         }
     }
 
-	/* FORMAT CONTENT
-	================================================== */
+    /* FORMAT CONTENT
+    ================================================== */
     function spb_format_content( $content ) {
         $content = do_shortcode( shortcode_unautop( $content ) );
         $content = preg_replace( '#^<\/p>|^<br \/>|<p>$#', '', $content );
@@ -1678,11 +1681,11 @@
             if ( $thumb_src ) {
                 $thumb_src = $thumb_src[0];
                 $output .= '
-				<li class="added">
-					<img rel="' . $th_id . '" src="' . $thumb_src . '" />
-					<span class="img-added">' . __( 'Added', 'swift-framework-plugin' ) . '</span>
-					<div class="sf-close-image-bar"><a title="Deselect" class="sf-close-delete-file" href="#">&times;</a>	</div>
-				</li>';
+                <li class="added">
+                    <img rel="' . $th_id . '" src="' . $thumb_src . '" />
+                    <span class="img-added">' . __( 'Added', 'swift-framework-plugin' ) . '</span>
+                    <div class="sf-close-image-bar"><a title="Deselect" class="sf-close-delete-file" href="#">&times;</a>   </div>
+                </li>';
             }
         }
         if ( $output != '' ) {

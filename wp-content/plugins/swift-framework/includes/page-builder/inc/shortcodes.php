@@ -499,7 +499,7 @@
                     , $atts ) );
  
                 $output .= '<div class="spb_edit_form_elements">';
-                $output .= '<div class="spb-edit-modal-inner">';
+                $output .= '<div class="spb-edit-modal-inner testing">';
                 $output .= '<div id="edit-modal-header">';
                 $output .= '<h2>' . __( 'Edit', 'swift-framework-plugin' ) . ' ' . __( $this->settings['name'], 'swift-framework-plugin' ) . '</h2>';
                 $output .= '<div class="edit_form_actions"><a href="#" class="spb_save_edit_form button-primary">' . __( 'Save', 'swift-framework-plugin' ) . '</a></div>';
@@ -509,6 +509,7 @@
                     $param_value = isset( ${$param['param_name']} ) ? ${$param['param_name']} : null;
 
                     if ( is_array( $param_value ) ) {
+                           
                         // Get first element from the array
                         reset( $param_value );
                         $first_key   = key( $param_value );
@@ -516,6 +517,8 @@
 
                     }
 
+
+                
                     $output .= $this->singleParamEditHolder( $param, $param_value );
                 }
 
@@ -529,6 +532,7 @@
         protected function singleParamEditHolder( $param, $param_value ) {
             $output = '';
             $field_visibility = '';
+
             
             $row_el_class = '';
 
@@ -536,7 +540,7 @@
                 $row_el_class = 'lb_buttonset';
             }
 
-            if ( $param['depreciated'] ) {
+            if ( isset($param['depreciated']) && $param['depreciated'] ) {
                 $row_el_class .= ' spb-depreciated';
             }
 
@@ -1029,7 +1033,7 @@
                    
                     
                 }
-                $param_line .= '</select></div>';
+                $param_line .= '</select></div>'; 
             } // Multi (id) - select 
             else if ( $param['type'] == 'select-multiple-id' ) {
                    $param_line .= '<div class="input-field col s12 m6 spb_param_value dropdown" ><select multiple name="' . $param['param_name'] . '" class=" spb-select ' . $param['param_name'] . ' ' . $param['type'] . '" type="hidden" value="" name="" multiple>';
@@ -1038,6 +1042,7 @@
                 $selected_values = explode( ",", $param_value );
                 
                 $selected_values = array_map('ltrim', $selected_values);
+    
 
                 foreach ( $param['value'] as $val => $text_val ) {
 
@@ -1049,8 +1054,9 @@
                         $selected = ' selected="selected"';
                     }
                     
-                    
-                    $param_line .= '<option id="' . $val . '" value="' . $val . '"' . $selected . '>' . $text_val . '</option>';
+                    if ( $text_val != "" ) {
+                        $param_line .= '<option id="' . $val . '" value="' . $val . '"' . $selected . '>' . $text_val . '</option>';
+                    }
                     
                 }
                 $param_line .= '</select></div>';
@@ -1236,7 +1242,7 @@
             $param_line .= '<div class="row"><div class="input-field col s12 plan_link_target"> <select id="select_link_target_' . $i . '"><option value="_self" ' . $selected_self . '>' . __('Same Window', 'swift-framework-plugin' ) . '</option><option value="_blank" ' . $selected_blank . '>' . __('New Window', 'swift-framework-plugin' ) . '</option></select><label for="select_link_target_' . $i . '">'  . __('Link Target', 'swift-framework-plugin' ) . '</label></div></div>';
 
             // Extra Class
-            $param_line .= '<div class="row"><div class="input-field col s12"><input name="plan_extra_class_' . $i . '" id="plan_extra_class_' . $i . '" class="textfield validate active plan_extra_class" type="text" value="" /><label for="plan_extra_class_' . $i . '">'  . __('Extra Class', 'swift-framework-plugin' ) . '</label></div></div>';
+            $param_line .= '<div class="row"><div class="input-field col s12"><input name="plan_extra_class_' . $i . '" id="plan_extra_class_' . $i . '" class="textfield validate active plan_extra_class" type="text" value="'. $el_class .'" /><label for="plan_extra_class_' . $i . '">'  . __('Extra Class', 'swift-framework-plugin' ) . '</label></div></div>';
             
             //HTML End 
             $param_line .= '</div>';
@@ -1324,6 +1330,8 @@
                         $first_key   = key( $param_value );
                         $param_value = $param_value[ $first_key ];
                     }
+                    
+                  
                     
                     if ( $param['type'] == "section_tab" ) {
                          

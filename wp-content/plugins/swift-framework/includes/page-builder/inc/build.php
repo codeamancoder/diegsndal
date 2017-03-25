@@ -178,7 +178,7 @@
 
         public function spb_scripts() {
   
-            $enable_min_scripts = false;
+            $enable_min_scripts = true;
 
             // Styles
             wp_enqueue_style( 'materialize-components-css' );                

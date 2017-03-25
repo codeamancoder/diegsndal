@@ -1,20 +1,23 @@
-﻿=== WooCommerce Currency Switcher ===
+=== WooCommerce Currency Switcher ===
 Contributors: RealMag777
-Donate link: http://codecanyon.net/item/woocommerce-currency-switcher/8085217?ref=realmag777
+Donate link: http://currency-switcher.com/a/buy
 Tags: woocommerce currency switcher, currencies, currencies switcher, currency switcher, woocommerce switcher, currency converter, currency, shortcode, switcher, woocommerce
 Requires at least: 3.8.0
-Tested up to: 4.5.3
-Stable tag: 1.1.7
+Tested up to: 4.7.2
+Stable tag: 1.1.8
 
-WooCommerce Currency Switcher – is the plugin that allows you to switch to different currencies and get their rates converted in the real time!
+WooCommerce Currency Switcher – is a WordPress plugin that allows to switch products prices and get their rates converted in the real time!
 
 == Description ==
 
-WooCommerce Currency Switcher – is a plugin that allows you to switch to different currencies and get their rates converted in the real time – a must have plugin for your WooCommerce powered online store!
-Currency Switcher is available as with shortcode [woocs] and with the widget.
-Plus it is possible to show on the front: currency converter and currencies rates widget/shortcode as here (in sidebar) http://demo.currency-switcher.com/
+**WooCommerce Currency Switcher** – is a plugin that allows your site customers/visitors switch currencies on your woocommerce store and get their rates converted in the real time – a must have plugin for your WooCommerce powered online store!
 
-Read more here: http://currency-switcher.com/
+Currency Switcher is available as with shortcode **[woocs]** so with the widget.
+
+Plus it is possible to show on the front 2 additional widgets: currency converter and currencies rates widget/shortcode as here (in sidebar) http://demo.currency-switcher.com/
+
+
+More info is here: http://currency-switcher.com/
 
 
 
@@ -25,14 +28,17 @@ Read more here: http://currency-switcher.com/
 * 5 kinds of selectors with flags + flag mode
 * 2 more additional AJAXED shortcodes: [woocs_rates exclude="" precision=2] & [woocs_converter exclude="" precision=2]
 * Currency can be changed automatically according to visitor's IP using woo WC_Geolocation PHP class
+* **Individual GeoIP rules for each product**
+* **Individual fixed prices rules for each product**
+* **Checkout by GeoIP rules**
 * 4 currencies aggregators
-* The customer allowed to pay in the selected currency
+* **The customer allowed to pay in the selected currency (optionally)**
 * WooCommerce native PayPal gate ready!
 * Ability to set new order currency which were created through admin panel by hands
 * Ability recount order from any currency to basic currency in multiple mode of the plugin
 * Easy to use for administrators and shop customers
 * Compatible with WooCommerce 2.4.x and higher
-* Compatible with WooCommerce Extra Product Options => http://codecanyon.net/item/woocommerce-extra-product-options/7908619?ref=realmag777
+* Compatible with WooCommerce Extra Product Options => http://codecanyon.net/item/woocommerce-extra-product-options/7908619?ref=realmaker777
 * Compatible with – WooCommerce Stripe Gateway by woothemes
 * Compatible with – PayPal for WooCommerce by angelleye
 * Compatible with – WooCommerce PDF Invoices & Packing Slips
@@ -40,11 +46,20 @@ Read more here: http://currency-switcher.com/
 * 90% compatibility with different payment gates in 'multiple allowed' mode, just try it!
 
 
-Look more here please: http://codecanyon.net/item/woocommerce-currency-switcher/8085217?ref=realmag777
+Premium version of the plugin: http://currency-switcher.com/a/buy
+
+Difference between FREE version of the plugin and PREMIUM - count of currencies, in free just 2 and unlimited in the premium version of the plugin.
 
 https://www.youtube.com/watch?v=wUoM9EHjnYs
 
-DO YOU NEED SEARCHING PRODUCTS FILTER FOR WOOCOMMERCE? LOOK IT HERE PLEASE: https://wordpress.org/plugins/woocommerce-products-filter/
+
+**DO YOU NEED PRODUCTS FILTERING IN YOUR WOOCOMMERCE STORE? LOOK IT HERE PLEASE**: https://wordpress.org/plugins/woocommerce-products-filter/
+
+
+### Video tutorials:
+http://currency-switcher.com/video-tutorials/
+
+
 
 == Installation ==
 * Download to your plugin directory or simply install via Wordpress admin interface.
@@ -60,16 +75,24 @@ R: http://demo.currency-switcher.com/
 Q: Documentation?
 R: http://currency-switcher.com/codex/
 
+Q: Videos?
+R: http://currency-switcher.com/video-tutorials/
+
 Q: More FAQ?
 R: http://currency-switcher.com/category/faq/
 
 
 == Screenshots ==
-1. Currencies back panel
-2. Options back panel
-3. GeoLocation rules in the back panel
+1. Currencies options
+2. Options
+3. Advanced options
+4. GeoLocation rules in the back panel
 
 == Changelog ==
+
+= 1.1.8 =
+* http://currency-switcher.com/update-v-2-1-8-and-v-1-1-8/
+* previous v.1.1.7 is here: http://currency-switcher.com/wp-content/uploads/2016/12/woocommerce-currency-switcher-117.zip
 
 = 1.1.7 =
 * Heap of small bugs fixed
@@ -178,5 +201,5 @@ WARRANTY. See the GNU General Public License for more details.
 
 
 == Upgrade Notice ==
-Look here for ADVANCED version of the plugin: http://codecanyon.net/item/woocommerce-currency-switcher/8085217?ref=realmag777
+Look here for ADVANCED version of the plugin: http://currency-switcher.com/a/buy
 

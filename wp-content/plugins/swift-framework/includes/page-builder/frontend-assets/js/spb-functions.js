@@ -13,6 +13,10 @@ var SPB = SPB || {};
  	SPB.general = {
  		init: function() {
 
+ 			if ( detectIE() ) {
+ 				jQuery('html').removeClass('flexbox');
+ 			}
+
  			// Check Element Titles
  			SPB.general.checkElemTitle();
 
@@ -110,9 +114,9 @@ var SPB = SPB || {};
  				// Set vars
 				spbFwElem.element = element;
 				spbFwElem.isFullWidth = true;
- 				if ( element.parents('.spb-row').length > 0 ) {
- 				spbFwElem.isFullWidth = false;
- 				}
+ 				// if ( element.parents('.spb-row').length > 0 ) {
+ 				// spbFwElem.isFullWidth = false;
+ 				// }
  				if ( spbFwElem.isFullWidth ) {
  					element.parent().addClass('has-fw-elements');
  				}
@@ -144,6 +148,9 @@ var SPB = SPB || {};
 			});
 			
 			SPB.var.window.on("throttledresize", function() {
+				if ( SPB.var.resizeTrigger ) {
+					return;
+				}
 				jQuery.each(fullWidthElements, function(index, elem ) {
 					if ( elem.isFullWidth ) {
 						SPB.general.fullWidthRow( elem.element, false, true );
@@ -228,6 +235,9 @@ var SPB = SPB || {};
 
  			// On window resize, run necessary functions
 			SPB.var.window.on("throttledresize", function() {
+				if ( SPB.var.resizeTrigger ) {
+					return;
+				}
 				jQuery.each(SPB.var.pageRows, function(index, row) {
 					if ( row.isParallax ) {
  						SPB.general.parallaxRowResize( row.element );
@@ -329,14 +339,14 @@ var SPB = SPB || {};
                 marginRight = parseInt( row.css("margin-right"), 10 ),
                 offset = Math.floor( 0 - sizerOffset - marginLeft ),
                 width = Math.floor( SPB.var.window.width() );
-            
+
             if ( SPB.var.body.hasClass('layout-boxed') ) {
             	width = Math.ceil( jQuery('#container').width() );
             	offset = offset + jQuery('#container').offset().left;
             } else if ( SPB.var.body.hasClass('vertical-header') ) {
             	width = Math.ceil( jQuery('#main-container').width() );
             	offset = offset + jQuery('#main-container').offset().left;
-            } else if ( SPB.var.body.hasClass('hero-content-split') ) {
+            } else if ( SPB.var.body.hasClass('hero-content-split') || SPB.var.body.hasClass('boxed-inner-page') ) {
             	width = Math.ceil( jQuery('.inner-page-wrap').parent().outerWidth() );
             	offset = offset + jQuery('.inner-page-wrap').parent().offset().left;
             }
@@ -371,6 +381,15 @@ var SPB = SPB || {};
             // Unhide row
             element.css('opacity', 1).css('visibility', 'visible');
             row.removeClass("spb-hidden");
+
+            setTimeout(function() {
+            	SPB.var.resizeTrigger = true;
+            	SPB.var.window.trigger('resize'); 	
+            }, 200);
+
+           	setTimeout(function() {
+            	SPB.var.resizeTrigger = false;
+            }, 220);
         },
         resizeVideoRow: function( element ) {
         	if ( element.find('video').length === 0 ) {
@@ -1124,6 +1143,7 @@ var SPB = SPB || {};
 	SPB.var.isScrolling = false;
 	SPB.var.offset = 0;
 	SPB.var.wpadminbarheight = 32;
+	SPB.var.resizeTrigger = false;
 
 	SPB.var.pageRows = [];
 
@@ -1203,6 +1223,36 @@ var SPB = SPB || {};
 	jQuery(window).load(SPB.onLoad.init);
 
 })(jQuery);
+
+/**
+ * detect IE
+ * returns version of IE or false, if browser is not Internet Explorer
+ */
+function detectIE() {
+  var ua = window.navigator.userAgent;
+
+  var msie = ua.indexOf('MSIE ');
+  if (msie > 0) {
+    // IE 10 or older => return version number
+    return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+  }
+
+  var trident = ua.indexOf('Trident/');
+  if (trident > 0) {
+    // IE 11 => return version number
+    var rv = ua.indexOf('rv:');
+    return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+  }
+
+  var edge = ua.indexOf('Edge/');
+  if (edge > 0) {
+    // Edge (IE 12+) => return version number
+    return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+  }
+
+  // other browser
+  return false;
+}
 
 /////////////////////////////////////////////
 // THROTTLED RESIZE

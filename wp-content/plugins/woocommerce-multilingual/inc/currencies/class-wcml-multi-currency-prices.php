@@ -24,9 +24,9 @@ class WCML_Multi_Currency_Prices{
             // Currency and Amount filters
             add_filter('woocommerce_currency', array($this, 'currency_filter'));
 
-        add_filter( 'wcml_price_currency', array($this, 'price_currency_filter') );      // WCML filters
-        add_filter( 'wcml_raw_price_amount', array($this, 'raw_price_filter'), 10, 2 );  // WCML filters
-        add_filter( 'wcml_product_price_by_currency', array($this, 'get_product_price_in_currency'), 10, 2 );  // WCML filters
+            add_filter( 'wcml_price_currency', array($this, 'price_currency_filter') );      // WCML filters
+            add_filter( 'wcml_raw_price_amount', array($this, 'raw_price_filter'), 10, 2 );  // WCML filters
+            add_filter( 'wcml_product_price_by_currency', array($this, 'get_product_price_in_currency'), 10, 2 );  // WCML filters
 
             add_filter('get_post_metadata', array($this, 'product_price_filter'), 10, 4);
             add_filter('get_post_metadata', array($this, 'variation_prices_filter'), 12, 4); // second
@@ -109,7 +109,11 @@ class WCML_Multi_Currency_Prices{
 
     }
 
-    public function get_product_price_in_currency( $product_id, $currency ){
+    public function get_product_price_in_currency( $product_id, $currency = false ){
+
+        if( !$currency ){
+            $currency = $this->multi_currency->get_client_currency();
+        }
 
         remove_filter( 'get_post_metadata', array( $this->woocommerce_wpml->multi_currency->prices, 'product_price_filter' ), 10, 4 );
 
@@ -181,7 +185,6 @@ class WCML_Multi_Currency_Prices{
 
         }
 
-
         return !empty($price) ? $price : $null;
     }
 
@@ -239,7 +242,7 @@ class WCML_Multi_Currency_Prices{
                 $amount = $amount * $exchange_rates[$currency];
 
                 // exception - currencies_without_cents
-                if(in_array($currency, $this->multi_currency->currencies_without_cents)){
+                if(in_array($currency, $this->multi_currency->get_currencies_without_cents())){
 
                     if(version_compare(PHP_VERSION, '5.3.0') >= 0){
                         $amount = round($amount, 0, PHP_ROUND_HALF_UP);
@@ -278,7 +281,7 @@ class WCML_Multi_Currency_Prices{
                 $amount = $amount / $exchange_rates[$currency];
 
                 // exception - currencies_without_cents
-                if(in_array($currency, $this->multi_currency->currencies_without_cents)){
+                if(in_array($currency, $this->multi_currency->get_currencies_without_cents())){
 
                     if(version_compare(PHP_VERSION, '5.3.0') >= 0){
                         $amount = round($amount, 0, PHP_ROUND_HALF_UP);
@@ -361,7 +364,7 @@ class WCML_Multi_Currency_Prices{
         }
 
 
-        return $price;
+        return apply_filters( 'wcml_rounded_price', $price, $currency );
 
     }
 

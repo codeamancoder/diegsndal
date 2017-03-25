@@ -1,5 +1,5 @@
 <?php
-
+// Should only be used for WooCommerce versions prior 2.6
 class WCML_WooCommerce_Rest_API_Support{
 
     private $woocommerce_wpml;
@@ -48,7 +48,8 @@ class WCML_WooCommerce_Rest_API_Support{
 
         if(!empty($wp->query_vars['wc-api-version'])) {
             global $wpml_url_filters;
-            remove_filter('home_url', array($wpml_url_filters, 'home_url_filter'), -10, 2);
+	        $wpml_url_filters->remove_global_hooks();
+            remove_filter('home_url', array($wpml_url_filters, 'home_url_filter'), -10, 4);
 
         }
 
@@ -216,13 +217,13 @@ class WCML_WooCommerce_Rest_API_Support{
 
                     $translated_product_id = apply_filters( 'translate_object_id', $item['product_id'], 'product', true, $lang );
                     if( $translated_product_id ){
-                        $translated_product = new WC_Product( $translated_product_id );
+                        $translated_product = get_post( $translated_product_id );
                         $order_data['line_items'][$k]['product_id'] = $translated_product_id;
-                        if( $translated_product->post->post_type == 'product_variation' ){
-                            $post_parent = get_post( $translated_product->post->post_parent );
+                        if( $translated_product->post_type == 'product_variation' ){
+                            $post_parent = get_post( $translated_product->post_parent );
                             $post_name = $post_parent->post_title;
                         } else {
-                            $post_name = $translated_product->post->post_title;
+                            $post_name = $translated_product->post_title;
                         }
                         $order_data['line_items'][$k]['name'] = $post_name;
                     }

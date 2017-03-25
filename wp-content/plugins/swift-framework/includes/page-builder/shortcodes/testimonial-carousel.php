@@ -125,7 +125,8 @@
                     $testimonial_image_url = wp_get_attachment_url( $testimonial_image, 'full' );
                 }
 
-                $testimonial_image = spb_image_resizer( $testimonial_image_url, 70, 70, true, false );
+                $testimonial_size = apply_filters( 'spb_testimonial_image_size', 70 );
+                $testimonial_image = spb_image_resizer( $testimonial_image_url, $testimonial_size, $testimonial_size, true, false );
 
                 $items .= '<li class="testimonial carousel-item col-sm-12 clearfix">';
                 $items .= '<div class="testimonial-text">' . do_shortcode( $testimonial_text ) . '</div>';
@@ -152,6 +153,7 @@
             if ( $page_link == "yes" ) {
                 global $sf_options;
                 $testimonials_page = __( $sf_options['testimonial_page'], 'swift-framework-plugin' );
+                $testimonials_page = apply_filters('wpml_object_id', $testimonials_page, 'page', true);
                 $testimonial_link_icon = apply_filters( 'spb_testimonial_view_all_icon', '<i class="ssnavigate-right"></i>' );
                 if ( $testimonials_page ) {
                     $items .= '<a href="' . get_permalink( $testimonials_page ) . '" class="read-more"><span>' . __( "More", 'swift-framework-plugin' ) . '</span>' . $testimonial_link_icon . '</a>';

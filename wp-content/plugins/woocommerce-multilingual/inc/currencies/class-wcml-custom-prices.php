@@ -19,7 +19,9 @@ class WCML_Custom_Prices{
 
         }
 
-        add_action( 'woocommerce_get_children', array( $this, 'filter_product_variations_with_custom_prices' ), 10 );
+        add_action( 'woocommerce_variation_is_visible', array( $this, 'filter_product_variations_with_custom_prices' ), 10, 2 );
+
+
         add_filter( 'loop_shop_post_in', array( $this, 'filter_products_with_custom_prices' ), 100 );
 
     }
@@ -33,8 +35,12 @@ class WCML_Custom_Prices{
     public function get_product_custom_prices($product_id, $currency = false){
         global $wpdb, $sitepress;
 
-        if(empty($currency)){
+        if( empty( $currency ) ){
             $currency = $this->woocommerce_wpml->multi_currency->get_client_currency();
+        }
+
+        if( get_option('woocommerce_currency') == $currency ){
+            return false;
         }
 
         $original_product_id = $product_id;
@@ -281,25 +287,22 @@ class WCML_Custom_Prices{
 
     }
 
-    //display variations with custom prices when "Show only products with custom prices in secondary currencies" enabled
-    public function filter_product_variations_with_custom_prices( $children ){
+    //set variations without custom prices to not visible when "Show only products with custom prices in secondary currencies" is enabled
+    public function filter_product_variations_with_custom_prices( $is_visible, $variation_id ){
 
         if( is_product() && $this->woocommerce_wpml->settings['enable_multi_currency'] == WCML_MULTI_CURRENCIES_INDEPENDENT &&
             isset($this->woocommerce_wpml->settings['display_custom_prices']) &&
             $this->woocommerce_wpml->settings['display_custom_prices'] ){
 
-            foreach( $children as $key => $child ){
-                $orig_lang = $this->woocommerce_wpml->products->get_original_product_language( $child );
-                $orig_child_id = apply_filters( 'translate_object_id', $child, get_post_type( $child ), true, $orig_lang );
+            $orig_lang = $this->woocommerce_wpml->products->get_original_product_language( $variation_id );
+            $orig_child_id = apply_filters( 'translate_object_id', $variation_id, 'product_variation', true, $orig_lang );
 
-                if( !get_post_meta( $orig_child_id, '_wcml_custom_prices_status', true ) ){
-                    unset( $children[ $key ] );
-                }
+            if( !get_post_meta( $orig_child_id, '_wcml_custom_prices_status', true ) ){
+                return false;
             }
         }
 
-        return $children;
-
+        return $is_visible;
     }
 
     // display products with custom prices only if enabled "Show only products with custom prices in secondary currencies" option on settings page
@@ -429,80 +432,32 @@ class WCML_Custom_Prices{
     }
 
     public function sync_product_variations_custom_prices( $product_id ){
-        global $wpdb;
 
-        $is_variable_product = $this->woocommerce_wpml->products->is_variable_product( $product_id );
-        if( $is_variable_product ){
-            $get_all_post_variations = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT * FROM {$wpdb->posts}
-                                                WHERE post_status IN ('publish','private')
-                                                  AND post_type = 'product_variation'
-                                                  AND post_parent = %d
-                                                ORDER BY ID"
-                    ,$product_id )
-            );
-            $duplicated_post_variation_ids = array();
-            $min_max_prices = array();
+        if( isset( $_POST[ '_wcml_custom_prices' ][ $product_id ] ) ){
 
-            foreach( $get_all_post_variations as $k => $post_data ){
-                $duplicated_post_variation_ids[] = $post_data->ID;
-                //save files option
-                $this->woocommerce_wpml->downloadable->save_files_option( $post_data->ID );
+            //save custom prices for variation
+            $nonce = filter_input( INPUT_POST, '_wcml_custom_prices_variation_' . $product_id . '_nonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+            if( isset( $_POST[ '_wcml_custom_prices' ][ $product_id ] ) && isset( $nonce ) && wp_verify_nonce( $nonce, 'wcml_save_custom_prices_variation_' . $product_id ) ){
+                update_post_meta( $product_id, '_wcml_custom_prices_status', $_POST[ '_wcml_custom_prices' ][ $product_id ] );
+                $currencies = $this->woocommerce_wpml->multi_currency->get_currencies();
 
-                if( !isset( $_POST[ '_wcml_custom_prices' ][ $post_data->ID ] ) ){
-                    continue; // save changes for individual variation
-                }
-                //save custom prices for variation
-                $nonce = filter_input( INPUT_POST, '_wcml_custom_prices_variation_' . $post_data->ID . '_nonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-                if( isset( $_POST['_wcml_custom_prices'][$post_data->ID]) && isset( $nonce ) && wp_verify_nonce( $nonce, 'wcml_save_custom_prices_variation_' . $post_data->ID ) ){
-                    update_post_meta( $post_data->ID, '_wcml_custom_prices_status', $_POST[ '_wcml_custom_prices' ][ $post_data->ID ] );
-                    $currencies = $this->woocommerce_wpml->multi_currency->get_currencies();
-
-                    if( $_POST[ '_wcml_custom_prices' ][ $post_data->ID ] == 1 ){
-                        foreach( $currencies as $code => $currency ){
-                            $sale_price = $_POST[ '_custom_variation_sale_price' ][ $code ][ $post_data->ID ];
-                            $regular_price = $_POST[ '_custom_variation_regular_price' ][ $code ][ $post_data->ID ];
-                            $date_from = strtotime( $_POST[ '_custom_variation_sale_price_dates_from' ][ $code ][ $post_data->ID ] );
-                            $date_to = strtotime( $_POST[ '_custom_variation_sale_price_dates_to' ][ $code ][ $post_data->ID ] );
-                            $schedule = $_POST[ '_wcml_schedule' ][ $code ][ $post_data->ID ];
-                            $custom_prices = apply_filters( 'wcml_update_custom_prices_values',
-                                array( '_regular_price' => $regular_price,
-                                    '_sale_price' => $sale_price,
-                                    '_wcml_schedule_' => $schedule,
-                                    '_sale_price_dates_from' => $date_from,
-                                    '_sale_price_dates_to' => $date_to ),
-                                $code,
-                                $post_data->ID
-                            );
-                            $price = $this->update_custom_prices( $post_data->ID, $custom_prices, $code );
-
-                            if( !isset( $min_max_prices[ '_min_variation_price_'.$code ] ) || ( $price && $price < $min_max_prices[ '_min_variation_price_'.$code ] ) ){
-                                $min_max_prices[ '_min_variation_price_'.$code ] = $price;
-                                $min_max_prices[ '_min_price_variation_id_'.$code ] = $post_data->ID;
-                            }
-
-                            if( !isset( $min_max_prices[ '_max_variation_price_'.$code ] ) || ( $price && $price > $min_max_prices[ '_max_variation_price_'.$code ] ) ){
-                                $min_max_prices[ '_max_variation_price_'.$code ] = $price;
-                                $min_max_prices[ '_max_price_variation_id_'.$code ] = $post_data->ID;
-                            }
-
-                            if( !isset( $min_max_prices[ '_min_variation_regular_price_'.$code ] ) || ( $regular_price && $regular_price < $min_max_prices[ '_min_variation_regular_price_'.$code ] ) ){
-                                $min_max_prices[ '_min_variation_regular_price_'.$code ] = $regular_price;
-                            }
-
-                            if( !isset( $min_max_prices[ '_max_variation_regular_price_'.$code ] ) || ( $regular_price && $regular_price > $min_max_prices[ '_max_variation_regular_price_'.$code ] ) ){
-                                $min_max_prices[ '_max_variation_regular_price_'.$code ] = $regular_price;
-                            }
-
-                            if( !isset( $min_max_prices[ '_min_variation_sale_price_'.$code ] ) || ( $sale_price && $sale_price < $min_max_prices[ '_min_variation_sale_price_'.$code ] ) ){
-                                $min_max_prices[ '_min_variation_sale_price_'.$code ] = $sale_price;
-                            }
-
-                            if( !isset( $min_max_prices[ '_max_variation_sale_price_'.$code ] ) || ( $sale_price && $sale_price > $min_max_prices[ '_max_variation_sale_price_'.$code ] ) ){
-                                $min_max_prices[ '_max_variation_sale_price_'.$code ] = $sale_price;
-                            }
-                        }
+                if( $_POST[ '_wcml_custom_prices' ][ $product_id ] == 1 ){
+                    foreach( $currencies as $code => $currency ){
+                        $sale_price = wc_format_decimal( $_POST[ '_custom_variation_sale_price' ][ $code ][ $product_id ] );
+                        $regular_price = wc_format_decimal( $_POST[ '_custom_variation_regular_price' ][ $code ][ $product_id ] );
+                        $date_from = strtotime( $_POST[ '_custom_variation_sale_price_dates_from' ][ $code ][ $product_id ] );
+                        $date_to = strtotime( $_POST[ '_custom_variation_sale_price_dates_to' ][ $code ][ $product_id ] );
+                        $schedule = $_POST[ '_wcml_schedule' ][ $code ][ $product_id ];
+                        $custom_prices = apply_filters( 'wcml_update_custom_prices_values',
+                            array( '_regular_price' => $regular_price,
+                                '_sale_price' => $sale_price,
+                                '_wcml_schedule_' => $schedule,
+                                '_sale_price_dates_from' => $date_from,
+                                '_sale_price_dates_to' => $date_to ),
+                            $code,
+                            $product_id
+                        );
+                        $price = $this->update_custom_prices( $product_id, $custom_prices, $code );
                     }
                 }
             }

@@ -43,7 +43,6 @@ class WCML_Emails{
         add_action('woocommerce_order_partially_refunded_notification', array($this,'email_heading_refund'), 9);
         add_action('woocommerce_order_partially_refunded_notification', array($this,'refresh_email_lang'), 9);
 
-
         //new order admins email
         add_action( 'woocommerce_order_status_pending_to_processing_notification', array( $this, 'new_order_admin_email' ), 9 );
         add_action( 'woocommerce_order_status_pending_to_completed_notification', array( $this, 'new_order_admin_email' ), 9 );
@@ -56,16 +55,25 @@ class WCML_Emails{
         add_filter( 'icl_st_admin_string_return_cached', array( $this, 'admin_string_return_cached' ), 10, 2 );
 
         add_filter( 'plugin_locale', array( $this, 'set_locale_for_emails' ), 10, 2 );
-
+        add_filter( 'woocommerce_countries', array( $this, 'translate_woocommerce_countries' ) );
 
         if( is_admin() && $pagenow == 'admin.php' && isset($_GET['page']) && $_GET['page'] == 'wc-settings' && isset($_GET['tab']) && $_GET['tab'] == 'email' ){
             add_action('admin_footer', array($this, 'show_language_links_for_wc_emails'));
-            $this->set_emails_string_lamguage();
+            $this->set_emails_string_language();
         }
 
         add_filter( 'get_post_metadata', array( $this, 'filter_payment_method_string' ), 10, 4 );
 
-        if( !isset( $_GET['post_type'] ) || $_GET['post_type'] != 'shop_order' ){
+        if(
+            (
+                !isset( $_GET['post_type'] ) ||
+                $_GET['post_type'] != 'shop_order'
+            ) &&
+            (
+                !isset( $_GET[ 'action' ] ) ||
+                !in_array( $_GET['action'] , array( 'woocommerce_mark_order_complete', 'woocommerce_mark_order_status', 'mark_processing' ) )
+            )
+        ){
             add_filter( 'woocommerce_order_items_meta_get_formatted', array( $this, 'filter_formatted_items' ), 10, 2 );
         }
     }
@@ -96,7 +104,7 @@ class WCML_Emails{
         if( is_array( $order ) ) {
             $order = $order[ 'order_id' ];
         } elseif( is_object( $order ) ) {
-            $order = $order->id;
+	        $order = method_exists( 'WC_Order', 'get_id' ) ? $order->get_id() : $order->id;
         }
 
         $this->refresh_email_lang( $order );
@@ -256,7 +264,7 @@ class WCML_Emails{
 
     function filter_formatted_items( $formatted_meta, $object ){
 
-        if( $object->product->variation_id ){
+        if( isset( $object->product->variation_id ) ){
 
             $current_prod_variation_id = apply_filters( 'translate_object_id', $object->product->variation_id, 'product_variation', false );
 
@@ -343,7 +351,15 @@ class WCML_Emails{
             $order_id = $this->order_id;
         }elseif(isset($_POST['action']) && $_POST['action'] == 'woocommerce_refund_line_items'){
             $order_id = filter_input( INPUT_POST, 'order_id', FILTER_SANITIZE_NUMBER_INT );
+        }elseif( empty( $_POST ) && isset( $_GET[ 'page' ] ) && $_GET[ 'page' ] == 'wc-settings' && isset( $_GET[ 'tab' ] ) && $_GET[ 'tab' ] == 'email' && substr( $name, 0, 12 ) == '[woocommerce' ){
+            $email_string = explode( ']', str_replace( '[', '', $name ) );
+            $email_option = get_option( $email_string[ 0 ], true );
+            $context = 'admin_texts_'.$email_string[ 0 ];
+
+            $current_language = $this->woocommerce_wpml->strings->get_string_language( $email_option[ $email_string[ 1 ] ], $context, $name );
         }
+
+        $order_id = apply_filters( 'wcml_send_email_order_id', $order_id );
 
         if( $order_id ){
             $order_language = get_post_meta( $order_id, 'wpml_language', true );
@@ -440,19 +456,43 @@ class WCML_Emails{
         }
     }
 
-    function set_emails_string_lamguage(){
+    function set_emails_string_language(){
 
-        foreach( $_POST as $key => $post_value ){
+        foreach( $_POST as $key => $language ){
+
             if( substr( $key, 0, 9 ) == 'wcml_lang' ){
 
                 $email_string = explode( '-', $key );
-                $email_settings = get_option( $email_string[1], true );
 
                 if( isset( $email_string[2] ) ){
-                    $this->woocommerce_wpml->strings->set_string_language( $email_settings[ $email_string[2] ], 'admin_texts_'.$email_string[1] ,  '['.$email_string[1].']'.$email_string[2], $post_value );
+
+                    $email_key = str_replace( '_settings', '',  $email_string[1] );
+                    $email_key .= '_'.$email_string[2];
+
+                    $email_settings = get_option( $email_string[1], true );
+                    $opt_string_value =  $email_settings[ $email_string[2] ];
+
+                    $string_value = isset( $_POST[ $email_key ] ) ? $_POST[ $email_key ] : $opt_string_value;
+
+                    $context = 'admin_texts_'.$email_string[1];
+                    $name =  '['.$email_string[1].']'.$email_string[2];
+
+                    do_action('wpml_register_single_string', $context, $name, $string_value, false, $this->woocommerce_wpml->strings->get_string_language( $opt_string_value, $context ) );
+
+                    $this->woocommerce_wpml->strings->set_string_language( $string_value, $context, $name, $language );
                 }
             }
         }
+    }
+
+    function translate_woocommerce_countries( $countries ){
+
+        if( isset( $_POST[ 'wc_order_action' ] ) && $_POST[ 'wc_order_action' ] !== 'send_email_new_order' && isset( $_POST[ 'post_ID' ] ) ){
+            $this->refresh_email_lang( $_POST[ 'post_ID' ] );
+            $countries = include( WC()->plugin_path() . '/i18n/countries.php' );
+        }
+
+        return $countries;
     }
 
 }

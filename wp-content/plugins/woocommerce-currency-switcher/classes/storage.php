@@ -4,7 +4,7 @@ if (!defined('ABSPATH'))
     die('No direct access allowed');
 
 //keeps current user data
-class WOOCS_STORAGE
+final class WOOCS_STORAGE
 {
 
     public $type = 'session'; //session, transient, cookie

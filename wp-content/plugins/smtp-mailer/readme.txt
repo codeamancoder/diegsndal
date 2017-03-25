@@ -2,9 +2,9 @@
 Contributors: naa986
 Donate link: https://wphowto.net/
 Tags: smtp, mail, mailer, phpmailer, wp_mail, email
-Requires at least: 4.4
-Tested up to: 4.5
-Stable tag: 1.0.1
+Requires at least: 4.7
+Tested up to: 4.7
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,13 @@ For screenshots please visit the [SMTP Mailer](https://wphowto.net/smtp-mailer-p
 none
 
 == Changelog ==
+
+= 1.0.3 =
+* Fixed a bug where an apostrophe in the password would cause SMTP authentication failure.
+
+= 1.0.2 =
+* SMTP Mailer now supports the "wp_mail_failed" hook which fires after a phpmailerException is caught.
+* Added a new option to bypass this error on some servers where the SSL certificate is not properly configured - Warning: stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages: error:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed.
 
 = 1.0.1 =
 * First commit

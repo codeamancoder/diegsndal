@@ -48,3 +48,9 @@ div.info_popup {
     background: url(../img/admin_preloader.gif) center no-repeat #fff;
 }
 
+label[for=woocs_is_fixed_enabled],
+label[for=woocs_force_pay_bygeoip_rules],
+label[for=woocs_is_geoip_manipulation]{
+    color: orangered;
+}
+

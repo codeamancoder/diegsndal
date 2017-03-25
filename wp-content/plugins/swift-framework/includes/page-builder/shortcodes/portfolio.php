@@ -85,6 +85,7 @@
             $has_button     = false;
             $page_button    = $title_wrap_class = "";
             $portfolio_page = __( $sf_options['portfolio_page'], 'swift-framework-plugin' );
+            $portfolio_page = apply_filters('wpml_object_id', $portfolio_page, 'page', true);
             if ( $portfolio_page != "" ) {
                 $has_button  = true;
                 $page_button = '<a class="sf-button medium white sf-icon-stroke " href="' . get_permalink( $portfolio_page ) . '">' . $view_all_icon . '<span class="text">' . __( "VIEW ALL PROJECTS", 'swift-framework-plugin' ) . '</span></a>';

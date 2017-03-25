@@ -115,6 +115,9 @@
             if ( $row_bg_color != "" ) {
                 $styles[] = 'background-color:' . $row_bg_color . ';';
             }
+            if ( $bg_type == "pattern" ) {
+                $row_classes[] = 'row-bg-img-pattern';  
+            }
             if ( $custom_css != "" ) {
                 $styles[] = $custom_css;
                 // Row background image

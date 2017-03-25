@@ -5,10 +5,10 @@ Author URI: http://wordpress.ieonly.com/category/my-plugins/anti-malware/
 Contributors: scheeeli, gotmls
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QZHD8QHZ2E7PE
 Tags: security, firewall, anti-malware, scanner, automatic, repair, remove, malware, virus, threat, hacked, malicious, infection, timthumb, exploit, block, brute-force, wp-login, patch, antimalware, revslider, Revolution Slider
-Version: 4.16.39
-Stable tag: 4.16.39
+Version: 4.16.53
+Stable tag: 4.16.53
 Requires at least: 3.3
-Tested up to: 4.6.1
+Tested up to: 4.7.2
 
 This Anti-Malware scanner searches for Malware, Viruses, and other security threats and vulnerabilities on your server and it helps you fix them.
 
@@ -27,7 +27,7 @@ This Anti-Malware scanner searches for Malware, Viruses, and other security thre
 * Check the integrity of your WordPress Core files.
 * Automatically download new Definition Updates when running a Complete Scan.
 
-Updated September 16th
+Updated February 19th
 
 Register this plugin at [GOTMLS.NET](http://gotmls.net/) and get access to new definitions of "Known Threats" and added features like Automatic Removal, plus patches for specific security vulnerabilities like old versions of timthumb. Updated definition files can be downloaded automatically within the admin once your Key is registered. Otherwise, this plugin just scans for "Potential Threats" and leaves it up to you to identify and remove the malicious ones.
 
@@ -92,6 +92,28 @@ sucuri.net caches their scan results and will not refresh the scan until you cli
 5. The Quarantine showing threats that have been fix already.
 
 == Changelog ==
+
+= 4.16.53 =
+* Fixed the details window so that it scrolls to the highlighted code.
+* Set defaults to disable the Potential Threat scan if other threats definitions are enabled.
+* Encoded definitions array for DB storage.
+
+= 4.16.49 =
+* Fixed syntax error in the XMLRPC patch for newer versions of Apache.
+
+= 4.16.48 =
+* Added fall-back to manual updates if the Automatic update feature fails.
+* Fixed PHP Notices about undefined variable added in last Version release.
+* Improved Apache version detection.
+
+= 4.16.47 =
+* Changed Automatic update feature to automatically download all definitions and firewall updates.
+* Added PHP and Apache version detections and changed the XMLRPC patch to work with Apache 2.4 directives.
+* Removed the onbeforeunload function because Norton detected it as a False Positive.
+* Removed code that was deprecated in PHP Version 7.
+
+= 4.16.39 =
+* Fixed PHP Notice about an array to string conversion with some rare global variable conditions.
 
 = 4.16.38 =
 * Added more firewall options.
@@ -336,6 +358,18 @@ sucuri.net caches their scan results and will not refresh the scan until you cli
 * First versions available for WordPress (code removed, no longer compatible).
 
 == Upgrade Notice ==
+
+= 4.16.53 =
+Fixed the details window to scrolls to the highlighted code, set default Potential Threat scan to disabled, and encoded definitions array for DB storage.
+
+= 4.16.49 =
+Fixed syntax error in the XMLRPC patch for newer versions of Apache.
+
+= 4.16.48 =
+Added fall-back to manual updates if the Automatic update feature fails, fixed PHP Notices  and improved Apache version detection.
+
+= 4.16.47 =
+Changed Automatic update feature, added PHP and Apache version detections, and removed the onbeforeunload function other code that was deprecated.
 
 = 4.16.39 =
 Fixed PHP Notice about an array to string conversion with some rare global variable conditions.

@@ -161,6 +161,7 @@
                 // Get portfolio page
                 global $sf_options;
                 $portfolio_page = __( $sf_options['portfolio_page'], 'swift-framework-plugin' );
+                $portfolio_page = apply_filters('wpml_object_id', $portfolio_page, 'page', true);
                 $base_slug      = ( $portfolio_page > 0 && get_page( $portfolio_page ) ) ? get_page_uri( $portfolio_page ) : __( 'portfolio', 'swift-framework-plugin' );
                 $portfolio_base = __( 'portfolio', 'swift-framework-plugin' );
 

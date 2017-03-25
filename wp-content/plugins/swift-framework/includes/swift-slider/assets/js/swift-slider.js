@@ -71,11 +71,11 @@ var SWIFTSLIDER = SWIFTSLIDER || {};
                 }
             );
 
-            $window.smartresize(
-                function() {
+            $window.on("throttledresize", function() {
+                setTimeout(function() {
                     SWIFTSLIDER.resizeSliders();
-                }
-            );
+                }, 100);
+            });
 
         },
         setupSlider: function( i, sliderID ) {
@@ -430,7 +430,7 @@ var SWIFTSLIDER = SWIFTSLIDER || {};
             );
 
             // Initiate parallax scrolling on the slider if it's using the hero location
-            if ( (sliderInstance.parent().parent( '#container' ).length > 0 || sliderInstance.parent().parent( 'body' ).length > 0 || sliderInstance.offset().top === 0) && !body.hasClass('header-standard') && !body.hasClass('layout-boxed') && sliderInstance.data( 'type' ) != "curtain" && !isMobileAlt && !body.hasClass('ss-parallax-disabled') ) {
+            if ( (sliderInstance.parent().parent( '#container' ).length > 0 || sliderInstance.parent().parent( 'body' ).length > 0 || sliderInstance.offset().top === 0) && !body.hasClass('header-standard') && !body.hasClass('layout-boxed') && sliderInstance.data( 'slider-type' ) != "curtain" && !isMobileAlt && !body.hasClass('ss-parallax-disabled') ) {
                 sliderInstance.addClass('swift-slider-parallax');
                 parallaxInstance = sliderInstance;
                 SWIFTSLIDER.parallax();
@@ -519,7 +519,7 @@ var SWIFTSLIDER = SWIFTSLIDER || {};
         showControls: function( sliderInstance ) {
 
             // Animate in controls
-            if ( sliderInstance.data( 'type' ) != "curtain" ) {
+            if ( sliderInstance.data( 'slider-type' ) != "curtain" ) {
                 if ( sliderInstance.data( 'loop' ) ) {
                     sliderInstance.find( '.swift-slider-prev' ).fadeIn( 400 );
                 }
@@ -527,7 +527,7 @@ var SWIFTSLIDER = SWIFTSLIDER || {};
                 sliderInstance.find( '.swift-slider-pagination .dot' ).first().addClass( 'active' );
                 sliderInstance.find( '.swift-slider-pagination' ).fadeIn( 600 );
                 sliderInstance.find( '.swift-slider-continue' ).removeClass( 'continue-hidden' );
-            } else if ( sliderInstance.data( 'type' ) === "curtain" ) {
+            } else if ( sliderInstance.data( 'slider-type' ) === "curtain" ) {
                 sliderInstance.find( '.swift-slider-pagination .dot' ).first().addClass( 'active' );
                 sliderInstance.find( '.swift-slider-pagination' ).css(
                     'margin-top', -sliderInstance.find( '.swift-slider-pagination' ).height() / 2
@@ -697,7 +697,6 @@ var SWIFTSLIDER = SWIFTSLIDER || {};
                 }
             );
 
-
             // Increase slider height if content height is larger
             if ( contentHeight > sliderHeight ) {
                 ssInstance.css( 'height', contentHeight + 60 );
@@ -766,10 +765,10 @@ var SWIFTSLIDER = SWIFTSLIDER || {};
             }
 
             // Resize current slider
-            SWIFTSLIDER.resizeSliders( sliderInstance );
+            //SWIFTSLIDER.resizeSliders( sliderInstance );
 
             // Update pagination
-            if ( sliderInstance.data( 'type' ) === "curtain" ) {
+            if ( sliderInstance.data( 'slider-type' ) === "curtain" ) {
                 currentSlideIndex = currentSlideIndex + 1;
             } else {
                 if ( sliderInstance.data( 'loop' ) ) {
@@ -1802,36 +1801,38 @@ var Swiper = function (selector, params) {
     _this.resizeFix = function (reInit) {
         _this.callPlugins('beforeResizeFix');
 
-        _this.init(params.resizeReInit || reInit);
+        setTimeout(function() {
+            _this.init(params.resizeReInit || reInit);
 
-        // swipe to active slide in fixed mode
-        if (!params.freeMode) {
-            _this.swipeTo((params.loop ? _this.activeLoopIndex : _this.activeIndex), 0, false);
-            // Fix autoplay
-            if (params.autoplay) {
-                if (_this.support.transitions && typeof autoplayTimeoutId !== 'undefined') {
-                    if (typeof autoplayTimeoutId !== 'undefined') {
-                        clearTimeout(autoplayTimeoutId);
-                        autoplayTimeoutId = undefined;
-                        _this.startAutoplay();
+            // swipe to active slide in fixed mode
+            if (!params.freeMode) {
+                _this.swipeTo((params.loop ? _this.activeLoopIndex : _this.activeIndex), 0, false);
+                // Fix autoplay
+                if (params.autoplay) {
+                    if (_this.support.transitions && typeof autoplayTimeoutId !== 'undefined') {
+                        if (typeof autoplayTimeoutId !== 'undefined') {
+                            clearTimeout(autoplayTimeoutId);
+                            autoplayTimeoutId = undefined;
+                            _this.startAutoplay();
+                        }
                     }
-                }
-                else {
-                    if (typeof autoplayIntervalId !== 'undefined') {
-                        clearInterval(autoplayIntervalId);
-                        autoplayIntervalId = undefined;
-                        _this.startAutoplay();
+                    else {
+                        if (typeof autoplayIntervalId !== 'undefined') {
+                            clearInterval(autoplayIntervalId);
+                            autoplayIntervalId = undefined;
+                            _this.startAutoplay();
+                        }
                     }
                 }
             }
-        }
-        // move wrapper to the beginning in free mode
-        else if (_this.getWrapperTranslate() < -maxWrapperPosition()) {
-            _this.setWrapperTransition(0);
-            _this.setWrapperTranslate(-maxWrapperPosition());
-        }
+            // move wrapper to the beginning in free mode
+            else if (_this.getWrapperTranslate() < -maxWrapperPosition()) {
+                _this.setWrapperTransition(0);
+                _this.setWrapperTranslate(-maxWrapperPosition());
+            }
 
-        _this.callPlugins('afterResizeFix');
+            _this.callPlugins('afterResizeFix');
+        }, 100);
     };
 
     /*==========================================
@@ -2798,7 +2799,7 @@ var Swiper = function (selector, params) {
         }
         if (newPosition === parseInt(currentPosition, 10)) {
             var ai = jQuery( _this.container );
-            if ( ai.data( "type" ) === "curtain" && ai.data( "continue" ) ) {
+            if ( ai.data( "slider-type" ) === "curtain" && ai.data( "continue" ) ) {
                 SWIFTSLIDER.curtainAdvance( ai );
             } else {
                 return false;
@@ -2814,7 +2815,7 @@ var Swiper = function (selector, params) {
         _this.callPlugins('onSwipePrev');
 
         var ai = jQuery( _this.container );
-        if ( ai.data( "type" ) === "curtain" && SWIFTSLIDER.curtainAnimating ) {
+        if ( ai.data( "slider-type" ) === "curtain" && SWIFTSLIDER.curtainAnimating ) {
             return false;
         }
 
@@ -3923,3 +3924,8 @@ Swiper.prototype.plugins.progress = function( a ) {
     };
     return f;
 };
+
+/////////////////////////////////////////////
+// THROTTLED RESIZE
+/////////////////////////////////////////////
+(function(d){var c=d.event,a,e={_:0},f=0,g,b;a=c.special.throttledresize={setup:function(){d(this).on("resize",a.handler)},teardown:function(){d(this).off("resize",a.handler)},handler:function(k,h){var j=this,i=arguments;g=true;if(!b){setInterval(function(){f++;if(f>a.threshold&&g||h){k.type="throttledresize";c.dispatch.apply(j,i);g=false;f=0}if(f>9){d(e).stop();b=false;f=0}},30);b=true}},threshold:0}})(jQuery);

@@ -1530,6 +1530,7 @@ var confirmOnPageExit = function( e ) {
 };
 
 function redux_change( variable ) {
+    variable = jQuery(variable);
 
     jQuery( 'body' ).trigger( 'check_dependencies', variable );
 
@@ -1620,12 +1621,6 @@ function redux_change( variable ) {
     }
     // Don't show the changed value notice while save_notice is visible.
     if ( rContainer.find( '.saved_notice:visible' ).length > 0 ) {
-        return;
-    }
-
-
-    if ( redux.customizer ) {
-        redux.customizer.save( variable, rContainer, parentID );
         return;
     }
 

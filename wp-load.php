@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Bootstrap file for setting the ABSPATH constant
  * and loading the wp-config.php file. The wp-config.php
@@ -13,8 +12,6 @@
  * Will also search for wp-config.php in WordPress' parent
  * directory to allow the WordPress directory to remain
  * untouched.
- *
- * @internal This file must be parsable by PHP4.
  *
  * @package WordPress
  */

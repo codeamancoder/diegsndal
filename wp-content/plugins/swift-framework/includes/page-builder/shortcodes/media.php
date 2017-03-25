@@ -43,6 +43,8 @@
                 $fullwidth = false;
             }
 
+            $fullwidth = apply_filters('spb_video_fw_override', $fullwidth);
+
             $el_class = $this->getExtraClass( $el_class );
             $width    = spb_translateColumnWidthToSpan( $width );
             $size     = str_replace( array( 'px', ' ' ), array( '', '' ), $size );
@@ -202,6 +204,8 @@
                 $fullwidth = false;
             }
 
+            $fullwidth = apply_filters('spb_image_fw_override', $fullwidth);
+            
             // $img      = spb_getImageBySize( array(
             //     'attach_id'  => preg_replace( '/[^\d]/', '', $image ),
             //     'thumb_size' => $image_size
@@ -264,24 +268,45 @@
                 $output .= '<div class="figcaption-wrap"></div>';
                 $output .= '<figcaption>';
                 if ( $caption_pos == "hover" ) {
+                    if ( spb_theme_supports('thumb-hover-icon') ) {
+                        $output .= '<div class="thumb-icon">';
+                        if ( $view_icon_svg != "" ) {
+                            $output .= $view_icon_svg;
+                        } else {
+                            $output .= $view_icon;
+                        }
+                        $output .= '</div>';
+                    }
                     $output .= '<div class="thumb-info">';
                     if ( $view_icon_svg != "" ) {
                         $output .= $view_icon_svg;
                     }
                     if ( $content != "" ) {
-                        $output .= $content;
+                        $output .= do_shortcode( $content );
                     } else {
                         $output .= '<h4>' . $caption . '</h4>';
                     }
+                    $output .= '</div>';
                 } else {
-                    $output .= '<div class="thumb-info thumb-info-alt">';
-                    if ( $link_icon_svg != "" ) {
-                        $output .= $link_icon_svg;
+                    if ( spb_theme_supports('thumb-hover-icon') ) {
+                        $output .= '<div class="thumb-icon">';
+                        if ( $link_icon_svg != "" ) {
+                            $output .= $link_icon_svg;
+                        } else {
+                            $output .= $link_icon;
+                        }
+                        $output .= '</div>';
                     } else {
-                        $output .= $link_icon;
+                        $output .= '<div class="thumb-info thumb-info-alt">';
+                        if ( $link_icon_svg != "" ) {
+                            $output .= $link_icon_svg;
+                        } else {
+                            $output .= $link_icon;
+                        }
+                        $output .= '</div>';
                     }
                 }
-                $output .= '</div></figcaption>';
+                $output .= '</figcaption>';
             } else if ( $lightbox == "yes" ) {
                 $output .= '<div class="img-wrap">' . $img . '</div>';
                 if ( $img_url[0] != "" ) {
@@ -300,15 +325,53 @@
                 $output .= '<figcaption>';
                 if ( $caption_pos == "hover" ) {
                     if ( $caption != "" || $content != "" ) {
+                        if ( spb_theme_supports('thumb-hover-icon') ) {
+                            $output .= '<div class="thumb-icon">';
+                            if ( $view_icon_svg != "" ) {
+                                $output .= $view_icon_svg;
+                            } else {
+                                $output .= $view_icon;
+                            }
+                            $output .= '</div>';
+                        }
                         $output .= '<div class="thumb-info">';
                         if ( $view_icon_svg != "" ) {
                             $output .= $view_icon_svg;
                         }
                         if ( $content != "" ) {
-                            $output .= $content;
+                            $output .= do_shortcode( $content );
                         } else {
                             $output .= '<h4>' . $caption . '</h4>';
                         }
+                        $output .= '</div>';
+                    } else {
+                        if ( spb_theme_supports('thumb-hover-icon') ) {
+                            $output .= '<div class="thumb-icon">';
+                            if ( $view_icon_svg != "" ) {
+                                $output .= $view_icon_svg;
+                            } else {
+                                $output .= $view_icon;
+                            }
+                            $output .= '</div>';
+                        } else {
+                            $output .= '<div class="thumb-info thumb-info-alt">';
+                            if ( $view_icon_svg != "" ) {
+                                $output .= $view_icon_svg;
+                            } else {
+                                $output .= $view_icon;
+                            }
+                            $output .= '</div>';
+                        }
+                    }
+                } else {
+                    if ( spb_theme_supports('thumb-hover-icon') ) {
+                        $output .= '<div class="thumb-icon">';
+                        if ( $view_icon_svg != "" ) {
+                            $output .= $view_icon_svg;
+                        } else {
+                            $output .= $view_icon;
+                        }
+                        $output .= '</div>';
                     } else {
                         $output .= '<div class="thumb-info thumb-info-alt">';
                         if ( $view_icon_svg != "" ) {
@@ -316,27 +379,30 @@
                         } else {
                             $output .= $view_icon;
                         }
-                    }
-                } else {
-                    $output .= '<div class="thumb-info thumb-info-alt">';
-                    if ( $view_icon_svg != "" ) {
-                        $output .= $view_icon_svg;
-                    } else {
-                        $output .= $view_icon;
+                        $output .= '</div>';
                     }
                 }
-                $output .= '</div></figcaption>';
+                $output .= '</figcaption>';
             } else {
                 $output .= "\n\t\t" . '<div class="img-wrap">' . $img . '</div>';
                 $output .= '<div class="figcaption-wrap"></div>';
                 if ( $caption_pos == "hover" && ( $caption != "" || $content != "" ) ) {
                     $output .= '<figcaption>';
+                    if ( spb_theme_supports('thumb-hover-icon') ) {
+                        $output .= '<div class="thumb-icon">';
+                        if ( $link_icon_svg != "" ) {
+                            $output .= $link_icon_svg;
+                        } else {
+                            $output .= $link_icon;
+                        }
+                        $output .= '</div>';
+                    }
                     $output .= '<div class="thumb-info">';
                     if ( $link_icon_svg != "" ) {
                         $output .= $link_icon_svg;
                     }
                     if ( $content != "" ) {
-                        $output .= $content;
+                        $output .= do_shortcode( $content );
                     } else {
                         $output .= '<h4>' . $caption . '</h4>';
                     }
@@ -347,7 +413,7 @@
             if ( $caption_pos == "below" && ( $caption != "" || $content != "" ) ) {
                 $output .= '<div class="image-caption">';
                 if ( $content != "" ) {
-                    $output .= $content;
+                    $output .= do_shortcode( $content );
                 } else {
                     $output .= '<h4>' . $caption . '</h4>';
                 }

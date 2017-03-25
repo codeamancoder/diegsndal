@@ -196,7 +196,7 @@
             }
 
             if ( strlen( $character ) > 1 ) {
-                $character = substr( $character, 0, 1 );
+                $character = substr( $character, 0, 2 );
             }
 
             global $sf_svg_icon_id;
@@ -509,7 +509,7 @@
 			}
             $image_banner .= '</div>';
 
-			if ( $href != "" && sf_current_theme() == "atelier" || sf_current_theme() == "uplift" ) {
+			if ( $href != "" && ( sf_current_theme() == "atelier" || sf_current_theme() == "uplift" ) ) {
 				$image_banner .= '<figcaption></figcaption>';
 				$image_banner .= '</figure>';
 			}
@@ -1039,6 +1039,7 @@
             $twitch     = "";
             $snapchat   = "";
             $whatsapp   = "";
+            $houzz      = "";
             if ( isset( $sf_options['yelp_url'] ) ) {
                 $yelp = $sf_options['yelp_url'];
             }
@@ -1053,6 +1054,9 @@
             }
             if ( isset( $sf_options['whatsapp_url'] ) ) {
                 $whatsapp = $sf_options['whatsapp_url'];
+            }
+            if ( isset( $sf_options['houzz_url'] ) ) {
+                $houzz = $sf_options['houzz_url'];
             }
 
             $social_icons = '';
@@ -1130,6 +1134,9 @@
                 if ( $whatsapp ) {
                     $social_icons .= '<li class="whatsapp"><a href="' . $whatsapp . '" target="_blank"><i class="fa-whatsapp"></i><i class="fa-whatsapp"></i></a></li>' . "\n";
                 }
+                if ( $houzz ) {
+                    $social_icons .= '<li class="houzz"><a href="' . $houzz . '" target="_blank"><i class="fa-houzz"></i><i class="fa-houzz"></i></a></li>' . "\n";
+                }
             } else {
 
                 $social_type = explode( ',', $type );
@@ -1205,6 +1212,9 @@
                     }
                     if ( $id == "whatsapp" ) {
                         $social_icons .= '<li class="whatsapp"><a href="' . $whatsapp . '" target="_blank"><i class="fa-whatsapp"></i><i class="fa-whatsapp"></i></a></li>' . "\n";
+                    }
+                    if ( $id == "houzz" ) {
+                        $social_icons .= '<li class="houzz"><a href="' . $houzz . '" target="_blank"><i class="fa-houzz"></i><i class="fa-houzz"></i></a></li>' . "\n";
                     }
                 }
             }

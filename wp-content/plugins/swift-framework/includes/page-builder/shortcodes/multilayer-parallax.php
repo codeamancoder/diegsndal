@@ -72,7 +72,6 @@
             $title = $size = $width = $el_class = '';
             extract( shortcode_atts( array(
                 'width'       => '1/1',
-                'fullscreen'  => 'false',
                 'maxheight'   => '600',
                 'x_scalar'    => '20',
                 'y_scalar'    => '20',
@@ -92,7 +91,7 @@
             global $sf_ml_parallax_layer;
             $sf_ml_parallax_layer = 1000;
 
-            $output .= "\n\t" . '<div class="spb_multilayer_parallax spb_content_element ' . $width . $el_class . '" data-xscalar="' . $x_scalar . '" data-yscalar="' . $y_scalar . '" data-fullscreen="' . $fullscreen . '" data-max-height="' . $maxheight . '" style="height'.$maxheight.';">';
+            $output .= "\n\t" . '<div class="spb_multilayer_parallax spb_content_element ' . $width . $el_class . '" data-xscalar="' . $x_scalar . '" data-yscalar="' . $y_scalar . '" data-max-height="' . $maxheight . '" style="height'.$maxheight.';">';
             $output .= "\n\t\t\t" . do_shortcode( $content );
             $output .= "\n\t" . '</div> ' . $this->endBlockComment( $width );
 
@@ -113,17 +112,6 @@
         "class"           => "spb_multilayer_parallax spb_tab_media",
         "icon"            => "icon-multilayer-parallax",
         "params"          => array(
-            array(
-                "type"        => "buttonset",
-                "heading"     => __( "Fullscreen", 'swift-framework-plugin' ),
-                "param_name"  => "fullscreen",
-                "value"       => array(
-                    __( 'Yes', 'swift-framework-plugin' ) => "true",
-                    __( 'No', 'swift-framework-plugin' )  => "false"
-                ),
-                "buttonset_on"  => "yes",
-                "description" => __( "Choose if you would like the slider to be window height.", 'swift-framework-plugin' )
-            ),
             array(
                 "type"        => "textfield",
                 "heading"     => __( "Slider Max Height", 'swift-framework-plugin' ),

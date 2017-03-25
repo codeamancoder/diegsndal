@@ -68,21 +68,24 @@ if ($drop_down_view == 'flags')
     <?php endif; ?>
 
 
-
-
-
-    <form method="post" action="" class="woocommerce-currency-switcher-form <?php if ($show_flags): ?>woocs_show_flags<?php endif; ?>">
+    <form method="post" action="" class="woocommerce-currency-switcher-form <?php if ($show_flags): ?>woocs_show_flags<?php endif; ?>" data-ver="<?php echo WOOCS_VERSION ?>">
         <input type="hidden" name="woocommerce-currency-switcher" value="<?php echo $this->current_currency ?>" />
         <select name="woocommerce-currency-switcher" style="width: <?php echo $width ?>;" data-width="<?php echo $width ?>" data-flag-position="<?php echo $flag_position ?>" class="woocommerce-currency-switcher" onchange="woocs_redirect(this.value);
-                void(0);">
+                    void(0);">
                     <?php foreach ($this->get_currencies() as $key => $currency) : ?>
 
                 <?php
-                $option_txt = $currency['name'];
+                $option_txt = apply_filters('woocs_currname_in_option', $currency['name']);
 
                 if ($show_money_signs)
                 {
-                    $option_txt.=', ' . $currency['symbol'];
+                    if (!empty($option_txt))
+                    {
+                        $option_txt.=', ' . $currency['symbol'];
+                    } else
+                    {
+                        $option_txt = $currency['symbol'];
+                    }
                 }
                 //***
                 if (isset($txt_type))
@@ -104,3 +107,4 @@ if ($drop_down_view == 'flags')
     </form>
     <?php
 }
+

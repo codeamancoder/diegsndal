@@ -203,6 +203,7 @@
             $has_button  = false;
             $page_button = $title_wrap_class = $view_all = "";
             $blog_page   = __( $sf_options['blog_page'], 'swift-framework-plugin' );
+            $blog_page = apply_filters('wpml_object_id', $blog_page, 'page', true);
             if ( $category_slug != "" && strpos($category_slug, ',') != true ) {
                 $has_button    = true;
                 $category_id   = get_category_by_slug( $category_slug );

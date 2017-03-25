@@ -40,34 +40,41 @@ class WCML_WC_Strings{
     }
 
     function translated_attribute_label($label, $name, $product_obj = false){
-        global $sitepress, $product, $sitepress_settings;
+        global $sitepress, $product, $sitepress_settings, $woocommerce_wpml;
 
         $product_id = false;
         $lang = $sitepress->get_current_language();
-        $name = sanitize_title($name);
 
         if( isset( $_GET[ 'post' ] ) && get_post_type( $_GET[ 'post' ] ) == 'shop_order' ){
             $lang = $sitepress->get_user_admin_language( get_current_user_id(), true );
         }
 
-        if( isset($product->id) ){
-            $product_id = $product->id;
+        if( $product ){
+            $product_id = WooCommerce_Functions_Wrapper::get_product_id( $product );
         }elseif( is_numeric( $product_obj ) ){
             $product_id = $product_obj;
-        }elseif( isset($product_obj->id) ){
-            $product_id = $product_obj->id;
+        }elseif( $product_obj ){
+            $product_id = WooCommerce_Functions_Wrapper::get_product_id( $product_obj );
         }
+
+        $name = $woocommerce_wpml->attributes->filter_attribute_name( $name, $product_id, true );
 
         if( $product_id ){
 
-            $custom_attr_translation =  get_post_meta( $product_id, 'attr_label_translations', true ) ;
+            $custom_attr_translation =  $woocommerce_wpml->attributes->get_attr_label_translations( $product_id, $lang ) ;
 
             if( $custom_attr_translation ){
-                if( isset( $custom_attr_translation[$lang][$name] ) ){
-                    return  $custom_attr_translation[$lang][$name];
+                if( isset( $custom_attr_translation[$name] ) ){
+                    return $custom_attr_translation[$name];
                 }
             }
 
+        }
+
+        $trnsl_label = apply_filters( 'wpml_translate_single_string', $label, 'WordPress', 'taxonomy singular name: '.$label, $lang );
+
+        if( $label != $trnsl_label ){
+            return $trnsl_label;
         }
 
         if(is_admin() && !wpml_is_ajax()){
@@ -86,12 +93,6 @@ class WCML_WC_Strings{
 
         }
 
-        $trnsl_label = apply_filters( 'wpml_translate_single_string', $label, 'WordPress', 'taxonomy singular name: '.$label, $lang );
-
-        if( $label != $trnsl_label ){
-            return $trnsl_label;
-        }
-
         // backward compatibility for WCML < 3.6.1
         $trnsl_labels = get_option('wcml_custom_attr_translations');
 
@@ -106,7 +107,7 @@ class WCML_WC_Strings{
 
         if($values){
 
-            $parent = $values['data']->post->post_parent;
+            $parent = wp_get_post_parent_id( $values['product_id'] );
             $tr_product_id = apply_filters( 'translate_object_id', $values['product_id'], 'product', true );
             $trnsl_title = get_the_title($tr_product_id);
             
@@ -127,10 +128,10 @@ class WCML_WC_Strings{
         return $title;
     }
 
-    function translated_checkout_product_title($title,$product){
+    function translated_checkout_product_title( $title, $product ){
 
-        if(isset($product->id)){
-            $tr_product_id = apply_filters( 'translate_object_id', $product->id, 'product', true, $this->current_language );
+        if( $product ){
+            $tr_product_id = apply_filters( 'translate_object_id', WooCommerce_Functions_Wrapper::get_product_id( $product ), 'product', true, $this->current_language );
             $title = get_the_title($tr_product_id);
         }
 
@@ -454,7 +455,16 @@ class WCML_WC_Strings{
         $current_language = $sitepress->get_current_language();
 
         if( $current_language != 'all' && in_array( 'product', $obj_type ) && substr( $taxonomy, 0, 3) == 'pa_' && isset( $wp_taxonomies[ $taxonomy ] )){
-            $wp_taxonomies[$taxonomy]->labels->name = apply_filters( 'wpml_translate_single_string', $args['labels']->name, 'WordPress', 'taxonomy singular name: '.$args['labels']->name, $current_language );
+
+            if( is_array( $args['labels'] ) ){
+                $name = $args['labels']['singular_name'];
+            }else{
+                $name = $args['labels']->name;
+            }
+
+            $wp_taxonomies[$taxonomy]->labels->name = apply_filters( 'wpml_translate_single_string', $name, 'WordPress', 'taxonomy singular name: '.$name, $current_language );
+
+
         }
 
     }

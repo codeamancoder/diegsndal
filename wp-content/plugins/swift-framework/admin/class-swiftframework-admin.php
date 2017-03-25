@@ -129,28 +129,24 @@ class SwiftFramework_Admin {
 				</ul>
 
 				<div class="divide"></div>
-				<h3>Latest Update (v2.5.20)</h3>
+				<h3>Latest Update (v2.5.30)</h3>
 				<p></p>
 				<ul>
-					<li>FRONTEND: Set table shortcode to run on sf_table namespace</li>
-					<li>FRONTEND: Fixed column parallax output</li>
-					<li>FRONTEND: Added option of 3 or 5 column output to social grid when not using full width mode</li>
-					<li>FRONTEND: Fixed window height parallax display issue</li>
-					<li>FRONTEND: Fixed minor styling issues</li>
-					<li>BACKEND: Fixed icon shortcode output</li>
+					<li>FRONTEND: Performance Improvements</li>
+					<li>FRONTEND: Mobile equal height column fix</li>
+					<li>FRONTEND: Fixed minor text issues</li>
+					<li>FRONTEND: Fixed swift slider curtain issues</li>
+					<li>FRONTEND: Fixed issue with rows on safari</li>
+					<li>FRONTEND: Translate pages in theme options using WPML filters instead of String
+translation.</li>
+					<li>BACKEND: Updated redux framework</li>
 				</ul>
 				<div class="divide"></div>
-				<h3>Previous Update (v2.5.0)</h3>
+				<h3>Previous Update (v2.5.23)</h3>
 				<p></p>
 				<ul>
-					<li><strong>NOTE: This version requires the following theme versions: Atelier v2.4.0, Cardinal v2.5.6, Joyn v2.5.6, Uplift v1.3.0</strong></li>
-					<li>FRONTEND: Improved row and full width row performance</li>
-					<li>FRONTEND: Added row column position option, allowing you to set the position of columns within the row</li>
-					<li>FRONTEND: Added row column spacing option, allowing you to set the spacing between columns within the row</li>
-					<li>FRONTEND: Added row column content position, allowing you to set the position of content within columns of a row</li>
-					<li>FRONTEND: Added row column equal heights option, allowing you to set the columns within a row to be equal height</li>
-					<li>FRONTEND: Improved overally frontend performance with conditional loading where possible</li>
-					<li>FRONTEND: Various fixes</li>
+					<li>FRONTEND: Icon Box Character mode now supports 2 characters</li>
+					<li>FRONTEND: Minor fixes</li>
 				</ul>
 			</div>
 		</div>

@@ -92,9 +92,9 @@ class SwiftFramework {
 		}
 
 		// CUSTOM POST TYPES
-		if ( ! $safety ) {
+		//if ( ! $safety ) {
 			$this->include_cpts();
-		}
+		//}
 
 		// PAGE BUILDER
 		if ( ! $disable_spb ) {

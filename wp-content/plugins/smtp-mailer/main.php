@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: SMTP Mailer
-Version: 1.0.1
+Version: 1.0.3
 Plugin URI: http://wphowto.net/smtp-mailer-plugin-for-wordpress-1482
 Author: naa986
 Author URI: http://wphowto.net/
@@ -16,8 +16,8 @@ if (!defined('ABSPATH')){
 
 class SMTP_MAILER {
     
-    var $plugin_version = '1.0.1';
-    var $phpmailer_version = '5.2.10';
+    var $plugin_version = '1.0.3';
+    var $phpmailer_version = '5.2.14';
     var $plugin_url;
     var $plugin_path;
     
@@ -223,7 +223,9 @@ class SMTP_MAILER {
             }
             $smtp_password = '';
             if(isset($_POST['smtp_password']) && !empty($_POST['smtp_password'])){
+                //echo "password: ".$_POST['smtp_password'];               
                 $smtp_password = sanitize_text_field($_POST['smtp_password']);
+                $smtp_password = wp_unslash($smtp_password); // This removes slash (automatically added by WordPress) from the password when apostrophe is present
                 $smtp_password = base64_encode($smtp_password);
             }
             $type_of_encryption = '';
@@ -242,6 +244,10 @@ class SMTP_MAILER {
             if(isset($_POST['from_name']) && !empty($_POST['from_name'])){
                 $from_name = sanitize_text_field(stripslashes($_POST['from_name']));
             }
+            $disable_ssl_verification = '';
+            if(isset($_POST['disable_ssl_verification']) && !empty($_POST['disable_ssl_verification'])){
+                $disable_ssl_verification = sanitize_text_field($_POST['disable_ssl_verification']);
+            }
             $options = array();
             $options['smtp_host'] = $smtp_host;
             $options['smtp_auth'] = $smtp_auth;
@@ -251,6 +257,7 @@ class SMTP_MAILER {
             $options['smtp_port'] = $smtp_port;
             $options['from_email'] = $from_email;
             $options['from_name'] = $from_name;
+            $options['disable_ssl_verification'] = $disable_ssl_verification;
             smtp_mailer_update_option($options);
             echo '<div id="message" class="updated fade"><p><strong>';
             echo __('Settings Saved!', 'smtp-mailer');
@@ -268,7 +275,14 @@ class SMTP_MAILER {
             $options['smtp_port'] = '';
             $options['from_email'] = '';
             $options['from_name'] = '';
+            $options['disable_ssl_verification'] = '';
         }
+        
+        // Avoid warning notice since this option was added later
+        if(!isset($options['disable_ssl_verification'])){
+            $options['disable_ssl_verification'] = '';
+        }
+        
         $smtp_password = '';
         if(isset($options['smtp_password']) && !empty($options['smtp_password'])){
             $smtp_password = base64_decode($options['smtp_password']);
@@ -339,6 +353,12 @@ class SMTP_MAILER {
                         <th scope="row"><label for="from_name"><?php _e('From Name', 'smtp-mailer');?></label></th>
                         <td><input name="from_name" type="text" id="from_name" value="<?php echo $options['from_name']; ?>" class="regular-text code">
                             <p class="description"><?php _e('The name which will be used as the From Name if it is not supplied to the mail function.', 'smtp-mailer');?></p></td>
+                    </tr>
+                    
+                    <tr valign="top">
+                        <th scope="row"><label for="disable_ssl_verification"><?php _e('Disable SSL Certificate Verification', 'smtp-mailer');?></label></th>
+                        <td><input name="disable_ssl_verification" type="checkbox" id="disable_ssl_verification" <?php checked($options['disable_ssl_verification'], 1); ?> value="1">
+                            <p class="description"><?php _e('As of PHP 5.6 you will get a warning/error if the SSL certificate on the server is not properly configured. You can check this option to disable that default behaviour. Please note that PHP 5.6 made this change for a good reason. So you should get your host to fix the SSL configurations instead of bypassing it', 'smtp-mailer');?></p></td>
                     </tr>
 
                 </tbody>
@@ -411,7 +431,7 @@ if(!function_exists('wp_mail') && is_smtp_mailer_configured()){
 	// Compact the input, apply the filters, and extract them back out
 
 	/**
-	 * Filter the wp_mail() arguments.
+	 * Filters the wp_mail() arguments.
 	 *
 	 * @since 2.2.0
 	 *
@@ -456,6 +476,8 @@ if(!function_exists('wp_mail') && is_smtp_mailer_configured()){
 	}
 
 	// Headers
+	$cc = $bcc = $reply_to = array();
+
 	if ( empty( $headers ) ) {
 		$headers = array();
 	} else {
@@ -467,8 +489,6 @@ if(!function_exists('wp_mail') && is_smtp_mailer_configured()){
 			$tempheaders = $headers;
 		}
 		$headers = array();
-		$cc = array();
-		$bcc = array();
 
 		// If it's actually got contents
 		if ( !empty( $tempheaders ) ) {
@@ -531,6 +551,9 @@ if(!function_exists('wp_mail') && is_smtp_mailer_configured()){
 					case 'bcc':
 						$bcc = array_merge( (array) $bcc, explode( ',', $content ) );
 						break;
+					case 'reply-to':
+						$reply_to = array_merge( (array) $reply_to, explode( ',', $content ) );
+						break;
 					default:
 						// Add it to our grand headers array
 						$headers[trim( $name )] = trim( $content );
@@ -569,78 +592,67 @@ if(!function_exists('wp_mail') && is_smtp_mailer_configured()){
 	}
 
 	/**
-	 * Filter the email address to send from.
+	 * Filters the email address to send from.
 	 *
 	 * @since 2.2.0
 	 *
 	 * @param string $from_email Email address to send from.
 	 */
-	$phpmailer->From = apply_filters( 'wp_mail_from', $from_email );
+	$from_email = apply_filters( 'wp_mail_from', $from_email );
 
 	/**
-	 * Filter the name to associate with the "from" email address.
+	 * Filters the name to associate with the "from" email address.
 	 *
 	 * @since 2.3.0
 	 *
 	 * @param string $from_name Name associated with the "from" email address.
 	 */
-	$phpmailer->FromName = apply_filters( 'wp_mail_from_name', $from_name );
+	$from_name = apply_filters( 'wp_mail_from_name', $from_name );
+
+	$phpmailer->setFrom( $from_email, $from_name, false );
 
 	// Set destination addresses
 	if ( !is_array( $to ) )
 		$to = explode( ',', $to );
 
-	foreach ( (array) $to as $recipient ) {
-		try {
-			// Break $recipient into name and address parts if in the format "Foo <bar@baz.com>"
-			$recipient_name = '';
-			if ( preg_match( '/(.*)<(.+)>/', $recipient, $matches ) ) {
-				if ( count( $matches ) == 3 ) {
-					$recipient_name = $matches[1];
-					$recipient = $matches[2];
-				}
-			}
-			$phpmailer->AddAddress( $recipient, $recipient_name);
-		} catch ( phpmailerException $e ) {
-			continue;
-		}
-	}
-
 	// Set mail's subject and body
 	$phpmailer->Subject = $subject;
 	$phpmailer->Body    = $message;
 
-	// Add any CC and BCC recipients
-	if ( !empty( $cc ) ) {
-		foreach ( (array) $cc as $recipient ) {
-			try {
-				// Break $recipient into name and address parts if in the format "Foo <bar@baz.com>"
-				$recipient_name = '';
-				if ( preg_match( '/(.*)<(.+)>/', $recipient, $matches ) ) {
-					if ( count( $matches ) == 3 ) {
-						$recipient_name = $matches[1];
-						$recipient = $matches[2];
-					}
-				}
-				$phpmailer->AddCc( $recipient, $recipient_name );
-			} catch ( phpmailerException $e ) {
+	// Use appropriate methods for handling addresses, rather than treating them as generic headers
+	$address_headers = compact( 'to', 'cc', 'bcc', 'reply_to' );
+
+	foreach ( $address_headers as $address_header => $addresses ) {
+		if ( empty( $addresses ) ) {
 				continue;
 			}
-		}
-	}
 
-	if ( !empty( $bcc ) ) {
-		foreach ( (array) $bcc as $recipient) {
+		foreach ( (array) $addresses as $address ) {
 			try {
 				// Break $recipient into name and address parts if in the format "Foo <bar@baz.com>"
 				$recipient_name = '';
-				if ( preg_match( '/(.*)<(.+)>/', $recipient, $matches ) ) {
+
+				if ( preg_match( '/(.*)<(.+)>/', $address, $matches ) ) {
 					if ( count( $matches ) == 3 ) {
 						$recipient_name = $matches[1];
-						$recipient = $matches[2];
+						$address        = $matches[2];
 					}
 				}
-				$phpmailer->AddBcc( $recipient, $recipient_name );
+
+				switch ( $address_header ) {
+					case 'to':
+						$phpmailer->addAddress( $address, $recipient_name );
+						break;
+					case 'cc':
+						$phpmailer->addCc( $address, $recipient_name );
+						break;
+					case 'bcc':
+						$phpmailer->addBcc( $address, $recipient_name );
+						break;
+					case 'reply_to':
+						$phpmailer->addReplyTo( $address, $recipient_name );
+						break;
+				}
 			} catch ( phpmailerException $e ) {
 				continue;
 			}
@@ -676,6 +688,17 @@ if(!function_exists('wp_mail') && is_smtp_mailer_configured()){
             // Ask for HTML-friendly debug output
             $phpmailer->Debugoutput = 'html';
         }
+        
+        //disable ssl certificate verification if checked
+        if(isset($options['disable_ssl_verification']) && !empty($options['disable_ssl_verification'])){
+            $phpmailer->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            );
+        }
 
 	// Set Content-Type and charset
 	// If we don't have a content-type from the input headers
@@ -683,7 +706,7 @@ if(!function_exists('wp_mail') && is_smtp_mailer_configured()){
 		$content_type = 'text/plain';
 
 	/**
-	 * Filter the wp_mail() content type.
+	 * Filters the wp_mail() content type.
 	 *
 	 * @since 2.3.0
 	 *
@@ -704,7 +727,7 @@ if(!function_exists('wp_mail') && is_smtp_mailer_configured()){
 	// Set the content-type and charset
 
 	/**
-	 * Filter the default wp_mail() charset.
+	 * Filters the default wp_mail() charset.
 	 *
 	 * @since 2.3.0
 	 *
@@ -746,17 +769,18 @@ if(!function_exists('wp_mail') && is_smtp_mailer_configured()){
 		return $phpmailer->Send();
 	} catch ( phpmailerException $e ) {
 
-		$mail_error_data = compact( $to, $subject, $message, $headers, $attachments );
+		$mail_error_data = compact( 'to', 'subject', 'message', 'headers', 'attachments' );
+		$mail_error_data['phpmailer_exception_code'] = $e->getCode();
 
 		/**
 		 * Fires after a phpmailerException is caught.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param WP_Error $error A WP_Error object with the phpmailerException code, message, and an array
+		 * @param WP_Error $error A WP_Error object with the phpmailerException message, and an array
 		 *                        containing the mail recipient, subject, message, headers, and attachments.
 		 */
- 		do_action( 'wp_mail_failed', new WP_Error( $e->getCode(), $e->getMessage(), $mail_error_data ) );
+		do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', $e->getMessage(), $mail_error_data ) );
 
 		return false;
 	}

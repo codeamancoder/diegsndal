@@ -4,8 +4,8 @@ Donate link: http://wpml.org/documentation/related-projects/woocommerce-multilin
 Tags: CMS, woocommerce, commerce, ecommerce, e-commerce, products, WPML, multilingual, e-shop, shop
 License: GPLv2
 Requires at least: 3.9
-Tested up to: 4.6.1
-Stable tag: 3.9.3
+Tested up to: 4.7.3
+Stable tag: 4.1.2
 
 Allows running fully multilingual e-commerce sites using WooCommerce and WPML.
 
@@ -141,6 +141,91 @@ WooCommerce Multilingual is compatible with all major WooCommerce extensions. We
 6. Shop URLs translation screen
 
 == Changelog ==
+
+= 4.1.2 =
+* Fixed the currency switcher not being displayed correctly when using the Storefront theme
+* Fixed an incompatibility with an older WPML version leading to a fatal error
+* Fixed the currency switcher css being loaded when no currency switcher was displayed
+* Fixed a bug causing an error when upgrading WooCommerce Multilingual to version 4.1 with WooCommerce inactive.
+
+= 4.1.1 =
+* Fixed fatal error that was occurring when using an older version of WPML (introduced in version 4.1.0)
+* Fixed a bug causing a 'Invalid or duplicated SKU when saving or updating product' warning when editing a product
+* Fixed a bug causing a fatal error when deactivating WooCommerce while WooCommerce Multilingual was active
+
+= 4.1.0 =
+* Enhanced language switchers
+* Improved REST API support
+* Updated WooCommerce 2.7 compatibiilty
+* Added the ability to translate product terms in the products translation editor
+* Enhanced the translation of rich text custom fields in the products translation editor.
+* Compatibility with WooCommerce Product Bundles (updated, not for WooCommerce 2.7)
+* Compatibility with ACF Pro (fixes)
+* Compatibility with WooCommerce Bookings (fixes)
+* Compatibility with WP Simple Survey (fixes)
+* Fix: Translations for custom attributes containing the umlaut character were not showing on the frontend.
+* Fix: Some gallery images were not synchronized when using the corresponding option on the troubleshooting page.
+* Fix: Incorrect country name translations were used in the order confirmation email is some situations.
+* Fix: Some endpoints were not accessible when using the ‘Different languages in directories’ configuration.
+* Fix: Order screen displayed ‘Variation # of Product name’ instead of just the product name.
+* Fix: The custom prices were not displayed correctly on the front end when using ‘,’ as a decimal separator.
+* Fix: In specific circumstances, the product category URLs were returning a 404 error.
+* Fix: New lines were not copied correctly when using the products translation editor.
+* Fix: In some circumstances, accessing product categories without a trailing slash generated PHP notices.
+* Fix: The stock status was not synchronized correctly for variable products.
+* Fix: By removing an attribute, only the terms in the default language were removed from the database.
+* Fix: When using the option to display only products with custom prices in the secondary currencies and the price was 0, the products variations were not visible on the front end.
+* Fix: The option to set separate download files for each translation was not working correctly for variable products
+
+= 4.0.4 =
+* Bug fix: empty shipping class was shown on the Quick Editor when using WooCommerce Table Rate Shipping
+* Bug fix: the Translation Editor could not save the same slug for translations of the same product
+* Bug fix: sales by product reports were inorect when filterign by languages including a dash character in their code
+* Bug fix: as of version 4.0.2 the option to use custom settings for translations download files was not always working
+* Bug fix: a PHP fatal error was shown when WooCommerce Multilingual was active but WooCommerce was not active
+* Bug fix: global attributes of variations were not copied to transltions when using the native interface to edit product translations
+* Bug fix: it was not possible to add multiple bookings in the cart at one time (when using WooCommerce Bookings)
+* Bug fix: custom URL parameters were not preserved when switching the language on the shop page
+* Fixed various incompatibilities with PHP 7.1
+
+= 4.0.3 =
+* Fixed fatal error caused by syntax incompatible with PHP versions prior 5.5
+
+= 4.0.2 =
+* Added a troubleshooting option to fix a problem with incorrectly translated product_type terms revealed by upgrading to WordPress 4.7
+
+= 4.0.1 =
+* Fixed various issues introduced by version 4.0.0
+* Fixed a problem that was preventing the cart from being updated for some users: items added or removed
+* Fixed a problem with product categories not being synchronized for product translations in some cases
+
+= 4.0.0 =
+* Added the option to configure automatic exchange rates for the multi-currency mode
+* Optimized the synchronization process between products and their translations when saving products
+* Added the option to reset the cart when switching the languages or currencies
+* Added compatibility updates for WordPress 4.7
+* Improved usability aspects related to popular compatible extensions
+* Added compatibility updates for upcoming WooCommerce 2.7
+* Fixed a compatibility issue with Yoast SEO premium: Redirects to the original product were created for translated variations
+* Fixed a compatibility issue with WooCommerce Tab Manager: HTML was stripped out when saving the translation of a tab
+* Bug fix: downloadable products were added multiple times to the cart (instead of quantity change)
+* Bug fix: order-pay endpoint string was re-registering itself with a blank value
+
+= 3.9.5 =
+* Fixed a bug introduced in 3.9.4 that prevented translating variable products
+
+= 3.9.4 =
+* Fixed an issue with custom prices (secondary currency) overriding the price in the default currency in some conditions
+* Fixed an issue with WooCommerce Authorize.Net AIM Gateway happening when using the credit cart checkout
+* Bug fix: the group products were excluded from the order notification emails
+* Fixed a compatibility issue with Revolution Slider
+* Changed the input field for variation descriptions to textarea in the tranlsation editor
+* Fixed an issue related to rates per shipping in secondary currencies when using WooCommerce Table Rate Shipping
+* Bug fix: the shipping class was not displayed in the backend when when using WooCommerce Table Rate Shipping and creating the product in a secondary language
+* Fixed a compatibility issue with WooCommerce Print Invoices
+* Fixed compatibility issues with Sensei
+* Added a filter for rounding rules logic
+* Added a currencies that do not use decimals
 
 = 3.9.3 =
 * Fixed a bug that was causing the currency switcher to not be displayed on the cart and checkout pages in certain conditions

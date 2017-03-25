@@ -63,7 +63,7 @@
 
             if ( $col_padding != "" &&  $custom_css == "" && $padding_horizontal == '') {  
                 $inner_inline_style .= 'padding:' . $col_padding . '%;';
-            }else if( $custom_css == "" && $padding_horizontal != '' ){
+            } else if ( $custom_css == "" && $padding_horizontal != '' && $padding_horizontal != '15' ) {
                 $inner_inline_style .= 'padding-left:' . $padding_horizontal . 'px; padding-right:' . $padding_horizontal . 'px;';
             }
 
